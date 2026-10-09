@@ -19,8 +19,12 @@ Measured acceptance:
 - Foundation tests: 4 passed.
 - `alphamosaic doctor`, `providers` and `analyze AAPL --fundamentals`: passed against live
   Nasdaq data; AAPL returned 132 rows and recorded evidence.
-- Build with isolated environment: blocked by Windows sandbox permission creating a temporary
-  venv; retry with `--no-isolation` or a writable build temp directory.
+- `python -m build --no-isolation --wheel --sdist`: passed after using a repository-owned temp
+  directory; produced `alphamosaic-0.1.0-py3-none-any.whl` and `.tar.gz`.
+- Clean Python 3.12 wheel environment: installed the wheel plus base dependencies with `uv`, and
+  `alphamosaic doctor` completed with OpenBB/QuantStats correctly reported as optional absent.
+- Live explicit scan of 10 symbols: 8 candidates, 2 exclusions, `REAL_DATA` report with unique
+  JSON and Markdown run bundle under the ignored runtime report store.
 - GitHub CLI authentication for SiriZhao is invalid, so private remote creation/push is blocked.
 
 Known limitations: current screener is survivorship-biased, historical data is reconstructed and

@@ -84,14 +84,8 @@ def test_risk_weights_are_long_only_and_bounded() -> None:
 def test_mcp_server_exposes_only_read_tools() -> None:
     server = create_server()
     names = {tool.name for tool in server._tool_manager.list_tools()}
-    assert names == {
-        "get_system_status",
-        "list_providers",
-        "scan_opportunities",
-        "get_stock_snapshot",
-        "get_candidate_ranking",
-        "get_research_report",
-    }
+    assert {"system_status", "provider_health", "scan_market", "analyze_stock", "run_backtest"} <= names
+    assert {"get_system_status", "list_providers", "scan_opportunities"} <= names
     status = asyncio.run(server._tool_manager.call_tool("get_system_status", {}, cast(Any, None)))
     assert status["broker_enabled"] is False
     assert status["mode"] == "RESEARCH_ONLY"

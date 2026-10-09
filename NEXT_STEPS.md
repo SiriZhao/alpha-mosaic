@@ -10,3 +10,6 @@
    model inference.
 5. Repeat wheel/sdist build and clean wheel installation in a writable environment, then run CLI
    and MCP invocation smoke tests from the installed wheel.
+6. Configure authorized TradingAgents model access and Danelfin credentials in an isolated environment, then run provider contract tests against the official endpoints; retain `NOT_CONFIGURED` when unavailable.
+7. Add licensed point-in-time news/catalyst and valuation evidence, then validate fusion on independently sourced historical snapshots before strategy promotion.
+8. Deploy remote MCP only behind operator-managed HTTPS and authentication; replace the plugin URL placeholder after a real ChatGPT tool invocation and record that evidence.

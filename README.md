@@ -12,6 +12,8 @@ uv sync --all-extras
 uv run alphamosaic doctor
 uv run alphamosaic providers
 uv run alphamosaic analyze AAPL --fundamentals
+uv run alphamosaic integrations
+uv run alphamosaic research AAPL,XOM,TSLA --profile FAST
 uv run alphamosaic scan --universe-limit 10 --top 10
 uv run alphamosaic report
 uv run alphamosaic mcp serve
@@ -30,8 +32,25 @@ the repository-local `runtime`) in unique run directories, and runtime data is i
   fields when the provider supplies them. Scores are heuristic percentile ranks, never return
   probabilities.
 - Fixed SMA diagnostic with QuantStats metrics, benchmark comparison, turnover and fees.
-- Six read-only MCP tools: status, providers, scan, snapshot, ranking and research report.
+- Unified read-only MCP tools for system/provider health, market scan, ranking, stock analysis, comparison, bounded portfolio research jobs, strategy evaluation, backtest, signal history, forward performance and investment reports. Local stdio is available with `alphamosaic mcp serve`; authenticated Streamable HTTP is opt-in via `python -m alphamosaic.mcp.remote`.
+- TradingAgents v0.6.0 and Danelfin adapters are optional and fail closed as `NOT_CONFIGURED` without authorized credentials. `IntegrationRegistry` records license and connection maturity for the listed external resources.
+- A portable ChatGPT plugin package is under `plugins/alphamosaic/`. Set the authenticated deployment URL in `mcp.json` only after HTTPS and bearer authentication are in place; local MCP success is not remote ChatGPT verification.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md), [INTEGRATIONS.md](INTEGRATIONS.md),
 [CURRENT_STATE.md](CURRENT_STATE.md) and [NEXT_STEPS.md](NEXT_STEPS.md) for boundaries and
 measured acceptance. This project is unrelated to Meridian Alpha and never modifies it.
+
+## Plugin and remote MCP
+
+The portable package contains `plugin.json`, `mcp.json`, and four skills. Every skill calls a named MCP tool and instructs the assistant to preserve sourced-or-missing values and provider statuses. The remote server exposes `/health` and authenticated `/mcp`, enforces a bearer token of at least 16 characters, request rate limits, a 4 MiB body limit, bounded sessions and localhost defaults. It does not expose shell, arbitrary files, credentials, or broker orders.
+
+## Environment variables
+
+- `ALPHAMOSAIC_HOME`: repository-owned runtime/report location.
+- `DANELFIN_API_KEY`: optional official Danelfin MCP Bearer key; never committed.
+- `DANELFIN_MCP_URL`: optional endpoint override for an authorized deployment.
+- `ALPHAMOSAIC_MCP_TOKEN`: required for remote MCP and must be supplied through deployment secrets.
+- `ALPHAMOSAIC_MCP_HOST` / `ALPHAMOSAIC_MCP_PORT`: remote bind settings; defaults are `127.0.0.1:8000`.
+- `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or `GOOGLE_API_KEY`: optional model authorization for TradingAgents; the adapter remains `NOT_CONFIGURED` when absent.
+
+No real broker token, account data, or API key belongs in this repository.

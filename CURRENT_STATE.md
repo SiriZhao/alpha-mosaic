@@ -27,6 +27,15 @@ Measured acceptance:
   JSON and Markdown run bundle under the ignored runtime report store.
 - GitHub CLI authentication for SiriZhao is invalid, so private remote creation/push is blocked.
 
+## Upstream integration acceptance (2026-10-09)
+
+- `TradingAgentsAdapter` targets the official v0.6.0 release through a bounded JSON subprocess. FAST/BALANCED/DEEP budgets, timeout, cache metadata and model-key gates are implemented. This run reports `NOT_CONFIGURED` because the optional package and authorized model credentials are absent; no natural-language probability is parsed.
+- `DanelfinAdapter` uses the official MCP HTTP endpoint with Bearer-key, cache, deduplication, interval, quota, timeout and stale-result guards. This run reports `NOT_CONFIGURED` because `DANELFIN_API_KEY` is absent; no web scraping or mock success is used.
+- `IntegrationRegistry` records OpenBB, TradingAgents, Danelfin, AI Hedge Fund, FINVIZ, TradingView, TIKR and Seeking Alpha with connection/license/test states.
+- `SignalFusionEngine` validates PIT chronology, symbol identity, duplicate evidence and shared dependencies; conflicting-source results are `CONFLICTED` with confidence withheld.
+- Live public research completed for AAPL, XOM and TSLA: OpenBB/Nasdaq history -> factors -> fused decisions -> JSON report `runtime/research/20261009-upstream-research.json`. Directions were AAPL `BULLISH`, XOM `BULLISH`, TSLA `BEARISH`; TradingAgents and Danelfin outcomes are explicitly `NOT_CONFIGURED` for all three.
+- Local MCP exposes the unified tools plus backward-compatible aliases. Remote Streamable HTTP is opt-in, bearer-authenticated, rate-limited and bound to localhost by default.
+- Portable plugin assets are under `plugins/alphamosaic/`; the remote URL is intentionally a deployment placeholder, so ChatGPT remote verification remains `NOT_VERIFIED`.
+- Integration validation: `ruff` passed, `pyright` passed, `pytest` 8 passed. Local stdio MCP handshake listed 19 tools and invoked `system_status`; authenticated remote smoke returned `/health` 200 and unauthenticated `/mcp` 401. ChatGPT remote connection remains `NOT_VERIFIED`.
 Known limitations: current screener is survivorship-biased, historical data is reconstructed and
-adjustment policy is unknown, fundamentals are partial, news and multi-agent research are not
-connected, and there is no demonstrated alpha or broker execution.
+adjustment policy is unknown, fundamentals are partial, news/catalyst feeds are not connected, optional multi-agent providers are unconfigured, forward signal storage is not initialized, and there is no demonstrated alpha or broker execution.

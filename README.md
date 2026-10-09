@@ -32,6 +32,14 @@ the repository-local `runtime`) in unique run directories, and runtime data is i
   fields when the provider supplies them. Scores are heuristic percentile ranks, never return
   probabilities.
 - Fixed SMA diagnostic with QuantStats metrics, benchmark comparison, turnover and fees.
+- Evidence-gated paper replay with transparent buy-and-hold, momentum, trend, quality, value,
+  multi-factor, AI-rating and signal-consensus baselines. Use `alphamosaic strategies` to inspect
+  the registry, `alphamosaic backtest AAPL --strategy momentum` for a reconstructed-history diagnostic,
+  and `alphamosaic forward-init` to create an empty isolated paper record. Fixture and reconstructed
+  metrics never certify alpha; AI-rating history is blocked without a licensed PIT time series.
+- QuantConnect LEAN is isolated behind an optional local CLI adapter and remains `BLOCKED` when Docker,
+  the LEAN CLI or reviewed data are absent. QuantStats is pinned as an analytics adapter; VectorBT,
+  Backtrader, FinRL and AI Hedge Fund remain under license/reproducibility review.
 - Unified read-only MCP tools for system/provider health, market scan, ranking, stock analysis, comparison, bounded portfolio research jobs, strategy evaluation, backtest, signal history, forward performance and investment reports. Local stdio is available with `alphamosaic mcp serve`; authenticated Streamable HTTP is opt-in via `python -m alphamosaic.mcp.remote`.
 - TradingAgents v0.6.0 and Danelfin adapters are optional and fail closed as `NOT_CONFIGURED` without authorized credentials. `IntegrationRegistry` records license and connection maturity for the listed external resources.
 - A portable ChatGPT plugin package is under `plugins/alphamosaic/`. Set the authenticated deployment URL in `mcp.json` only after HTTPS and bearer authentication are in place; local MCP success is not remote ChatGPT verification.

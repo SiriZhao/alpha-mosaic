@@ -25,7 +25,8 @@ Measured acceptance:
   `alphamosaic doctor` completed with OpenBB/QuantStats correctly reported as optional absent.
 - Live explicit scan of 10 symbols: 8 candidates, 2 exclusions, `REAL_DATA` report with unique
   JSON and Markdown run bundle under the ignored runtime report store.
-- GitHub CLI authentication for SiriZhao is invalid, so private remote creation/push is blocked.
+- The private GitHub remote `SiriZhao/alpha-mosaic` was created after authentication became available;
+  local `e5833d1` matches `origin/main`.
 
 ## Upstream integration acceptance (2026-10-09)
 

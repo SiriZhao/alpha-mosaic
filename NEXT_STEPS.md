@@ -1,7 +1,6 @@
 # Next steps
 
-1. Re-authenticate GitHub CLI, verify `SiriZhao/alpha-mosaic` ownership and create the private
-   remote only after local review.
+1. Keep `origin/main` synchronized after reviewed commits; never force-push or rewrite history.
 2. Add licensed, point-in-time fundamentals and corporate-action adapters with explicit source
    terms and delisting coverage.
 3. Add opt-in network acceptance snapshots and a reviewed index-membership source; keep fixture

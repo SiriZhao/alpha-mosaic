@@ -1,0 +1,24 @@
+{
+  "accepted_at": "2026-10-09T05:13:56.170996Z",
+  "symbol": "AAPL",
+  "status": "OK",
+  "source": "OpenBB V5 / Nasdaq public website",
+  "source_url": "https://www.nasdaq.com/market-activity/stocks/aapl/historical",
+  "endpoint": "history+profile",
+  "row_count": 132,
+  "fields": [
+    "close",
+    "date",
+    "high",
+    "low",
+    "open",
+    "symbol",
+    "volume",
+    "vwap"
+  ],
+  "data_quality": "HISTORICAL",
+  "adjustment_policy": "UNKNOWN",
+  "pit_status": "RECONSTRUCTED",
+  "license_scope": "Nasdaq website terms; personal noncommercial research; no data redistribution grant",
+  "diagnostics": []
+}

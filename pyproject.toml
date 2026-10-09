@@ -1,0 +1,54 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "alphamosaic"
+version = "0.1.0"
+description = "Unified AI Investment Intelligence Platform: evidence-first research, no broker execution"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = "Apache-2.0"
+authors = [{name = "AlphaMosaic contributors"}]
+dependencies = [
+  "pydantic>=2.11,<3", "httpx>=0.28,<1", "typer>=0.16,<1",
+  "numpy>=2,<3", "pandas>=2.2,<3", "exchange-calendars>=4.11,<5",
+  "mcp==2.3.0",
+]
+
+[project.optional-dependencies]
+openbb = ["openbb-core[pandas]==2.0.1", "openbb-nasdaq==2.0.0", "openbb-sec==2.0.0"]
+analytics = ["quantstats==0.0.86"]
+
+[dependency-groups]
+dev = ["ruff>=0.14,<1", "pyright>=1.1.400,<2", "pytest>=8.4,<10", "pytest-asyncio>=1,<2", "pytest-cov>=7,<8", "build>=1.3,<2"]
+
+[project.scripts]
+alphamosaic = "alphamosaic.cli.app:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/alphamosaic"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/alphamosaic/cli/app.py" = ["B008"]
+
+[tool.pyright]
+include = ["src", "tests", "scripts"]
+pythonVersion = "3.12"
+typeCheckingMode = "standard"
+venvPath = "."
+venv = ".venv"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "-ra"
+markers = ["live: opt-in real network acceptance, never replaced by fixtures"]

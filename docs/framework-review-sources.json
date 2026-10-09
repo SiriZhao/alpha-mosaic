@@ -1,0 +1,76 @@
+[
+  {
+    "html_url": "https://github.com/QuantConnect/Lean",
+    "pushed_at": "2026-10-08T21:12:27Z",
+    "archived": false,
+    "default_branch": "master",
+    "repo": "QuantConnect/Lean",
+    "license": "Apache-2.0",
+    "release": "v2.4.0.1",
+    "release_date": "2017-08-08T20:57:57Z"
+  },
+  {
+    "html_url": "https://github.com/QuantConnect/lean-cli",
+    "pushed_at": "2026-10-08T21:37:03Z",
+    "archived": false,
+    "default_branch": "master",
+    "repo": "QuantConnect/lean-cli",
+    "license": "Apache-2.0",
+    "release": "1.0.229",
+    "release_date": "2026-08-28T15:33:25Z"
+  },
+  {
+    "html_url": "https://github.com/ranaroussi/quantstats",
+    "pushed_at": "2026-09-27T19:40:19Z",
+    "archived": false,
+    "default_branch": "main",
+    "repo": "ranaroussi/quantstats",
+    "license": "Apache-2.0",
+    "release": "v0.0.86",
+    "release_date": "2026-09-27T19:40:20Z"
+  },
+  {
+    "html_url": "https://github.com/polakowo/vectorbt",
+    "pushed_at": "2026-09-26T11:27:49Z",
+    "archived": false,
+    "default_branch": "master",
+    "repo": "polakowo/vectorbt",
+    "license": "NOASSERTION",
+    "release": "v1.1.1",
+    "release_date": "2026-09-26T06:12:54Z"
+  },
+  {
+    "html_url": "https://github.com/mementum/backtrader",
+    "pushed_at": "2024-08-19T17:47:36Z",
+    "archived": false,
+    "default_branch": "master",
+    "repo": "mementum/backtrader",
+    "license": "GPL-3.0",
+    "release": null,
+    "release_date": null
+  },
+  {
+    "html_url": "https://github.com/virattt/ai-hedge-fund",
+    "pushed_at": "2026-10-02T14:19:04Z",
+    "archived": false,
+    "default_branch": "main",
+    "repo": "virattt/ai-hedge-fund",
+    "license": "MIT",
+    "release": "v2.5.0",
+    "release_date": "2026-10-02T14:19:25Z"
+  },
+  {
+    "html_url": "https://github.com/AI4Finance-Foundation/FinRL",
+    "pushed_at": "2026-10-09T09:03:13Z",
+    "archived": false,
+    "default_branch": "master",
+    "repo": "AI4Finance-Foundation/FinRL",
+    "license": "MIT",
+    "release": "v0.3.8",
+    "release_date": "2026-03-20T10:39:25Z"
+  },
+  {
+    "repo": "AI4Finance-Foundation/FinRL-X",
+    "status": "HTTPStatusError"
+  }
+]

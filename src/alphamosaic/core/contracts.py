@@ -105,7 +105,7 @@ class HistoricalBar(Evidence):
     high: float = Field(gt=0)
     low: float = Field(gt=0)
     close: float = Field(gt=0)
-    volume: float = Field(ge=0)
+    volume: float | None = Field(default=None, ge=0)
 
     @model_validator(mode="after")
     def ohlc(self) -> Self:

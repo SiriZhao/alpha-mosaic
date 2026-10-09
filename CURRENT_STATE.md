@@ -39,3 +39,22 @@ Measured acceptance:
 - Integration validation: `ruff` passed, `pyright` passed, `pytest` 8 passed. Local stdio MCP handshake listed 19 tools and invoked `system_status`; authenticated remote smoke returned `/health` 200 and unauthenticated `/mcp` 401. ChatGPT remote connection remains `NOT_VERIFIED`.
 Known limitations: current screener is survivorship-biased, historical data is reconstructed and
 adjustment policy is unknown, fundamentals are partial, news/catalyst feeds are not connected, optional multi-agent providers are unconfigured, forward signal storage is not initialized, and there is no demonstrated alpha or broker execution.
+
+## Professional backtesting and alpha QA (2026-10-09)
+
+- Added a deterministic causal `PaperReplayEngine` with next-session-open execution, fees, slippage,
+  prior-known liquidity caps, partial/unfilled orders, cash/position constraints, XNYS sessions,
+  split/dividend handling, and fail-closed data/PIT/identity checks.
+- Added transparent buy-and-hold, momentum, trend, quality, value, multi-factor, AI-rating and
+  signal-consensus baselines. `QuantStats 0.0.86` now reports CAGR, volatility, max drawdown, Sharpe,
+  Sortino, benchmark excess return, information ratio, turnover, fees, slippage, uncertainty, regime
+  diagnostics, walk-forward folds and a trend ablation.
+- Added deterministic strategy lifecycle gates, an empty forward-paper initializer, and a separate
+  local LEAN CLI boundary. The MCP server does not expose arbitrary process execution.
+- Acceptance evidence: **31 backtesting/foundation/integration tests passed**, ruff and pyright passed,
+  and `uv build` produced wheel/sdist. The fixture experiment is explicitly `FIXTURE` and
+  `INSUFFICIENT_EVIDENCE_NO_DEMONSTRATED_ALPHA`; its metrics are engineering evidence only.
+- Live OpenBB history remains `REAL_RECONSTRUCTED` and is not eligible for alpha promotion because PIT,
+  survivorship, delisting, adjustment-policy and corporate-action evidence is incomplete. LEAN is
+  `BLOCKED` locally because Docker and the LEAN CLI are absent. No paid service, commercial data,
+  broker, or real account was used.

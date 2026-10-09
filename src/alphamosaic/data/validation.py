@@ -36,6 +36,8 @@ def validate_batch(
         flags.append("FUTURE_IDENTITY")
     if not bars:
         return flags + ["EMPTY_HISTORY"]
+    if any(bar.volume is None for bar in bars):
+        flags.append("MISSING_VOLUME")
     sessions = [bar.session for bar in bars]
     if len(sessions) != len(set(sessions)):
         flags.append("DUPLICATE_SESSIONS")

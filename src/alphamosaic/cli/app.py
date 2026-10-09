@@ -103,6 +103,27 @@ def analyze(symbol: str, fundamentals: bool = False) -> None:
 
 
 @app.command()
+def strategies() -> None:
+    """List transparent research baselines and unconfigured engine status."""
+    from alphamosaic.backtesting.strategies import StrategyRegistry
+    from alphamosaic.integrations.lean import LeanAdapter
+
+    output({"strategies": StrategyRegistry().list(), "lean": LeanAdapter().health()})
+
+
+@app.command()
+def backtest(symbols: str, strategy: str = "momentum", fee_bps: float = 10, slippage_bps: float = 5, out_of_sample: bool = True) -> None:
+    """Run a sourced reconstructed-history replay; no alpha certification."""
+    output(ApplicationService().run_backtest(symbols, strategy, out_of_sample, fee_bps, slippage_bps))
+
+
+@app.command()
+def forward_init(initial_cash: float = 100_000) -> None:
+    """Initialize a separate empty paper record; idempotent, no fills."""
+    output(ApplicationService().initialize_forward(initial_cash))
+
+
+@app.command()
 def report() -> None:
     """Query the latest validated local report (no new request)."""
     output(ApplicationService().latest_report())

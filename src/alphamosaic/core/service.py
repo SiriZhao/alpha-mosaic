@@ -1,8 +1,10 @@
 """The single application orchestration boundary used by CLI and MCP."""
 
+import json
 import os
 import platform
 import threading
+import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import timedelta
 from importlib.metadata import PackageNotFoundError, version
@@ -12,9 +14,16 @@ from uuid import uuid4
 
 from alphamosaic import __version__
 from alphamosaic.backtesting.diagnostic import trend_diagnostic
+from alphamosaic.backtesting.models import ReplayConfig, ReplayDataset
+from alphamosaic.backtesting.replay import PaperReplayEngine
+from alphamosaic.backtesting.strategies import StrategyRegistry
 from alphamosaic.core.contracts import DataQuality, DecisionProposal, ScanReport, Status, utc_now
 from alphamosaic.data.validation import completed_session, market_state, validate_batch
+from alphamosaic.evaluation.registry import EvaluationEvidence, EvaluationRegistry
+from alphamosaic.evaluation.validation import experiment, summarize, walk_forward
+from alphamosaic.integrations.lean import LeanAdapter
 from alphamosaic.integrations.registry import IntegrationRegistry
+from alphamosaic.portfolio.forward import ForwardPaperStore
 from alphamosaic.portfolio.risk import assess_risk
 from alphamosaic.providers.openbb import OpenBBDataProvider
 from alphamosaic.providers.protocol import DataProvider
@@ -97,28 +106,79 @@ class ApplicationService:
         strategy: str = "momentum",
         out_of_sample: bool = False,
         fee_bps: float = 10,
+        slippage_bps: float = 5,
     ) -> dict[str, Any]:
-        if strategy.lower() not in {"momentum", "trend", "buy_and_hold"}:
-            return {"status": "BLOCKED", "diagnostics": ["strategy is not in the transparent baseline registry"]}
+        started = time.monotonic()
+        if strategy.lower() not in {i["name"] for i in StrategyRegistry().list()}:
+            return {"status": "BLOCKED", "diagnostics": ["unknown baseline strategy"]}
+        if strategy.lower() in {"quality", "value", "ai_rating", "signal_consensus"}:
+            return {"status": "BLOCKED", "diagnostics": ["MISSING_LICENSED_VERIFIED_PIT_SIGNAL_SERIES"]}
+        config = ReplayConfig(fee_bps=fee_bps, slippage_bps=slippage_bps)
+        symbols = normalize_symbols(symbol.split(","))
+        if not 1 <= len(symbols) <= 10:
+            raise ValueError("backtest requires 1..10 explicit symbols")
         end = completed_session(utc_now())
         start = end - timedelta(days=750)
-        batch = self.provider.history(symbol.upper(), start, end)
-        benchmarks = {
-            name: self.provider.history(name, start, end).bars for name in ("SPY", "QQQM")
-        }
-        if batch.status != Status.OK or len(batch.bars) < 65:
-            return {"status": "DEGRADED", "symbol": symbol.upper(), "diagnostics": [batch.status.value]}
-        result = trend_diagnostic(batch.bars, benchmarks, fee_bps=fee_bps, out_of_sample=out_of_sample)
-        return {"status": "READY", "symbol": symbol.upper(), "strategy": strategy.lower(), "result": result.model_dump(mode="json")}
+        requested = list(dict.fromkeys([*symbols, "SPY", "QQQM"]))
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            batches = dict(zip(requested, executor.map(lambda s: self.provider.history(s, start, end), requested), strict=True))
+        failures = {s: b.status.value for s, b in batches.items() if b.status != Status.OK or b.identity is None or len(b.bars) < 65}
+        if any(s in failures for s in symbols):
+            return {"status": "DEGRADED", "diagnostics": ["REQUESTED_HISTORY_UNAVAILABLE"], "provider_failures": failures}
+        valid_batches = {s: batches[s] for s in symbols if batches[s].identity is not None}
+        data = ReplayDataset(bars={s: item.bars for s, item in valid_batches.items()},
+            identities={s: item.identity for s, item in valid_batches.items() if item.identity is not None},
+            cutoff=utc_now(), mode="RECONSTRUCTED_DIAGNOSTIC")
+        benchmarks = {s: batches[s].bars for s in ("SPY", "QQQM") if s not in failures}
+        try:
+            replay = PaperReplayEngine().run(data, StrategyRegistry().get(strategy.lower()), strategy.lower(), config)
+            summary = summarize(replay, benchmarks)
+            result = {"replay": replay.model_dump(mode="json"), **summary}
+            if out_of_sample:
+                result["walk_forward"] = walk_forward(data, config, strategy.lower())
+        except ImportError:
+            return {"status": "NOT_CONFIGURED", "diagnostics": ["QUANTSTATS_OPTIONAL_EXTRA_REQUIRED"]}
+        except ValueError as exc:
+            return {"status": "BLOCKED", "diagnostics": ["REPLAY_DATA_CONTRACT_REJECTED", str(exc)]}
+        evidence = EvaluationEvidence(strategy=strategy.lower(), run_id=uuid4().hex,
+            acceptance=replay.acceptance, replay_completed=True)
+        return {"status": "DEGRADED", "symbols": symbols, "strategy": strategy.lower(),
+            "result": result, "evaluation_state": EvaluationRegistry().evaluate(evidence),
+            "provider_failures": failures, "elapsed_seconds": time.monotonic()-started,
+            "diagnostics": replay.diagnostics, "alpha_status": "NO_DEMONSTRATED_ALPHA", "broker_enabled": False}
 
     def evaluate_strategy(self, symbol: str, strategy: str = "momentum") -> dict[str, Any]:
         return self.run_backtest(symbol, strategy, out_of_sample=True)
+
+    def backtest_experiment(self, data: ReplayDataset, benchmarks: dict, config: ReplayConfig | None = None) -> dict[str, Any]:
+        started = time.monotonic()
+        result = experiment(data, benchmarks, config or ReplayConfig())
+        run_id = uuid4().hex
+        result.update({"run_id": run_id, "created_at": utc_now().isoformat(),
+                       "elapsed_seconds": time.monotonic()-started, "external_engine_health": LeanAdapter().health(),
+                       "evaluation_states": [EvaluationRegistry().evaluate(EvaluationEvidence(strategy=name, run_id=run_id,
+                           acceptance=result["acceptance"], replay_completed=item["status"] == "COMPUTED"))
+                           for name, item in result["strategies"].items()]})
+        root = self.home / "backtests" / run_id
+        root.mkdir(parents=True, exist_ok=False)
+        (root / "report.json").write_text(json.dumps(result, indent=2, allow_nan=False), encoding="utf-8")
+        lines = ["# AlphaMosaic backtest experiment", f"Run: {run_id}", f"Acceptance: {result['acceptance']}",
+            f"Alpha status: {result['alpha_status']}", "", "| Strategy | Status | Net return | CAGR | Max drawdown |", "|---|---|---|---|---|"]
+        for name, item in result["strategies"].items():
+            metrics = item.get("metrics", {})
+            lines.append(f"| {name} | {item['status']} | {metrics.get('return')} | {metrics.get('cagr')} | {metrics.get('max_drawdown')} |")
+        lines.extend(["", "## Limitations", *result["limitations"], "", "Historical OOS folds reset to fresh cash. No forward or real-account returns. Full benchmark, uncertainty, costs and ablation evidence is in report.json."])
+        (root / "report.md").write_text("\n".join(lines), encoding="utf-8")
+        return {**result, "report_directory": str(root)}
+
+    def initialize_forward(self, initial_cash: float = 100_000) -> dict[str, Any]:
+        return ForwardPaperStore(self.home / "paper").initialize(initial_cash)
 
     def signal_history(self, symbol: str | None = None) -> dict[str, Any]:
         return {"status": "NOT_CONFIGURED", "symbol": symbol, "signals": [], "diagnostics": ["forward signal store is not initialized"]}
 
     def forward_performance(self, symbol: str | None = None) -> dict[str, Any]:
-        return {"status": "NOT_CONFIGURED", "symbol": symbol, "observations": [], "diagnostics": ["no forward observations have been recorded"]}
+        return {"symbol": symbol, **ForwardPaperStore(self.home / "paper").status()}
 
     def investment_report(self, symbols: list[str], profile: str = "FAST") -> dict[str, Any]:
         result = self.research_portfolio(symbols, profile)

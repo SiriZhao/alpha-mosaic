@@ -32,6 +32,8 @@ class Status(StrEnum):
     QUOTA = "QUOTA"
     NETWORK_ERROR = "NETWORK_ERROR"
     TIMEOUT = "TIMEOUT"
+    NOT_CONFIGURED = "NOT_CONFIGURED"
+    RATE_LIMITED = "RATE_LIMITED"
 
 
 class Contract(BaseModel):
@@ -202,9 +204,112 @@ class OpportunityCandidate(Contract):
 
 
 class ResearchVerdict(Evidence):
-    verdict: Literal["REVIEW", "INSUFFICIENT_EVIDENCE", "BLOCKED"]
+    verdict: Literal[
+        "BULLISH",
+        "BEARISH",
+        "NEUTRAL",
+        "CONFLICTED",
+        "REVIEW",
+        "INSUFFICIENT_EVIDENCE",
+        "BLOCKED",
+    ]
     rationale: list[str]
     validated_alpha: bool = False
+    evidence_ids: list[str] = Field(default_factory=list)
+    time_horizon: str | None = None
+
+
+class ResearchOutcome(Contract):
+    symbol: str
+    status: Status
+    verdict: ResearchVerdict | None = None
+    source: str
+    cost_profile: Literal["FAST", "BALANCED", "DEEP"] | None = None
+    diagnostics: list[str] = Field(default_factory=list)
+    requested_at: datetime
+    completed_at: datetime
+
+
+class SignalDirection(StrEnum):
+    BULLISH = "BULLISH"
+    BEARISH = "BEARISH"
+    NEUTRAL = "NEUTRAL"
+    CONFLICTED = "CONFLICTED"
+    INSUFFICIENT_EVIDENCE = "INSUFFICIENT_EVIDENCE"
+
+
+class FusionSignal(Contract):
+    source: str
+    symbol: str
+    direction: SignalDirection
+    strength: float | None = Field(default=None, ge=0, le=1)
+    horizon: str | None = None
+    reliability: float | None = Field(default=None, ge=0, le=1)
+    data_quality: DataQuality
+    evidence_ids: list[str] = Field(default_factory=list)
+    observed_at: datetime
+    known_at: datetime
+    rationale: list[str] = Field(default_factory=list)
+
+
+class FusedSignal(Contract):
+    symbol: str
+    direction: SignalDirection
+    research_confidence: float | None = Field(default=None, ge=0, le=1)
+    rationale: list[str]
+    conflicts: list[str]
+    sources: list[str]
+    horizon: str | None = None
+    risk_flags: list[str] = Field(default_factory=list)
+    evidence_ids: list[str] = Field(default_factory=list)
+    price_plan: dict[str, float | str] | None = None
+
+
+class IntegrationStatus(StrEnum):
+    ACTIVE = "ACTIVE"
+    READY_UNCONFIGURED = "READY_UNCONFIGURED"
+    EXPERIMENTAL = "EXPERIMENTAL"
+    LICENSE_BLOCKED = "LICENSE_BLOCKED"
+    UNSUPPORTED = "UNSUPPORTED"
+    DEPRECATED = "DEPRECATED"
+
+
+class IntegrationRecord(Contract):
+    name: str
+    official_url: str
+    version: str | None
+    license: str | None
+    interface: str
+    authentication: str
+    runtime_cost: str
+    data_limits: str
+    capabilities: list[str]
+    status: IntegrationStatus
+    connection_status: Status
+    test_status: str
+    diagnostics: list[str] = Field(default_factory=list)
+
+
+class ResearchDecision(Contract):
+    symbol: str
+    candidate_reason: list[str]
+    upside_drivers: list[str]
+    fundamental_support: str
+    valuation_view: str
+    trend_view: str
+    catalysts: list[str]
+    downside_risks: list[str]
+    invalidation_conditions: list[str]
+    action: Literal["OBSERVE", "DEEP_RESEARCH", "AVOID"]
+    trigger_conditions: list[str]
+    entry_reference_price: float | None = None
+    entry_trigger: float | None = None
+    invalidation_level: float | None = None
+    risk_budget: float | None = Field(default=None, ge=0, le=1)
+    holding_horizon: str | None = None
+    fused_signal: FusedSignal
+    outcomes: list[ResearchOutcome]
+    broker_enabled: Literal[False] = False
 
 
 class RiskAssessment(Contract):

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "alphamosaic",
+  "version": "0.2.0",
+  "description": "Evidence-first investment research through a read-only AlphaMosaic MCP server.",
+  "author": {"name": "AlphaMosaic contributors"},
+  "homepage": "https://github.com/SiriZhao/alpha-mosaic",
+  "repository": "https://github.com/SiriZhao/alpha-mosaic",
+  "license": "Apache-2.0",
+  "keywords": ["investment-research", "stocks", "MCP", "risk"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "AlphaMosaic",
+        "shortDescription": "Evidence-first stock research",
+        "longDescription": "Scan markets, compare sourced signals, run bounded research and inspect paper-only strategy results.",
+        "developerName": "AlphaMosaic contributors",
+        "category": "Research",
+        "capabilities": ["Read"],
+        "defaultPrompt": [
+          "Scan today's US stock opportunities with sourced evidence.",
+          "Compare the research evidence and risks for these stocks.",
+          "Run a transparent historical strategy evaluation with costs."
+        ]
+      }
+    }
+  }
+}

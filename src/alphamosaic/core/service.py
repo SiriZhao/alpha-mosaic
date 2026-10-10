@@ -14,10 +14,12 @@ from alphamosaic import __version__
 from alphamosaic.backtesting.diagnostic import trend_diagnostic
 from alphamosaic.core.contracts import DataQuality, DecisionProposal, ScanReport, Status, utc_now
 from alphamosaic.data.validation import completed_session, market_state, validate_batch
+from alphamosaic.integrations.registry import IntegrationRegistry
 from alphamosaic.portfolio.risk import assess_risk
 from alphamosaic.providers.openbb import OpenBBDataProvider
 from alphamosaic.providers.protocol import DataProvider
 from alphamosaic.reporting.store import ReportStore
+from alphamosaic.research_engine import ResearchEngine
 from alphamosaic.screening.scanner import OpportunityScanner, ResearchQueue
 from alphamosaic.screening.universe import Universe, UniverseManager, normalize_symbols
 
@@ -28,6 +30,7 @@ class ApplicationService:
         self.provider = provider or OpenBBDataProvider(self.home)
         self.store = ReportStore(self.home / "reports")
         self.lock = threading.RLock()
+        self.research_engine = ResearchEngine(self.provider, self.home)
 
     def status(self) -> dict[str, Any]:
         now = utc_now()
@@ -60,10 +63,66 @@ class ApplicationService:
             "signal_validity": "NO_VALIDATED_ALPHA",
             "dependencies": dependencies,
             "providers": self.providers(),
+            "integrations": self.integrations(),
         }
 
     def providers(self) -> list[dict[str, Any]]:
         return [self.provider.health().model_dump(mode="json")]
+
+    def provider_health(self) -> dict[str, Any]:
+        return {"status": "READY" if self.provider.health().status == Status.OK else "DEGRADED", "providers": self.providers()}
+
+    def integrations(self) -> list[dict[str, Any]]:
+        return [item.model_dump(mode="json") for item in IntegrationRegistry().records()]
+
+    def research(self, symbols: list[str], profile: str = "FAST") -> list[dict[str, Any]]:
+        with self.lock:
+            return [item.model_dump(mode="json") for item in self.research_engine.research(symbols, profile)]
+
+    def compare(self, symbols: list[str]) -> dict[str, Any]:
+        if not 2 <= len(symbols) <= 10:
+            raise ValueError("compare requires 2..10 symbols")
+        snapshots = [self.analyze(symbol) for symbol in dict.fromkeys(symbols)]
+        return {"status": "READY" if any(item["status"] == "OK" for item in snapshots) else "DEGRADED", "symbols": snapshots}
+
+    def research_portfolio(self, symbols: list[str], profile: str = "FAST") -> dict[str, Any]:
+        if not 1 <= len(symbols) <= 5:
+            raise ValueError("portfolio research requires 1..5 symbols")
+        decisions = self.research(symbols, profile)
+        return {"status": "READY" if decisions else "DEGRADED", "broker_enabled": False, "decisions": decisions}
+
+    def run_backtest(
+        self,
+        symbol: str,
+        strategy: str = "momentum",
+        out_of_sample: bool = False,
+        fee_bps: float = 10,
+    ) -> dict[str, Any]:
+        if strategy.lower() not in {"momentum", "trend", "buy_and_hold"}:
+            return {"status": "BLOCKED", "diagnostics": ["strategy is not in the transparent baseline registry"]}
+        end = completed_session(utc_now())
+        start = end - timedelta(days=750)
+        batch = self.provider.history(symbol.upper(), start, end)
+        benchmarks = {
+            name: self.provider.history(name, start, end).bars for name in ("SPY", "QQQM")
+        }
+        if batch.status != Status.OK or len(batch.bars) < 65:
+            return {"status": "DEGRADED", "symbol": symbol.upper(), "diagnostics": [batch.status.value]}
+        result = trend_diagnostic(batch.bars, benchmarks, fee_bps=fee_bps, out_of_sample=out_of_sample)
+        return {"status": "READY", "symbol": symbol.upper(), "strategy": strategy.lower(), "result": result.model_dump(mode="json")}
+
+    def evaluate_strategy(self, symbol: str, strategy: str = "momentum") -> dict[str, Any]:
+        return self.run_backtest(symbol, strategy, out_of_sample=True)
+
+    def signal_history(self, symbol: str | None = None) -> dict[str, Any]:
+        return {"status": "NOT_CONFIGURED", "symbol": symbol, "signals": [], "diagnostics": ["forward signal store is not initialized"]}
+
+    def forward_performance(self, symbol: str | None = None) -> dict[str, Any]:
+        return {"status": "NOT_CONFIGURED", "symbol": symbol, "observations": [], "diagnostics": ["no forward observations have been recorded"]}
+
+    def investment_report(self, symbols: list[str], profile: str = "FAST") -> dict[str, Any]:
+        result = self.research_portfolio(symbols, profile)
+        return {"status": result["status"], "report_type": "RESEARCH_ONLY", "broker_enabled": False, **result}
 
     def scan(
         self,

@@ -11,6 +11,11 @@ repository-local runtime directory and never reads ambient credentials. `screeni
 `portfolio`, `backtesting` and `evaluation` contain deterministic research logic. `reporting`
 stores unique, schema-validated JSON and Markdown run bundles.
 
-No module can create broker orders. MCP exposes six read-only tools and has no arbitrary file,
-shell, credential or order surface. AI-generated commentary is not accepted as a market
-observation.
+No module can create broker orders. MCP exposes a unified read-only tool surface (plus legacy
+aliases) over stdio and opt-in Streamable HTTP. The HTTP app keeps MCP's session-manager lifespan,
+requires a bearer token, limits request size and rate, rejects insecure non-local traffic, adds
+safe cache headers and optionally writes redacted audit records. It has no arbitrary file, shell,
+credential or order surface. AI-generated commentary is not accepted as a market observation.
+
+The portable agent package under `plugins/alphamosaic` contains four skills that call these tools;
+the packaged URL remains a deployment placeholder until a real HTTPS ChatGPT connection is tested.

@@ -32,6 +32,25 @@ def providers() -> None:
 
 
 @app.command()
+def integrations() -> None:
+    """List upstream and commercial integration status without making network calls."""
+    output(ApplicationService().integrations())
+
+
+@app.command()
+def research(
+    symbols: str,
+    profile: str = typer.Option("FAST", case_sensitive=False),
+) -> None:
+    """Run bounded multi-source research for up to five screened candidates."""
+    try:
+        result = ApplicationService().research([item.strip().upper() for item in symbols.split(",")], profile.upper())
+    except ValueError as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    output({"research_only": True, "broker_enabled": False, "profile": profile.upper(), "decisions": result})
+
+
+@app.command()
 def scan(
     universe_limit: int = typer.Option(30, min=1, max=100),
     top: int = typer.Option(10, min=1, max=10),

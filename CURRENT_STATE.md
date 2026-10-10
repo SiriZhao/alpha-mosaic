@@ -1,4 +1,10 @@
-# Current state (2026-10-09)
+# Current state (2026-10-10)
+
+## Workspace audit checkpoint
+
+- Removed only confirmed local caches, stale virtual environments and temporary build directories; retained tests, acceptance evidence and ignored runtime research reports.
+- Ruff, Pyright and pytest pass from the repository Python 3.12 environment.
+- GitHub authentication and private repository ADMIN ownership are verified. Local and remote main have independent histories; publish audit on an isolated branch, with main integration NOT_VERIFIED.
 
 Implemented and locally verified:
 
@@ -58,3 +64,4 @@ adjustment policy is unknown, fundamentals are partial, news/catalyst feeds are 
   because the retrieved history was stale at the cutoff; the provider also rejected SPY benchmark
   history for a null volume field. An AAPL historical momentum replay still completed with fees,
   turnover and QQQM comparison, and remains a diagnostic with `validated_alpha=false`.
+

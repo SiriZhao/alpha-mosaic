@@ -1,5 +1,7 @@
 # Next steps
 
+0. Review `AUDIT_REPORT.md`; restore GitHub authentication, verify private repository ownership and configure the remote before any push. Do not delete runtime evidence or valid tests during cleanup.
+
 1. Re-authenticate GitHub CLI, verify `SiriZhao/alpha-mosaic` ownership and configure the private
    remote only after local review; current `gh auth status` is invalid and no remote is configured.
 2. Add licensed, point-in-time fundamentals and corporate-action adapters with explicit source
@@ -17,3 +19,4 @@
 9. Enable the checked-in GitHub Actions workflow after remote setup; mark CI passed only from an
    actual successful run. Keep LEAN and forward-performance states blocked/not-configured until
    their external prerequisites are available.
+

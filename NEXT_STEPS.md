@@ -19,4 +19,3 @@
 9. Enable the checked-in GitHub Actions workflow after remote setup; mark CI passed only from an
    actual successful run. Keep LEAN and forward-performance states blocked/not-configured until
    their external prerequisites are available.
-

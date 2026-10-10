@@ -1,6 +1,6 @@
 # AlphaMosaic 审计与升级报告
 
-审计日期：2026-10-10  
+审计日期：2026-10-10
 审计范围：源码、测试、插件、文档、构建配置、工作区卫生和 Git 发布准备。
 
 ## 结论
@@ -37,4 +37,3 @@
 ```text
 审计 E:\CSDIY\Vibe Coding Project\AlphaMosaic：先验证仓库根目录、Git remote 所有权和当前分支；运行 ruff、pyright、pytest、wheel/sdist 构建、清洁安装、CLI doctor/providers 和本地 stdio/HTTP MCP 冒烟。只删除已确认的缓存和临时构建物，不删除 tests、docs/acceptance、runtime 证据或未知文件。修复真实缺陷后更新 CURRENT_STATE.md、NEXT_STEPS.md 和 AUDIT_REPORT.md，扫描 staged 文件中的凭据与运行时数据，提交自包含变更；只有在 GitHub 私有仓库归属、认证和远端 HEAD 均验证成功后才推送，并报告本地与远端 SHA。
 ```
-

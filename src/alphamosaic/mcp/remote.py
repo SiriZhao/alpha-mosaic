@@ -1,5 +1,6 @@
 """Opt-in authenticated Streamable HTTP wrapper; no public deployment is performed."""
 
+import hmac
 import json
 import os
 import time
@@ -50,7 +51,7 @@ class SecurityMiddleware(BaseHTTPMiddleware):
                 status_code=413,
             )
         supplied = request.headers.get("authorization", "")
-        if supplied != f"Bearer {self.token}":
+        if not hmac.compare_digest(supplied, f"Bearer {self.token}"):
             return JSONResponse({"status": "BLOCKED", "diagnostics": ["authentication required"]}, status_code=401)
         key = request.client.host if request.client else "unknown"
         now = time.monotonic()

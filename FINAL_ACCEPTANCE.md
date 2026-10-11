@@ -51,3 +51,12 @@ inference, and heuristic rankings are not return probabilities.
 Before publishing a remote plugin, replace the placeholder URL with an operator-managed HTTPS
 deployment, perform a real ChatGPT tool call, record the evidence and only then change the remote
 status to `VERIFIED`.
+
+## Batch 2 upstream integration checkpoint (2026-10-11)
+
+- Danelfin official MCP SDK transport, strict dated score contract, and provider downgrade paths are implemented.
+- TradingAgents v0.6.0 profile settings are mapped to bounded upstream graph configuration in an isolated worker; free-text direction parsing is prohibited.
+- Shared dependency, repeated content, and derived-evidence correlation checks are implemented in signal fusion.
+- Local verification: Ruff passed, Pyright 0 errors, 14 tests passed, and AAPL/GOOGL/AVGO OpenBB research evidence is recorded in docs/audits/batch2-research-20261011.json.
+- Danelfin and TradingAgents remain NOT_CONFIGURED; no live credentials or model calls were available, and no LIVE_VERIFIED claim is made.
+

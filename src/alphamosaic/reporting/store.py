@@ -18,6 +18,14 @@ def markdown(report: ScanReport) -> str:
         "",
         "Research and human review only. Heuristic ranks are not return probabilities. NO_VALIDATED_ALPHA.",
         "",
+        "## Research contract",
+        "",
+        f"- Objective: bounded evidence-first opportunity research for `{report.universe_name}`.",
+        f"- Cutoff: `{report.cutoff.isoformat()}`; created: `{report.created_at.isoformat()}`.",
+        f"- Acceptance: `{report.acceptance}`; broker enabled: `{report.broker_enabled}`.",
+        "- Values are sourced or missing; no synthetic prices, returns, news, or inferred fills are permitted.",
+        "- Ranking is a heuristic ordering, not a return probability or investment advice.",
+        "",
         "| Rank | Ticker | Score | Momentum 63d | Trend | Risks | Missing |",
         "|---:|---|---:|---:|---:|---|---|",
     ]
@@ -55,6 +63,14 @@ def markdown(report: ScanReport) -> str:
         "## Limitations",
         "",
         *[f"- {warning}" for warning in report.warnings],
+        "",
+        "## Reproducibility and provider status",
+        "",
+        f"- Reproducible run ID: `{report.run_id}`.",
+        "- Model version: deterministic AlphaMosaic factor pipeline (repository source hash is recorded by the run environment).",
+        "- Provider availability is reported per evidence row and is independent of signal validity.",
+        "- Historical, out-of-sample, and forward evidence levels are preserved in the evaluation object; missing evaluation means `NOT_RUN`.",
+        "- Known limitations include survivorship, corporate actions, licensing, point-in-time availability, and provider outages where applicable.",
     ]
     if report.evaluation:
         lines += [
@@ -77,7 +93,17 @@ class ReportStore:
             raise ValueError("invalid run id")
         directory = self.root / report.run_id
         directory.mkdir(parents=True, exist_ok=False)
-        (directory / "report.json").write_text(report.model_dump_json(indent=2), encoding="utf-8")
+        payload = {
+            "schema_version": "1.0",
+            "report": report.model_dump(mode="json"),
+            "contract": {
+                "research_only": True,
+                "broker_enabled": False,
+                "missing_values": "preserved",
+                "synthetic_data": False,
+            },
+        }
+        (directory / "report.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
         (directory / "report.md").write_text(markdown(report), encoding="utf-8")
         return directory
 
@@ -93,7 +119,9 @@ class ReportStore:
         reports = []
         for path in paths:
             if path.is_file() and not path.is_symlink():
-                report = ScanReport.model_validate_json(path.read_text(encoding="utf-8"))
+                raw = json.loads(path.read_text(encoding="utf-8"))
+                # Read both the versioned envelope and pre-1.0 bundles.
+                report = ScanReport.model_validate(raw.get("report", raw))
                 if report.run_id == path.parent.name:
                     reports.append(report)
         return max(reports, key=lambda report: report.created_at) if reports else None

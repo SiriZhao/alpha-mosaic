@@ -73,3 +73,18 @@ The portable package contains `plugin.json`, `mcp.json`, and four skills. Every 
 - `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or `GOOGLE_API_KEY`: optional model authorization for TradingAgents; the adapter remains `NOT_CONFIGURED` when absent.
 
 No real broker token, account data, or API key belongs in this repository.
+
+## Architecture and limits
+
+The CLI and MCP transports call one `ApplicationService`; providers and optional integrations sit
+behind protocols, while reporting stores immutable run bundles. MCP exposes read-only research and
+paper diagnostics only. Values remain sourced or missing, timestamps are timezone-aware, and
+point-in-time, survivorship, corporate-action, licensing, and provider-availability limits remain
+visible in every report. This repository is public; no visibility change is required.
+
+## Roadmap
+
+Next work is operator-owned HTTPS deployment verification, licensed point-in-time datasets, and
+independent forward evidence. Those are prerequisites for any future evidence promotion and are
+not configured or claimed by this release. See [BATCH6_PLATFORM_ACCEPTANCE.md](BATCH6_PLATFORM_ACCEPTANCE.md)
+for measured checks and remaining deployment conditions.

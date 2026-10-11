@@ -19,8 +19,10 @@ from alphamosaic.backtesting.replay import PaperReplayEngine
 from alphamosaic.backtesting.strategies import StrategyRegistry
 from alphamosaic.core.contracts import DataQuality, DecisionProposal, ScanReport, Status, utc_now
 from alphamosaic.data.validation import completed_session, market_state, validate_batch
+from alphamosaic.evaluation.engine_comparison import compare_engine_paths
 from alphamosaic.evaluation.registry import EvaluationEvidence, EvaluationRegistry
 from alphamosaic.evaluation.validation import experiment, summarize, walk_forward
+from alphamosaic.integrations.frameworks import FrameworkIntegrationMatrix
 from alphamosaic.integrations.lean import LeanAdapter
 from alphamosaic.integrations.registry import IntegrationRegistry
 from alphamosaic.portfolio.forward import ForwardPaperStore
@@ -79,26 +81,43 @@ class ApplicationService:
         return [self.provider.health().model_dump(mode="json")]
 
     def provider_health(self) -> dict[str, Any]:
-        return {"status": "READY" if self.provider.health().status == Status.OK else "DEGRADED", "providers": self.providers()}
+        return {
+            "status": "READY" if self.provider.health().status == Status.OK else "DEGRADED",
+            "providers": self.providers(),
+        }
 
     def integrations(self) -> list[dict[str, Any]]:
         return [item.model_dump(mode="json") for item in IntegrationRegistry().records()]
 
+    def framework_matrix(self) -> list[dict[str, Any]]:
+        """Return an auditable dependency/engine/validation matrix."""
+        return FrameworkIntegrationMatrix().as_dict()
+
     def research(self, symbols: list[str], profile: str = "FAST") -> list[dict[str, Any]]:
         with self.lock:
-            return [item.model_dump(mode="json") for item in self.research_engine.research(symbols, profile)]
+            return [
+                item.model_dump(mode="json")
+                for item in self.research_engine.research(symbols, profile)
+            ]
 
     def compare(self, symbols: list[str]) -> dict[str, Any]:
         if not 2 <= len(symbols) <= 10:
             raise ValueError("compare requires 2..10 symbols")
         snapshots = [self.analyze(symbol) for symbol in dict.fromkeys(symbols)]
-        return {"status": "READY" if any(item["status"] == "OK" for item in snapshots) else "DEGRADED", "symbols": snapshots}
+        return {
+            "status": "READY" if any(item["status"] == "OK" for item in snapshots) else "DEGRADED",
+            "symbols": snapshots,
+        }
 
     def research_portfolio(self, symbols: list[str], profile: str = "FAST") -> dict[str, Any]:
         if not 1 <= len(symbols) <= 5:
             raise ValueError("portfolio research requires 1..5 symbols")
         decisions = self.research(symbols, profile)
-        return {"status": "READY" if decisions else "DEGRADED", "broker_enabled": False, "decisions": decisions}
+        return {
+            "status": "READY" if decisions else "DEGRADED",
+            "broker_enabled": False,
+            "decisions": decisions,
+        }
 
     def run_backtest(
         self,
@@ -112,7 +131,10 @@ class ApplicationService:
         if strategy.lower() not in {i["name"] for i in StrategyRegistry().list()}:
             return {"status": "BLOCKED", "diagnostics": ["unknown baseline strategy"]}
         if strategy.lower() in {"quality", "value", "ai_rating", "signal_consensus"}:
-            return {"status": "BLOCKED", "diagnostics": ["MISSING_LICENSED_VERIFIED_PIT_SIGNAL_SERIES"]}
+            return {
+                "status": "BLOCKED",
+                "diagnostics": ["MISSING_LICENSED_VERIFIED_PIT_SIGNAL_SERIES"],
+            }
         config = ReplayConfig(fee_bps=fee_bps, slippage_bps=slippage_bps)
         symbols = normalize_symbols(symbol.split(","))
         if not 1 <= len(symbols) <= 10:
@@ -121,68 +143,157 @@ class ApplicationService:
         start = end - timedelta(days=750)
         requested = list(dict.fromkeys([*symbols, "SPY", "QQQM"]))
         with ThreadPoolExecutor(max_workers=3) as executor:
-            batches = dict(zip(requested, executor.map(lambda s: self.provider.history(s, start, end), requested), strict=True))
-        failures = {s: b.status.value for s, b in batches.items() if b.status != Status.OK or b.identity is None or len(b.bars) < 65}
+            batches = dict(
+                zip(
+                    requested,
+                    executor.map(lambda s: self.provider.history(s, start, end), requested),
+                    strict=True,
+                )
+            )
+        failures = {
+            s: b.status.value
+            for s, b in batches.items()
+            if b.status != Status.OK or b.identity is None or len(b.bars) < 65
+        }
         if any(s in failures for s in symbols):
-            return {"status": "DEGRADED", "diagnostics": ["REQUESTED_HISTORY_UNAVAILABLE"], "provider_failures": failures}
+            return {
+                "status": "DEGRADED",
+                "diagnostics": ["REQUESTED_HISTORY_UNAVAILABLE"],
+                "provider_failures": failures,
+            }
         valid_batches = {s: batches[s] for s in symbols if batches[s].identity is not None}
-        data = ReplayDataset(bars={s: item.bars for s, item in valid_batches.items()},
-            identities={s: item.identity for s, item in valid_batches.items() if item.identity is not None},
-            cutoff=utc_now(), mode="RECONSTRUCTED_DIAGNOSTIC")
+        data = ReplayDataset(
+            bars={s: item.bars for s, item in valid_batches.items()},
+            identities={
+                s: item.identity for s, item in valid_batches.items() if item.identity is not None
+            },
+            cutoff=utc_now(),
+            mode="RECONSTRUCTED_DIAGNOSTIC",
+        )
         benchmarks = {s: batches[s].bars for s in ("SPY", "QQQM") if s not in failures}
         try:
-            replay = PaperReplayEngine().run(data, StrategyRegistry().get(strategy.lower()), strategy.lower(), config)
+            replay = PaperReplayEngine().run(
+                data, StrategyRegistry().get(strategy.lower()), strategy.lower(), config
+            )
             summary = summarize(replay, benchmarks)
             result = {"replay": replay.model_dump(mode="json"), **summary}
             if out_of_sample:
                 result["walk_forward"] = walk_forward(data, config, strategy.lower())
         except ImportError:
-            return {"status": "NOT_CONFIGURED", "diagnostics": ["QUANTSTATS_OPTIONAL_EXTRA_REQUIRED"]}
+            return {
+                "status": "NOT_CONFIGURED",
+                "diagnostics": ["QUANTSTATS_OPTIONAL_EXTRA_REQUIRED"],
+            }
         except ValueError as exc:
             return {"status": "BLOCKED", "diagnostics": ["REPLAY_DATA_CONTRACT_REJECTED", str(exc)]}
-        evidence = EvaluationEvidence(strategy=strategy.lower(), run_id=uuid4().hex,
-            acceptance=replay.acceptance, replay_completed=True)
-        return {"status": "DEGRADED", "symbols": symbols, "strategy": strategy.lower(),
-            "result": result, "evaluation_state": EvaluationRegistry().evaluate(evidence),
-            "provider_failures": failures, "elapsed_seconds": time.monotonic()-started,
-            "diagnostics": replay.diagnostics, "alpha_status": "NO_DEMONSTRATED_ALPHA", "broker_enabled": False}
+        evidence = EvaluationEvidence(
+            strategy=strategy.lower(),
+            run_id=uuid4().hex,
+            acceptance=replay.acceptance,
+            replay_completed=True,
+        )
+        return {
+            "status": "DEGRADED",
+            "symbols": symbols,
+            "strategy": strategy.lower(),
+            "result": result,
+            "evaluation_state": EvaluationRegistry().evaluate(evidence),
+            "provider_failures": failures,
+            "elapsed_seconds": time.monotonic() - started,
+            "diagnostics": replay.diagnostics,
+            "alpha_status": "NO_DEMONSTRATED_ALPHA",
+            "broker_enabled": False,
+        }
 
     def evaluate_strategy(self, symbol: str, strategy: str = "momentum") -> dict[str, Any]:
         return self.run_backtest(symbol, strategy, out_of_sample=True)
 
-    def backtest_experiment(self, data: ReplayDataset, benchmarks: dict, config: ReplayConfig | None = None) -> dict[str, Any]:
+    def backtest_experiment(
+        self, data: ReplayDataset, benchmarks: dict, config: ReplayConfig | None = None
+    ) -> dict[str, Any]:
         started = time.monotonic()
         result = experiment(data, benchmarks, config or ReplayConfig())
         run_id = uuid4().hex
-        result.update({"run_id": run_id, "created_at": utc_now().isoformat(),
-                       "elapsed_seconds": time.monotonic()-started, "external_engine_health": LeanAdapter().health(),
-                       "evaluation_states": [EvaluationRegistry().evaluate(EvaluationEvidence(strategy=name, run_id=run_id,
-                           acceptance=result["acceptance"], replay_completed=item["status"] == "COMPUTED"))
-                           for name, item in result["strategies"].items()]})
+        result.update(
+            {
+                "run_id": run_id,
+                "created_at": utc_now().isoformat(),
+                "elapsed_seconds": time.monotonic() - started,
+                "external_engine_health": LeanAdapter().health(),
+                "evaluation_states": [
+                    EvaluationRegistry().evaluate(
+                        EvaluationEvidence(
+                            strategy=name,
+                            run_id=run_id,
+                            acceptance=result["acceptance"],
+                            replay_completed=item["status"] == "COMPUTED",
+                        )
+                    )
+                    for name, item in result["strategies"].items()
+                ],
+            }
+        )
         root = self.home / "backtests" / run_id
         root.mkdir(parents=True, exist_ok=False)
-        (root / "report.json").write_text(json.dumps(result, indent=2, allow_nan=False), encoding="utf-8")
-        lines = ["# AlphaMosaic backtest experiment", f"Run: {run_id}", f"Acceptance: {result['acceptance']}",
-            f"Alpha status: {result['alpha_status']}", "", "| Strategy | Status | Net return | CAGR | Max drawdown |", "|---|---|---|---|---|"]
+        (root / "report.json").write_text(
+            json.dumps(result, indent=2, allow_nan=False), encoding="utf-8"
+        )
+        lines = [
+            "# AlphaMosaic backtest experiment",
+            f"Run: {run_id}",
+            f"Acceptance: {result['acceptance']}",
+            f"Alpha status: {result['alpha_status']}",
+            "",
+            "| Strategy | Status | Net return | CAGR | Max drawdown |",
+            "|---|---|---|---|---|",
+        ]
         for name, item in result["strategies"].items():
             metrics = item.get("metrics", {})
-            lines.append(f"| {name} | {item['status']} | {metrics.get('return')} | {metrics.get('cagr')} | {metrics.get('max_drawdown')} |")
-        lines.extend(["", "## Limitations", *result["limitations"], "", "Historical OOS folds reset to fresh cash. No forward or real-account returns. Full benchmark, uncertainty, costs and ablation evidence is in report.json."])
+            lines.append(
+                f"| {name} | {item['status']} | {metrics.get('return')} | {metrics.get('cagr')} | {metrics.get('max_drawdown')} |"
+            )
+        lines.extend(
+            [
+                "",
+                "## Limitations",
+                *result["limitations"],
+                "",
+                "Historical OOS folds reset to fresh cash. No forward or real-account returns. Full benchmark, uncertainty, costs and ablation evidence is in report.json.",
+            ]
+        )
         (root / "report.md").write_text("\n".join(lines), encoding="utf-8")
         return {**result, "report_directory": str(root)}
+
+    def compare_backtest_engines(
+        self, data: ReplayDataset, strategy: str = "momentum", config: ReplayConfig | None = None
+    ) -> dict[str, Any]:
+        return compare_engine_paths(data, strategy, config)
 
     def initialize_forward(self, initial_cash: float = 100_000) -> dict[str, Any]:
         return ForwardPaperStore(self.home / "paper").initialize(initial_cash)
 
     def signal_history(self, symbol: str | None = None) -> dict[str, Any]:
-        return {"status": "NOT_CONFIGURED", "symbol": symbol, "signals": [], "diagnostics": ["forward signal store is not initialized"]}
+        store = ForwardPaperStore(self.home / "paper")
+        signals = store.signals(symbol)
+        return {
+            "status": "READY" if signals else "NOT_CONFIGURED",
+            "symbol": symbol,
+            "signals": signals,
+            "diagnostics": [] if signals else ["no frozen forward signals"],
+        }
 
     def forward_performance(self, symbol: str | None = None) -> dict[str, Any]:
-        return {"symbol": symbol, **ForwardPaperStore(self.home / "paper").status()}
+        store = ForwardPaperStore(self.home / "paper")
+        return {"symbol": symbol, **store.status(), "outcomes": store.outcomes()}
 
     def investment_report(self, symbols: list[str], profile: str = "FAST") -> dict[str, Any]:
         result = self.research_portfolio(symbols, profile)
-        return {"status": result["status"], "report_type": "RESEARCH_ONLY", "broker_enabled": False, **result}
+        return {
+            "status": result["status"],
+            "report_type": "RESEARCH_ONLY",
+            "broker_enabled": False,
+            **result,
+        }
 
     def scan(
         self,

@@ -38,6 +38,12 @@ def integrations() -> None:
 
 
 @app.command()
+def frameworks() -> None:
+    """Audit external framework maturity without installing optional dependencies."""
+    output(ApplicationService().framework_matrix())
+
+
+@app.command()
 def research(
     symbols: str,
     profile: str = typer.Option("FAST", case_sensitive=False),

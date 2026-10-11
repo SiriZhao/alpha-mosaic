@@ -1,42 +1,20 @@
-# AlphaMosaic final acceptance record
+# Final acceptance (Batch 5)
 
-Date: 2026-10-09 (Asia/Shanghai)
+Status: `PARTIAL / RESEARCH_ONLY / NO_DEMONSTRATED_ALPHA`
 
-## Verified locally
+Verified in this batch:
 
-- OpenBB V5 Nasdaq adapter: live AAPL historical/profile request, 132 rows, provenance and
-  reconstructed PIT labels recorded.
-- TradingAgents v0.6.0 adapter: official Python API isolated behind a bounded worker with FAST,
-  BALANCED and DEEP profiles. Current result: `NOT_CONFIGURED` because the optional package and
-  authorized model credentials are absent.
-- Danelfin adapter: official remote MCP endpoint, Bearer credential from `DANELFIN_API_KEY`,
-  cache, deduplication, rate interval, dynamic budget, timeout and explicit failure statuses.
-  Current result: `NOT_CONFIGURED`; no scraping or mock success.
-- Signal fusion: chronology, identity, evidence overlap, source dependency and conflict checks.
-- Three-stock live research: AAPL, XOM and TSLA. Deterministic factors produced decisions;
-  missing external agents remain explicitly unconfigured.
-- Local MCP: stdio initialize/list-tools/tool-call handshake succeeded with 19 tools.
-- Remote MCP security smoke: `/health` returned 200; unauthenticated `/mcp` returned 401.
-- Plugin package: portable `plugin.json`, `mcp.json` and four MCP-calling skills validate as JSON
-  and remain marked remote-unverified until a real HTTPS ChatGPT connection is completed.
+- Framework matrix for LEAN, QuantStats, VectorBT, AI Hedge Fund, FinRL-X, FinRL and Backtrader.
+- PaperReplay execution and QuantStats statistics comparison on identical fixture inputs.
+- Immutable forward signal freeze, source-hash retention, cost-aware T+5/T+20/T+60 evaluation and failure-path tests.
+- 34 local tests, Ruff, Pyright, live OpenBB request and live explicit scan followed by same-run MCP ranking.
 
-## Checks
+Not verified:
 
-- Ruff: passed.
-- Pyright: 0 errors.
-- Pytest: 8 passed.
-- `uv lock --check`: passed.
-- Runtime contains no broker, shell, arbitrary-file, credential or order tool.
+- LEAN computation: Docker/CLI and reviewed licensed data are absent.
+- A second independent execution engine: QuantStats is analytics-only; no legal optional engine is installed.
+- PIT alpha: current OpenBB history is reconstructed and survivorship/corporate-action limited.
+- Longitudinal forward returns: no historical sample has reached a reviewed acceptance threshold.
+- `uv lock --check`, `pip-audit`, clean-wheel rerun and GitHub CI/push: tooling or authentication unavailable.
 
-## Deliberately unverified
-
-- TradingAgents real model execution: no authorized model key or optional package in the current
-  environment.
-- Danelfin real score/ranking/history call: no authorized API key.
-- Public ChatGPT plugin connection: no public HTTPS endpoint, tunnel, or manual ChatGPT setup was
-  authorized; local MCP success is not remote verification.
-- Forward signal performance: no initialized forward observation store.
-- Demonstrated alpha: none claimed. Current signals are research evidence and heuristic ranking.
-
-The project remains research-only and broker-disabled. No paid service, cloud deployment, domain,
-credential, or real-account action was performed.
+No broker, cloud backtest purchase, paid data, credential or real account was used.

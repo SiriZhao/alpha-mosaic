@@ -48,6 +48,17 @@ See [ARCHITECTURE.md](ARCHITECTURE.md), [INTEGRATIONS.md](INTEGRATIONS.md),
 [CURRENT_STATE.md](CURRENT_STATE.md) and [NEXT_STEPS.md](NEXT_STEPS.md) for boundaries and
 measured acceptance. This project is unrelated to Meridian Alpha and never modifies it.
 
+## Framework and forward validation
+
+`uv run alphamosaic frameworks` prints the non-installing integration matrix for LEAN,
+QuantStats, VectorBT, AI Hedge Fund, FinRL-X, FinRL and Backtrader. The matrix reports adapter,
+dependency, startup, computation and validation states independently. The local PaperReplay engine
+owns fills, cash, fees, slippage and corporate actions; QuantStats is analytics-only and cannot be
+treated as a second execution engine. `ForwardPaperStore` freezes source-hashed paper signals and
+evaluates predeclared T+5/T+20/T+60 horizons with frozen cost assumptions. See
+[BATCH5_FRAMEWORK_AND_ALPHA_VALIDATION.md](BATCH5_FRAMEWORK_AND_ALPHA_VALIDATION.md) for the
+dated audit, real-data evidence and blockers.
+
 ## Plugin and remote MCP
 
 The portable package contains `plugin.json`, `mcp.json`, and four skills. Every skill calls a named MCP tool and instructs the assistant to preserve sourced-or-missing values and provider statuses. The remote server exposes `/health` and authenticated `/mcp`, enforces a bearer token of at least 16 characters, request rate limits, a 4 MiB body limit, bounded sessions and localhost defaults. It does not expose shell, arbitrary files, credentials, or broker orders.

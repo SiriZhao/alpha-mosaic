@@ -55,6 +55,10 @@ def create_server(service: ApplicationService | None = None) -> MCPServer:
     def provider_health() -> dict[str, Any]:
         return application.provider_health()
 
+    @server.tool(annotations=_annotations())
+    def framework_matrix() -> list[dict[str, Any]]:
+        return application.framework_matrix()
+
     @server.tool(annotations=_annotations(False))
     async def scan_market(universe_limit: int = 30, top: int = 10) -> dict[str, Any]:
         report = await asyncio.to_thread(application.scan, universe_limit=universe_limit, top=top, persist=False)

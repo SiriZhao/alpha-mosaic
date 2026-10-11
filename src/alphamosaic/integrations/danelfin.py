@@ -276,6 +276,37 @@ class DanelfinAdapter:
         except Exception as exc:
             return Status.UNAVAILABLE, [], [f"Danelfin MCP session: {type(exc).__name__}"]
 
+    async def capability(
+        self,
+        name: str,
+        symbol: str = "",
+        arguments: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Call an advertised official capability without guessing its response semantics."""
+
+        if name not in OFFICIAL_TOOLS:
+            return {"status": Status.UNSUPPORTED.value, "diagnostics": [f"unsupported capability: {name}"]}
+        status, payload, diagnostics = await self._call(name, symbol.upper(), arguments)
+        return {
+            "status": status.value,
+            "capability": name,
+            "source": self.name,
+            "result": payload,
+            "diagnostics": diagnostics,
+        }
+
+    async def ranking(self, arguments: dict[str, Any] | None = None) -> dict[str, Any]:
+        return await self.capability("ranking", arguments=arguments)
+
+    async def screening(self, arguments: dict[str, Any] | None = None) -> dict[str, Any]:
+        return await self.capability("screening", arguments=arguments)
+
+    async def score_history(
+        self, symbol: str, start: str | None = None, end: str | None = None
+    ) -> dict[str, Any]:
+        arguments = {key: value for key, value in {"symbol": symbol, "start": start, "end": end}.items() if value}
+        return await self.capability("history", symbol, arguments)
+
     async def score(self, symbol: str) -> dict[str, Any]:
         normalized = symbol.upper()
         status, result, diagnostics = await self._call("stock_score", normalized)

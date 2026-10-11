@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "alphamosaic",
-  "version": "0.2.0",
+  "version": "0.1.0",
   "description": "Evidence-first investment research through a read-only AlphaMosaic MCP server.",
   "author": {"name": "AlphaMosaic contributors"},
   "homepage": "https://github.com/SiriZhao/alpha-mosaic",

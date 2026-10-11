@@ -1,16 +1,132 @@
-"""Official Danelfin MCP client with cache, deduplication and quota telemetry."""
+"""Danelfin MCP adapter using the official MCP ClientSession transport.
+
+The adapter discovers the server's advertised tools and schemas before calling them. It never
+assumes a score field is a return probability and fails closed when a response cannot be validated
+as a dated, symbol-matched score.
+"""
 
 import asyncio
+import hashlib
+import json
 import os
 import threading
 import time
-from collections import deque
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
 import httpx
+import httpx2
+from mcp import ClientSession
+from mcp.client.streamable_http import streamable_http_client
+from mcp.shared._httpx_utils import create_mcp_http_client
 
-from alphamosaic.core.contracts import DataQuality, ProviderHealth, Status, utc_now
+from alphamosaic.core.contracts import (
+    DanelfinScoreObservation,
+    DataQuality,
+    FusionSignal,
+    ProviderHealth,
+    SignalDirection,
+    Status,
+    utc_now,
+)
+
+SOURCE_URL = "https://mcp.danelfin.com/docs/en"
+MCP_VERSION = "mcp-sdk-client-session"
+OFFICIAL_TOOLS = {
+    "stock_score": "get_stock_score",
+    "etf_score": "get_etf_score",
+    "ranking": "get_top_ranked",
+    "screening": "screen_by_score",
+    "history": "get_score_history",
+}
+
+
+def _jsonable(value: Any) -> Any:
+    if hasattr(value, "model_dump"):
+        return value.model_dump(mode="json", by_alias=True)
+    return value
+
+
+def _payload(result: Any) -> dict[str, Any] | None:
+    """Extract structured JSON from a CallToolResult without interpreting prose as facts."""
+
+    dumped = _jsonable(result)
+    if isinstance(dumped, dict) and dumped.get("isError"):
+        return None
+    if isinstance(dumped, dict):
+        structured = dumped.get("structuredContent")
+        if isinstance(structured, dict):
+            return structured
+        content = dumped.get("content")
+        if isinstance(content, list):
+            for item in content:
+                if isinstance(item, dict) and item.get("type") == "text":
+                    try:
+                        parsed = json.loads(str(item.get("text", "")))
+                    except json.JSONDecodeError:
+                        continue
+                    if isinstance(parsed, dict):
+                        return parsed
+    return dumped if isinstance(dumped, dict) else None
+
+
+def _find(payload: dict[str, Any], names: set[str]) -> Any:
+    for key, value in payload.items():
+        if key.lower() in names:
+            return value
+        if isinstance(value, dict):
+            found = _find(value, names)
+            if found is not None:
+                return found
+    return None
+
+
+def _parse_date(value: Any) -> datetime | None:
+    if not isinstance(value, (str, date, datetime)):
+        return None
+    if isinstance(value, datetime):
+        parsed = value
+    elif isinstance(value, date):
+        parsed = datetime.combine(value, datetime.min.time())
+    else:
+        text = value.strip().replace("Z", "+00:00")
+        try:
+            parsed = datetime.fromisoformat(text)
+        except ValueError:
+            try:
+                parsed = datetime.combine(date.fromisoformat(text[:10]), datetime.min.time())
+            except ValueError:
+                return None
+    return (parsed if parsed.tzinfo else parsed.replace(tzinfo=UTC)).astimezone(UTC)
+
+
+def _number(value: Any, lower: float, upper: float) -> float | None:
+    if isinstance(value, bool):
+        return None
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    return number if lower <= number <= upper else None
+
+
+def _schema_arguments(
+    schema: dict[str, Any], symbol: str, start: str | None = None, end: str | None = None
+) -> dict[str, Any] | None:
+    """Build only arguments advertised by the live tool schema; unknown fields fail closed."""
+
+    properties = schema.get("properties") or {}
+    required = set(schema.get("required") or [])
+    result: dict[str, Any] = {}
+    for name in properties:
+        lowered = name.lower()
+        if lowered in {"symbol", "ticker", "stock", "asset", "security"}:
+            result[name] = symbol
+        elif lowered in {"start", "start_date", "from", "from_date", "date_from"} and start:
+            result[name] = start
+        elif lowered in {"end", "end_date", "to", "to_date", "date_to"} and end:
+            result[name] = end
+    return result if required.issubset(result) else None
 
 
 class DanelfinAdapter:
@@ -24,7 +140,7 @@ class DanelfinAdapter:
         monthly_budget: int | None = None,
         endpoint: str | None = None,
         api_key: str | None = None,
-        client: httpx.AsyncClient | None = None,
+        client: Any | None = None,
     ):
         self.endpoint = endpoint or os.environ.get("DANELFIN_MCP_URL", "https://mcp.danelfin.com/mcp")
         self.api_key = api_key if api_key is not None else os.environ.get("DANELFIN_API_KEY")
@@ -34,111 +150,226 @@ class DanelfinAdapter:
         self.monthly_budget = monthly_budget
         self._client = client
         self._cache: dict[tuple[str, str], tuple[float, Any]] = {}
-        self._inflight: dict[tuple[str, str], asyncio.Future[Any]] = {}
         self._lock = asyncio.Lock()
-        self._request_times: deque[float] = deque()
-        self._last_request = 0.0
         self._request_count = 0
         self._sync_lock = threading.Lock()
+        self._last_test: dict[str, str] = {}
+        self._last_request = 0.0
 
     def health(self) -> ProviderHealth:
         configured = bool(self.api_key)
         return ProviderHealth(
             name=self.name,
-            status=Status.OK if configured else Status.NOT_CONFIGURED,
+            status=Status.PARTIAL if configured else Status.NOT_CONFIGURED,
             checked_at=utc_now(),
-            version=None,
-            capabilities=["AI_SCORE", "RANKING", "DAILY_HISTORY", "SUBSCORES", "FILTER"],
+            version=MCP_VERSION,
+            capabilities=list(OFFICIAL_TOOLS),
             diagnostics=[
-                "Official MCP over HTTPS; no website scraping",
-                "Score is research evidence, not a return probability",
+                "Official MCP ClientSession over Streamable HTTP; no website scraping",
+                "AI score is a 1-10 conviction score, not a return probability",
                 "No credentials are persisted by this adapter",
             ] if configured else ["DANELFIN_API_KEY is absent"],
+            lifecycle={
+                "installed": "INSTALLED",
+                "configured": "CONFIGURED" if configured else "NOT_CONFIGURED",
+                "connected": "CONNECTED" if self._last_test else "NOT_TESTED",
+                "data_validated": "VALIDATED" if self._last_test.get("data_validated") == "true" else "NOT_TESTED",
+                "research_ready": "READY" if self._last_test.get("data_validated") == "true" else "NO",
+            },
+            last_test=dict(self._last_test),
         )
 
     @property
     def quota(self) -> dict[str, int | None]:
         return {"requests": self._request_count, "monthly_budget": self.monthly_budget}
 
-    async def _request(self, method: str, params: dict[str, Any]) -> Any:
+    async def _session_tools(self) -> tuple[ClientSession, Any, Any, list[Any]]:
         if not self.api_key:
             raise RuntimeError("NOT_CONFIGURED")
-        key = (method, repr(sorted(params.items())))
-        now = time.monotonic()
+        headers = {"Authorization": f"Bearer {self.api_key}"}
+        timeout = httpx2.Timeout(self.timeout, read=self.timeout)
+        client = self._client or create_mcp_http_client(headers=headers, timeout=timeout)
+        streams = streamable_http_client(self.endpoint, http_client=client)
+        read_stream, write_stream = await streams.__aenter__()
+        session = ClientSession(read_stream, write_stream, read_timeout_seconds=self.timeout)
+        await session.__aenter__()
+        try:
+            init = await asyncio.wait_for(session.initialize(), timeout=self.timeout)
+            tools = (await asyncio.wait_for(session.list_tools(), timeout=self.timeout)).tools
+            self._last_test = {
+                "checked_at": utc_now().isoformat(),
+                "protocol_version": str(init.protocol_version),
+                "tool_count": str(len(tools)),
+                "data_validated": "false",
+            }
+            return session, streams, client, tools
+        except Exception:
+            # A cancelled MCP task group cannot safely be exited from the caller's
+            # task (AnyIO raises a cross-task cancel-scope error). The transport
+            # owns cleanup for production clients; injected clients are test-only.
+            if self._client is None:
+                try:
+                    await client.aclose()
+                except Exception:
+                    pass
+            raise
+
+    async def _close_session(self, session: ClientSession, streams: Any, client: Any) -> None:
+        await session.__aexit__(None, None, None)
+        await streams.__aexit__(None, None, None)
+        if self._client is None:
+            await client.aclose()
+
+    async def _call(
+        self, capability: str, symbol: str, arguments: dict[str, Any] | None = None
+    ) -> tuple[Status, Any, list[str]]:
+        if not self.api_key:
+            return Status.NOT_CONFIGURED, None, ["DANELFIN_API_KEY is absent"]
+        key = (capability, json.dumps(arguments or {"symbol": symbol}, sort_keys=True))
         cached = self._cache.get(key)
-        if cached and cached[0] > now:
-            return cached[1]
+        if cached and cached[0] > time.monotonic():
+            return Status.OK, cached[1], []
+        if self.monthly_budget is not None and self._request_count >= self.monthly_budget:
+            return Status.RATE_LIMITED, None, ["configured monthly request budget exhausted"]
         async with self._lock:
-            cached = self._cache.get(key)
-            if cached and cached[0] > time.monotonic():
-                return cached[1]
-            while time.monotonic() - self._last_request < self.min_interval:
-                await asyncio.sleep(self.min_interval - (time.monotonic() - self._last_request))
-            if self.monthly_budget is not None and self._request_count >= self.monthly_budget:
-                raise RuntimeError("RATE_LIMITED")
+            delay = self.min_interval - (time.monotonic() - self._last_request)
+            if delay > 0:
+                await asyncio.sleep(delay)
             self._last_request = time.monotonic()
             self._request_count += 1
-            client = self._client or httpx.AsyncClient(timeout=self.timeout)
-            close = self._client is None
             try:
-                response = await client.post(
-                    self.endpoint,
-                    headers={"Authorization": f"Bearer {self.api_key}", "Accept": "application/json"},
-                    json={"jsonrpc": "2.0", "id": self._request_count, "method": method, "params": params},
-                )
-                response.raise_for_status()
-                body = response.json()
-                if "error" in body:
-                    raise RuntimeError(str(body["error"]))
-                value = body.get("result")
-                self._cache[key] = (time.monotonic() + self.cache_ttl.total_seconds(), value)
-                return value
-            finally:
-                if close:
-                    await client.aclose()
+                session, streams, client, tools = await self._session_tools()
+                try:
+                    tool_name = OFFICIAL_TOOLS[capability]
+                    advertised = next((tool for tool in tools if tool.name == tool_name), None)
+                    if advertised is None:
+                        return Status.UNSUPPORTED, None, [f"official tool {tool_name} was not advertised"]
+                    call_args = arguments or _schema_arguments(advertised.input_schema, symbol)
+                    if call_args is None:
+                        return Status.UNSUPPORTED, None, [f"required schema fields for {tool_name} are unknown"]
+                    result = await asyncio.wait_for(
+                        session.call_tool(tool_name, call_args), timeout=self.timeout
+                    )
+                    payload = _payload(result)
+                    if payload is None:
+                        return Status.INVALID_DATA, None, [f"{tool_name} returned an MCP error or no structured JSON"]
+                    self._cache[key] = (time.monotonic() + self.cache_ttl.total_seconds(), payload)
+                    return Status.OK, payload, []
+                finally:
+                    await self._close_session(session, streams, client)
+            except TimeoutError:
+                return Status.TIMEOUT, None, ["Danelfin MCP ClientSession timeout"]
+            except httpx.TimeoutException:
+                return Status.TIMEOUT, None, ["Danelfin MCP transport timeout"]
+            except (httpx.HTTPError, OSError, RuntimeError, ValueError) as exc:
+                text = str(exc).lower()
+                status = Status.RATE_LIMITED if "429" in text or "quota" in text else Status.UNAVAILABLE
+                return status, None, [f"Danelfin MCP {type(exc).__name__}"]
 
     async def list_tools(self) -> tuple[Status, list[dict[str, Any]], list[str]]:
         if not self.api_key:
             return Status.NOT_CONFIGURED, [], ["DANELFIN_API_KEY is absent"]
         try:
-            result = await self._request("tools/list", {})
-            return Status.OK, list((result or {}).get("tools", [])), []
-        except httpx.TimeoutException:
-            return Status.TIMEOUT, [], ["Danelfin MCP timeout"]
-        except (httpx.HTTPError, RuntimeError, ValueError) as exc:
-            status = Status.RATE_LIMITED if "RATE_LIMITED" in str(exc) or "429" in str(exc) else Status.UNAVAILABLE
-            return status, [], [f"Danelfin MCP: {type(exc).__name__}"]
-
-    async def call_tool(self, tool: str, arguments: dict[str, Any]) -> tuple[Status, Any, list[str]]:
-        if not self.api_key:
-            return Status.NOT_CONFIGURED, None, ["DANELFIN_API_KEY is absent"]
-        try:
-            value = await self._request("tools/call", {"name": tool, "arguments": arguments})
-            return Status.OK, value, []
-        except httpx.TimeoutException:
-            return Status.TIMEOUT, None, ["Danelfin MCP timeout"]
-        except (httpx.HTTPError, RuntimeError, ValueError) as exc:
-            status = Status.RATE_LIMITED if "RATE_LIMITED" in str(exc) or "429" in str(exc) else Status.UNAVAILABLE
-            return status, None, [f"Danelfin MCP: {type(exc).__name__}"]
+            session, streams, client, tools = await self._session_tools()
+            await self._close_session(session, streams, client)
+            return Status.OK, [_jsonable(tool) for tool in tools], []
+        except Exception as exc:
+            return Status.UNAVAILABLE, [], [f"Danelfin MCP session: {type(exc).__name__}"]
 
     async def score(self, symbol: str) -> dict[str, Any]:
-        status, tools, diagnostics = await self.list_tools()
-        if status != Status.OK:
-            return {"symbol": symbol, "status": status.value, "diagnostics": diagnostics}
-        names = {str(item.get("name")) for item in tools}
-        candidate = next((name for name in ("get_stock_score", "get_ai_score", "stock_score") if name in names), None)
-        if candidate is None:
-            return {"symbol": symbol, "status": Status.UNSUPPORTED.value, "diagnostics": ["score tool not advertised by Danelfin MCP"]}
-        status, result, diagnostics = await self.call_tool(candidate, {"symbol": symbol})
-        return {
-            "symbol": symbol,
+        normalized = symbol.upper()
+        status, result, diagnostics = await self._call("stock_score", normalized)
+        response: dict[str, Any] = {
+            "symbol": normalized,
             "status": status.value,
             "source": self.name,
-            "data_quality": DataQuality.REAL.value if status == Status.OK else DataQuality.MISSING.value,
-            "observed_at": datetime.now(UTC).isoformat(),
-            "result": result,
             "diagnostics": diagnostics,
         }
+        if status != Status.OK:
+            return response
+        try:
+            observation, signal, parse_diagnostics = self._parse_score(normalized, result)
+        except (TypeError, ValueError) as exc:
+            observation, signal, parse_diagnostics = None, None, [f"validated score contract rejected response: {type(exc).__name__}"]
+        if observation is None or signal is None:
+            response["status"] = Status.INVALID_DATA.value
+            response["diagnostics"] = parse_diagnostics
+            return response
+        self._last_test["data_validated"] = "true"
+        response["observation"] = observation.model_dump(mode="json")
+        response["signal"] = signal.model_dump(mode="json")
+        return response
+
+    def _parse_score(
+        self, symbol: str, payload: dict[str, Any]
+    ) -> tuple[DanelfinScoreObservation | None, FusionSignal | None, list[str]]:
+        returned = _find(payload, {"symbol", "ticker", "stock", "security"})
+        if str(returned or "").upper() != symbol:
+            return None, None, ["response symbol does not match requested security"]
+        score = _number(_find(payload, {"ai_score", "aiscore", "score"}), 1, 10)
+        when = _parse_date(_find(payload, {"score_date", "scoredate", "date", "as_of", "timestamp"}))
+        now = utc_now()
+        if score is None or when is None or when > now:
+            return None, None, ["score, 1-10 range, and non-future score date are required"]
+        subs: dict[str, float | None] = {}
+        raw_subs = _find(payload, {"subscores", "sub_scores"})
+        if isinstance(raw_subs, dict):
+            for key, value in raw_subs.items():
+                number = _number(value, 1, 10)
+                if number is not None:
+                    subs[str(key)] = number
+        fingerprint = hashlib.sha256(
+            json.dumps(payload, sort_keys=True, default=str).encode()
+        ).hexdigest()
+        score_date = when.date()
+        observation = DanelfinScoreObservation(
+            symbol=symbol,
+            source="Danelfin MCP get_stock_score",
+            source_url=SOURCE_URL,
+            observed_at=when,
+            known_at=when,
+            as_of=when,
+            currency="USD",
+            data_quality=DataQuality.REAL,
+            adjustment_policy="NOT_APPLICABLE",
+            provenance={"transport": "official MCP ClientSession", "retrieved_at": now.isoformat()},
+            license_scope="Danelfin service terms; no redistribution assumed",
+            factor="danelfin_ai_score",
+            value=score,
+            methodology="Official Danelfin 1-10 AI conviction score; not a return probability",
+            validated_predictive_probability=False,
+            ai_score=score,
+            identity_match=True,
+            sub_scores=subs,
+            score_date=score_date,
+            valid_until=when + timedelta(days=1),
+            capability="STOCK_SCORE",
+            response_id=str(_find(payload, {"id", "score_id"}) or "") or None,
+            content_fingerprint=fingerprint,
+        )
+        direction = (
+            SignalDirection.BULLISH
+            if score >= 7
+            else SignalDirection.BEARISH
+            if score <= 4
+            else SignalDirection.NEUTRAL
+        )
+        signal = FusionSignal(
+            source="Danelfin MCP get_stock_score",
+            symbol=symbol,
+            direction=direction,
+            strength=round(abs(score - 5.5) / 4.5, 4),
+            reliability=None,
+            horizon="daily-to-weeks",
+            data_quality=DataQuality.REAL,
+            evidence_ids=[observation.response_id] if observation.response_id else [],
+            observed_at=when,
+            known_at=when,
+            rationale=[f"Danelfin AI score {score:.1f}/10; conviction scale only"],
+            dependency_keys=[f"danelfin:{symbol}:{score_date.isoformat()}"],
+            content_fingerprint=fingerprint,
+        )
+        return observation, signal, []
 
     def score_sync(self, symbol: str) -> dict[str, Any]:
         with self._sync_lock:

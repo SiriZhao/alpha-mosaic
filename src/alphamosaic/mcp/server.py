@@ -57,8 +57,15 @@ def create_server(service: ApplicationService | None = None) -> MCPServer:
 
     @server.tool(annotations=_annotations(False))
     async def scan_market(universe_limit: int = 30, top: int = 10) -> dict[str, Any]:
-        report = await asyncio.to_thread(application.scan, universe_limit=universe_limit, top=top, persist=False)
+        report = await asyncio.to_thread(application.scan, universe_limit=universe_limit, top=top, persist=True, evaluate=False)
         return {"status": "READY" if report.candidates else "DEGRADED", "report": report.model_dump(mode="json")}
+
+    @server.tool(annotations=_annotations(False))
+    async def discover_opportunities(mode: str = "FAST", universe_limit: int = 30, top: int = 10,
+                                     deep: int = 3, pool: str = "BROAD_LIQUIDITY",
+                                     symbols: list[str] | None = None, resume: bool = False) -> dict[str, Any]:
+        """Run the bounded Batch 3 opportunity pipeline and persist its run snapshot."""
+        return await asyncio.to_thread(application.discover_opportunities, mode.upper(), universe_limit, top, deep, pool.upper(), symbols, resume)
 
     @server.tool(annotations=_annotations())
     def rank_opportunities() -> dict[str, Any]:

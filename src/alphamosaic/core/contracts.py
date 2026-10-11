@@ -132,6 +132,15 @@ class CompanyFundamentals(Evidence):
     market_cap: float | None = Field(default=None, gt=0)
     pe_ratio: float | None = None
     return_on_equity: float | None = None
+    revenue_growth: float | None = None
+    operating_margin: float | None = None
+    free_cash_flow: float | None = None
+    return_on_invested_capital: float | None = None
+    net_debt: float | None = None
+    valuation_multiple: float | None = None
+    filing_date: date | None = None
+    fiscal_year: int | None = None
+    net_margin: float | None = None
     missing_fields: list[str] = Field(default_factory=list)
 
 
@@ -201,6 +210,7 @@ class OpportunityCandidate(Contract):
     identity: SecurityIdentity
     data_quality: DataQuality
     score_type: Literal["HEURISTIC_PERCENTILE"] = "HEURISTIC_PERCENTILE"
+    archetypes: list[str] = Field(default_factory=list)
 
 
 class ResearchVerdict(Evidence):
@@ -368,3 +378,80 @@ class ScanReport(Contract):
     acceptance: Literal["REAL_DATA", "FIXTURE"]
     warnings: list[str]
     broker_enabled: Literal[False] = False
+
+
+class OpportunityArchetype(StrEnum):
+    QUALITY_GROWTH = "QUALITY_GROWTH"
+    EARNINGS_REVISION = "EARNINGS_REVISION"
+    VALUATION_DISLOCATION = "VALUATION_DISLOCATION"
+    MOMENTUM_BREAKOUT = "MOMENTUM_BREAKOUT"
+    EVENT_CATALYST = "EVENT_CATALYST"
+    MEAN_REVERSION = "MEAN_REVERSION"
+
+
+class OpportunityArchetypeSpec(Contract):
+    name: OpportunityArchetype
+    suitable_regimes: list[str]
+    required_data: list[str]
+    prerequisites: list[str]
+    failure_risks: list[str]
+    holding_period: str
+    research_priority: Literal["HIGH", "NORMAL"]
+
+
+class OpportunitySummary(Contract):
+    symbol: str
+    initial_rank: int
+    deep_rank: int | None = None
+    archetypes: list[OpportunityArchetype]
+    business_drivers: list[str]
+    thesis: list[str]
+    expectations: list[str]
+    overlooked_factors: list[str]
+    valuation_risks: list[str]
+    catalysts: list[str]
+    trend: str
+    scenarios: dict[str, str]
+    holding_horizon: str
+    invalidations: list[str]
+    observation_range: dict[str, float | str] | None = None
+    factors: dict[str, float | None] = Field(default_factory=dict)
+    evidence_ids: list[str] = Field(default_factory=list)
+    provider_statuses: dict[str, str] = Field(default_factory=dict)
+    no_action_reasons: list[str] = Field(default_factory=list)
+    rerank_reason: str | None = None
+    archetype_gaps: dict[str, list[str]] = Field(default_factory=dict)
+    archetype_scores: dict[str, float | None] = Field(default_factory=dict)
+    fundamentals: CompanyFundamentals | None = None
+    deep_decision: ResearchDecision | None = None
+    data_timestamp: datetime
+    risks: list[str] = Field(default_factory=list)
+
+
+class OpportunityPipelineReport(Contract):
+    run_id: str
+    mode: Literal["FAST", "DEEP"]
+    started_at: datetime
+    completed_at: datetime
+    cutoff: datetime
+    universe_name: str
+    universe_source: str
+    universe_count: int = Field(ge=0)
+    data_success_count: int = Field(ge=0)
+    excluded_count: int = Field(ge=0)
+    preliminary_count: int = Field(ge=0)
+    deep_count: int = Field(ge=0)
+    elapsed_seconds: float = Field(ge=0)
+    initial_run_id: str
+    initial_cutoff: datetime
+    summaries: list[OpportunitySummary]
+    archetypes: list[OpportunityArchetypeSpec]
+    provider_health: dict[str, str]
+    warnings: list[str] = Field(default_factory=list)
+    status: Literal["READY", "DEGRADED", "NO_ACTION", "FAILED"]
+    acceptance: Literal["REAL_DATA", "FIXTURE"]
+    broker_enabled: Literal[False] = False
+    scan: ScanReport
+    external_call_count: int = Field(default=0, ge=0)
+    cost: dict[str, float | None] = Field(default_factory=dict)
+    resume_count: int = Field(default=0, ge=0)

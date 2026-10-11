@@ -14,6 +14,7 @@ uv run alphamosaic doctor
 uv run alphamosaic providers
 uv run alphamosaic analyze AAPL --fundamentals
 uv run alphamosaic scan --universe-limit 10 --top 10
+uv run alphamosaic opportunities --mode FAST --universe-limit 30 --top 10
 uv run alphamosaic research AAPL,XOM,TSLA --profile FAST
 uv run alphamosaic integrations
 uv run alphamosaic report
@@ -29,6 +30,9 @@ the repository-local `runtime`) in unique run directories, and runtime data is i
 - Pydantic contracts for market observations, historical bars, fundamentals, evidence, factors,
   candidates, risk, decisions, backtests and provider health.
 - Current screener discovery plus explicit symbols, imports and user watchlists.
+- Batch 3 opportunity discovery pipeline with six named archetypes, top-10 ranking, bounded top-3
+  deep research, JSON/Markdown snapshots and same-configuration checkpoint resume. Use
+  `alphamosaic opportunities --mode DEEP --symbols AAPL,GOOGL,AVGO` for a small review run.
 - Momentum, relative strength, trend, volume, volatility, drawdown, liquidity, quality and value
   fields when the provider supplies them. Scores are heuristic percentile ranks, never return
   probabilities.
@@ -40,6 +44,8 @@ the repository-local `runtime`) in unique run directories, and runtime data is i
   and reports research confidence rather than a return probability.
 - Unified read-only MCP tools for status, providers, scans, stock analysis, comparison, research,
   backtests, signal history and reports. Long research is returned as a bounded `job_id`.
+- `discover_opportunities` exposes the same pipeline through MCP and preserves the exact initial
+  scan ID and cutoff in its report.
 - Portable `plugins/alphamosaic` package with four skills; each skill calls an MCP tool and keeps
   missing or failed data explicit.
 

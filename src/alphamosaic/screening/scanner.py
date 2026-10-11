@@ -8,6 +8,7 @@ from alphamosaic.core.contracts import DataBatch, OpportunityCandidate, Status
 from alphamosaic.data.validation import validate_batch
 from alphamosaic.factors.engine import FactorEngine
 from alphamosaic.portfolio.risk import assess_risk
+from alphamosaic.screening.archetypes import OpportunityArchetypeRegistry
 
 
 class CandidateRanker:
@@ -80,6 +81,7 @@ class OpportunityScanner:
             eligible[symbol] = factors
         ranked = CandidateRanker().rank(eligible)
         candidates = []
+        archetypes = OpportunityArchetypeRegistry()
         for rank, (symbol, score) in enumerate(ranked[:top], 1):
             batch = batches[symbol]
             assert batch.identity is not None
@@ -110,6 +112,7 @@ class OpportunityScanner:
                     research_priority="HIGH" if rank <= 3 else "NORMAL",
                     identity=batch.identity,
                     data_quality=batch.bars[-1].data_quality,
+                    archetypes=[item.value for item in archetypes.categorize(factors)],
                 )
             )
         return candidates, excluded, len(eligible)

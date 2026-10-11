@@ -46,6 +46,13 @@ Measured acceptance:
 Known limitations: current screener is survivorship-biased, historical data is reconstructed and
 adjustment policy is unknown, fundamentals are partial, news/catalyst feeds are not connected, optional multi-agent providers are unconfigured, forward signal storage is not initialized, and there is no demonstrated alpha or broker execution.
 
+## Batch 3 opportunity discovery checkpoint (2026-10-11)
+
+- Isolated branch `codex/batch3-opportunities` adds the bounded opportunity pipeline, six explicit archetypes, SEC adapter boundary, CLI/MCP discovery entrypoints, report snapshots and deterministic checkpoint resume.
+- Real public-data FAST run completed `10/10/10/0` (universe/data-success/preliminary/exclusions) in 61.94 seconds. Real DEEP watchlist run completed AAPL/GOOGL/AVGO `3/3/3/3` in 68.98 seconds; Danelfin and TradingAgents remained unavailable/not configured and did not affect ranking.
+- Acceptance evidence is in `BATCH3_OPPORTUNITY_ACCEPTANCE.md`. Pytest 11 passed, Ruff passed and Pyright reported zero errors.
+- This branch is isolated from concurrent Batch 1/2 work in the original worktree. Remote main is not claimed to contain this checkpoint until its branch SHA is verified.
+
 ## ChatGPT-native acceptance checkpoint (2026-10-10)
 
 - Unified MCP now includes status/health, scan/rank, stock analysis/comparison, bounded research

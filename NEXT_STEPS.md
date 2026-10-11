@@ -19,3 +19,9 @@
 9. Enable the checked-in GitHub Actions workflow after remote setup; mark CI passed only from an
    actual successful run. Keep LEAN and forward-performance states blocked/not-configured until
    their external prerequisites are available.
+
+10. For Batch 3, replace the bounded current screener with a licensed broad universe and add
+    point-in-time SEC/IR, estimates and catalyst evidence. Keep archetypes with missing
+    prerequisites as research hypotheses until those fields are validated.
+11. Run authorized Danelfin and TradingAgents contract calls only in an isolated budgeted
+    environment; record live evidence IDs, costs and timestamps before allowing any deep rerank.

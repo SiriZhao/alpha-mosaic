@@ -271,8 +271,8 @@ class ForwardPaperStore:
                     "excess_return": None if benchmark_return is None else net - benchmark_return,
                     "broker_enabled": False,
                 }
-            raw = json.dumps(outcome, sort_keys=True, separators=(",", ":"), allow_nan=False)
             outcome = {**outcome, "source_hash": signal["source_hash"]}
+            raw = json.dumps(outcome, sort_keys=True, separators=(",", ":"), allow_nan=False)
             with self._connect() as connection:
                 existing = connection.execute(
                     "SELECT payload FROM outcomes WHERE id=?", (f"{signal_id}:{horizon}",)

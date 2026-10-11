@@ -52,4 +52,5 @@ def test_forward_signal_is_immutable_and_evaluates_costed_horizons(tmp_path: Pat
     assert all(item["status"] == "AT_HORIZON" for item in outcomes)
     assert all(item["source_hash"] == "reviewed-source" for item in outcomes)
     assert all(item["net_return"] < item["gross_return"] for item in outcomes)
+    assert all(item["source_hash"] == "reviewed-source" for item in store.outcomes("frozen-1"))
     assert store.evaluate("frozen-1", data.bars["AAA"], data.bars["BBB"]) == outcomes

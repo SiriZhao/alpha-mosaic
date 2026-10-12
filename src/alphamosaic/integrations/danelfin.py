@@ -205,6 +205,13 @@ class DanelfinAdapter:
                 "data_validated": "false",
             }
             return session, streams, client, tools
+        except asyncio.CancelledError as exc:
+            # MCP's AnyIO transport can surface the cancellation used by
+            # ``wait_for`` directly instead of translating it to TimeoutError.
+            # Normalize that transport-specific detail so callers receive the
+            # adapter's stable timeout status and do not mistake it for a
+            # caller-requested task cancellation.
+            raise TimeoutError("Danelfin MCP session timeout") from exc
         except Exception:
             # A cancelled MCP task group cannot safely be exited from the caller's
             # task (AnyIO raises a cross-task cancel-scope error). The transport

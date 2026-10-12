@@ -494,6 +494,7 @@ class OpportunitySummary(Contract):
     rerank_reason: str | None = None
     archetype_gaps: dict[str, list[str]] = Field(default_factory=dict)
     archetype_scores: dict[str, float | None] = Field(default_factory=dict)
+    deep_score: float | None = None
     fundamentals: CompanyFundamentals | None = None
     deep_decision: ResearchDecision | None = None
     data_timestamp: datetime

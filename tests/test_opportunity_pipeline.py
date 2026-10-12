@@ -1,5 +1,7 @@
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
+from types import SimpleNamespace
+from typing import Any, cast
 
 import exchange_calendars as xcals
 
@@ -11,9 +13,12 @@ from alphamosaic.core.contracts import (
     ProviderEvidence,
     ProviderHealth,
     SecurityIdentity,
+    SignalDirection,
     Status,
 )
 from alphamosaic.core.service import ApplicationService
+from alphamosaic.factors.engine import FactorEngine
+from alphamosaic.opportunity_pipeline import OpportunityDiscoveryPipeline
 from alphamosaic.providers.sec_edgar import SecEdgarAdapter
 from alphamosaic.screening.archetypes import OpportunityArchetypeRegistry
 
@@ -72,5 +77,61 @@ def test_sec_latest_excludes_quarterly_and_future_filed() -> None:
     assert value == 10 and item is not None
 
 
+def test_sec_same_period_does_not_mix_fiscal_years_or_revisions() -> None:
+    cutoff = datetime(2025, 5, 1, tzinfo=UTC)
+    anchor = {"filed": "2025-04-01", "end": "2024-12-31", "start": "2024-01-01", "fy": 2024, "fp": "FY", "form": "10-K"}
+    value, item = SecEdgarAdapter._same_annual_period([
+        {"val": 10, **anchor},
+        {"val": 20, "filed": "2025-06-01", "end": "2024-12-31", "start": "2024-01-01", "fy": 2024, "fp": "FY", "form": "10-K/A"},
+        {"val": 99, "filed": "2025-04-02", "end": "2023-12-31", "start": "2023-01-01", "fy": 2023, "fp": "FY", "form": "10-K"},
+    ], cutoff, anchor)
+    assert value == 10 and item is not None
+
+
 def test_archetype_does_not_default_to_momentum_without_prerequisites() -> None:
     assert OpportunityArchetype.MOMENTUM_BREAKOUT not in OpportunityArchetypeRegistry().categorize({"momentum_63d": 0.2, "trend_20_60": 0.1})
+
+
+def test_factor_aliases_and_market_regime_are_date_aligned() -> None:
+    provider = FixtureProvider()
+    bars = provider.history("AAA", None, None).bars
+    factors = FactorEngine().calculate(bars, bars)
+    assert factors["volume_ratio"] == 1.0
+    assert factors["volatility_20d"] is not None
+    assert factors["market_regime"] == 1.0
+    momentum = OpportunityArchetypeRegistry().categorize({
+        **factors,
+        "momentum_63d": 0.2,
+        "trend_20_60": 0.1,
+    })
+    assert OpportunityArchetype.MOMENTUM_BREAKOUT in momentum
+
+    missing_regime = FactorEngine().calculate(bars, [])
+    assert missing_regime["market_regime"] is None
+    assert OpportunityArchetype.MOMENTUM_BREAKOUT not in OpportunityArchetypeRegistry().categorize(missing_regime)
+
+
+def test_deep_rerank_requires_validated_non_model_evidence() -> None:
+    candidate = SimpleNamespace(score=0.7)
+    model_only = SimpleNamespace(
+        fused_signal=SimpleNamespace(direction=SignalDirection.BULLISH),
+        outcomes=[SimpleNamespace(status=Status.NOT_CONFIGURED, observation=None, source="TradingAgents")],
+    )
+    score, reason = OpportunityDiscoveryPipeline._validated_deep_score(candidate, cast(Any, model_only))
+    assert score is None and "unavailable" in reason
+
+    verified = SimpleNamespace(
+        fused_signal=SimpleNamespace(direction=SignalDirection.BULLISH),
+        outcomes=[SimpleNamespace(status=Status.OK, observation=object(), source="Danelfin MCP")],
+    )
+    score, reason = OpportunityDiscoveryPipeline._validated_deep_score(candidate, cast(Any, verified))
+    assert score == 0.75 and "validated evidence" in reason
+
+
+def test_deep_mode_degrades_to_baseline_without_external_evidence(tmp_path: Path) -> None:
+    service = ApplicationService(tmp_path, FixtureProvider())
+    report = service.discover_opportunities("DEEP", 3, 3, 1, "BROAD_LIQUIDITY")
+    assert report["deep_count"] == 1
+    assert all(item["deep_rank"] is None for item in report["summaries"])
+    assert any("baseline ranking retained" in item for item in report["warnings"])
+    assert all(item["no_action_reasons"] for item in report["summaries"])

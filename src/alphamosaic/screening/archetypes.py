@@ -68,15 +68,20 @@ class OpportunityArchetypeRegistry:
         volume = factors.get("volume_ratio")
         volatility = factors.get("volatility_20d")
         regime = factors.get("market_regime")
+        revenue_growth = factors.get("quality_revenue_growth")
+        fcf_margin = factors.get("quality_fcf_margin")
+        stabilization = factors.get("stabilization_signal")
+        valuation_evidence = factors.get("valuation_evidence")
         if (momentum is not None and trend is not None and volume is not None
                 and volatility is not None and regime is not None
-                and momentum > 0 and trend > 0 and volume >= 1 and volatility >= 0):
+                and momentum > 0 and trend > 0 and volume >= 1 and volatility >= 0
+                and regime > 0):
             result.append(OpportunityArchetype.MOMENTUM_BREAKOUT)
-        if drawdown is not None and drawdown < -0.20:
-            # Categorisation only; no claim that stabilisation exists.
+        if drawdown is not None and drawdown < -0.20 and stabilization is not None and stabilization > 0:
             result.append(OpportunityArchetype.MEAN_REVERSION)
-        if roe is not None and roe > 0 and momentum is not None and momentum > 0:
+        if (roe is not None and roe > 0 and revenue_growth is not None
+                and revenue_growth > 0 and fcf_margin is not None and fcf_margin > 0):
             result.append(OpportunityArchetype.QUALITY_GROWTH)
-        if earnings_yield is not None and earnings_yield > 0.05:
+        if earnings_yield is not None and earnings_yield > 0.05 and valuation_evidence is not None and valuation_evidence > 0:
             result.append(OpportunityArchetype.VALUATION_DISLOCATION)
         return result

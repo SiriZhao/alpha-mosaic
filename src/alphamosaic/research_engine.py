@@ -4,6 +4,7 @@ from datetime import UTC, datetime, timedelta
 from typing import cast
 
 from alphamosaic.core.contracts import (
+    DanelfinScoreObservation,
     DataQuality,
     FusionSignal,
     ResearchDecision,
@@ -16,6 +17,7 @@ from alphamosaic.factors.engine import FactorEngine
 from alphamosaic.integrations.danelfin import DanelfinAdapter
 from alphamosaic.integrations.tradingagents import Profile, TradingAgentsAdapter
 from alphamosaic.providers.protocol import DataProvider
+from alphamosaic.providers.sec_edgar import SecEdgarAdapter
 from alphamosaic.signals_fusion import SignalFusionEngine
 
 
@@ -24,6 +26,7 @@ class ResearchEngine:
         self.provider = provider
         self.tradingagents = TradingAgentsAdapter(home)
         self.danelfin = DanelfinAdapter()
+        self.sec = SecEdgarAdapter()
 
     def _technical_signal(self, symbol: str, batch, benchmark) -> FusionSignal:
         factors = FactorEngine().calculate(batch.bars, benchmark.bars if benchmark else [])
@@ -93,6 +96,28 @@ class ResearchEngine:
                     requested_at=batch.evidence[0].requested_at,
                     completed_at=batch.evidence[0].completed_at,
                 ))
+            if batch.fundamentals is None and self.sec.health().status == Status.OK:
+                sec_requested = utc_now()
+                try:
+                    sec_fundamentals = self.sec.fundamentals(symbol, sec_requested)
+                    sec_status = Status.OK if sec_fundamentals is not None else Status.EMPTY
+                    sec_diagnostics: list[str] = [] if sec_fundamentals is not None else ["no annual SEC facts at cutoff"]
+                except (OSError, RuntimeError, ValueError) as exc:
+                    sec_fundamentals = None
+                    sec_status = Status.NETWORK_ERROR
+                    sec_diagnostics = [f"SEC request failed: {type(exc).__name__}"]
+                outcomes.append(ResearchOutcome(
+                    symbol=symbol,
+                    status=sec_status,
+                    source="SEC EDGAR XBRL",
+                    diagnostics=sec_diagnostics,
+                    requested_at=sec_requested,
+                    completed_at=utc_now(),
+                ))
+                if sec_fundamentals is not None:
+                    sec_signal = self._fundamental_signal(symbol, batch.model_copy(update={"fundamentals": sec_fundamentals}))
+                    if sec_signal is not None:
+                        signals.append(sec_signal)
             agent = self.tradingagents.research(symbol, cast(Profile, profile))
             outcomes.append(agent)
             if agent.verdict:
@@ -110,10 +135,21 @@ class ResearchEngine:
                     rationale=agent.verdict.rationale[:2],
                 ))
             score = self.danelfin.score_sync(symbol)
-            danelfin_status = Status(score["status"])
+            danelfin_status = Status(str(score.get("status", Status.INVALID_DATA.value)))
+            danelfin_observation = None
+            signal_payload = score.get("signal")
+            if danelfin_status == Status.OK and score.get("observation") and signal_payload:
+                danelfin_observation = DanelfinScoreObservation.model_validate(score["observation"])
+                signals.append(FusionSignal.model_validate(signal_payload))
             outcomes.append(ResearchOutcome(
                 symbol=symbol, status=danelfin_status, source="Danelfin MCP",
-                diagnostics=score.get("diagnostics", []), requested_at=utc_now(), completed_at=utc_now(),
+                metadata={
+                    "observation_validated": danelfin_observation is not None,
+                    "capability": danelfin_observation.capability if danelfin_observation else None,
+                    "score_date": danelfin_observation.score_date.isoformat() if danelfin_observation else None,
+                },
+                observation=danelfin_observation,
+                diagnostics=[str(item) for item in score.get("diagnostics", [])], requested_at=utc_now(), completed_at=utc_now(),
             ))
             fused = SignalFusionEngine().fuse(symbol, signals)
             if batch.bars:

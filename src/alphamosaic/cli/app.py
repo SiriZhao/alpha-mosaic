@@ -38,6 +38,12 @@ def integrations() -> None:
 
 
 @app.command()
+def frameworks() -> None:
+    """Audit external framework maturity without installing optional dependencies."""
+    output(ApplicationService().framework_matrix())
+
+
+@app.command()
 def research(
     symbols: str,
     profile: str = typer.Option("FAST", case_sensitive=False),
@@ -83,6 +89,28 @@ def scan(
     )
     if report.status == Status.EMPTY:
         raise typer.Exit(2)
+
+
+@app.command()
+def opportunities(
+    mode: str = typer.Option("FAST", case_sensitive=False),
+    universe_limit: int = typer.Option(30, min=1, max=100),
+    top: int = typer.Option(10, min=1, max=10),
+    deep: int = typer.Option(3, min=1, max=3),
+    pool: str = typer.Option("BROAD_LIQUIDITY"),
+    symbols: str | None = None,
+    resume: bool = typer.Option(False, help="Resume the same-day checkpoint when available"),
+) -> None:
+    """Run bounded universe discovery, ranking and optional top-three research."""
+    try:
+        result = ApplicationService().discover_opportunities(
+            mode.upper(), universe_limit, top, deep, pool.upper(),
+            [x.strip().upper() for x in symbols.split(",")] if symbols else None,
+            resume,
+        )
+    except ValueError as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    output(result)
 
 
 @app.command()

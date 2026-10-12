@@ -22,13 +22,29 @@ class SignalFusionEngine:
                 conflicts.append(f"future information from {signal.source}")
         deduped: list[FusionSignal] = []
         seen_evidence: set[str] = set()
+        seen_dependencies: set[str] = set()
+        seen_fingerprints: set[str] = set()
         for signal in valid:
             overlap = set(signal.evidence_ids) & seen_evidence
             if overlap:
                 conflicts.append(f"dependent evidence overlap from {signal.source}: {sorted(overlap)}")
                 continue
+            dependency_overlap = set(signal.dependency_keys) & seen_dependencies
+            if dependency_overlap:
+                conflicts.append(f"shared underlying dependency from {signal.source}: {sorted(dependency_overlap)}")
+                continue
+            if signal.content_fingerprint and signal.content_fingerprint in seen_fingerprints:
+                conflicts.append(f"duplicate analysis content from {signal.source}")
+                continue
+            derived_overlap = set(signal.derived_from) & (seen_evidence | seen_dependencies)
+            if derived_overlap:
+                conflicts.append(f"repackaged upstream evidence from {signal.source}: {sorted(derived_overlap)}")
+                continue
             deduped.append(signal)
             seen_evidence.update(signal.evidence_ids)
+            seen_dependencies.update(signal.dependency_keys)
+            if signal.content_fingerprint:
+                seen_fingerprints.add(signal.content_fingerprint)
             evidence_ids.extend(signal.evidence_ids)
         directions = {signal.direction for signal in deduped if signal.direction not in {
             SignalDirection.NEUTRAL, SignalDirection.INSUFFICIENT_EVIDENCE

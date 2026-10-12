@@ -50,6 +50,36 @@ class EvaluationRegistry:
     def __init__(self, rules: PromotionRules | None = None):
         self.rules = rules or PromotionRules()
         self.records: dict[str, dict[str, str]] = {}
+        self.evidence: list[dict[str, object]] = []
+
+    def record_evaluation(
+        self,
+        *,
+        strategy: str,
+        strategy_version: str,
+        engine: str,
+        data_fingerprint: str,
+        acceptance: str,
+        metrics: dict[str, float | None],
+        failure_evidence: list[str] | None = None,
+    ) -> dict[str, object]:
+        """Append run evidence without changing promotion state.
+
+        The registry deliberately stores failure evidence alongside metrics so a later
+        review cannot silently select only successful runs.
+        """
+        item: dict[str, object] = {
+            "strategy": strategy,
+            "strategy_version": strategy_version,
+            "engine": engine,
+            "data_fingerprint": data_fingerprint,
+            "acceptance": acceptance,
+            "metrics": dict(metrics),
+            "failure_evidence": list(failure_evidence or []),
+            "broker_submission": "DISABLED",
+        }
+        self.evidence.append(item)
+        return item
 
     def evaluate(self, evidence: EvaluationEvidence) -> dict[str, str]:
         state = StrategyState.RESEARCH
@@ -92,3 +122,7 @@ class EvaluationRegistry:
         }
         self.records[evidence.strategy] = record
         return record
+
+
+class StrategyEvaluationRegistry(EvaluationRegistry):
+    """Named Batch 5 facade for long-lived strategy experiment evidence."""

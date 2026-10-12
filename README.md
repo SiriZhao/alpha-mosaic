@@ -48,6 +48,17 @@ See [ARCHITECTURE.md](ARCHITECTURE.md), [INTEGRATIONS.md](INTEGRATIONS.md),
 [CURRENT_STATE.md](CURRENT_STATE.md) and [NEXT_STEPS.md](NEXT_STEPS.md) for boundaries and
 measured acceptance. This project is unrelated to Meridian Alpha and never modifies it.
 
+## Framework and forward validation
+
+`uv run alphamosaic frameworks` prints the non-installing integration matrix for LEAN,
+QuantStats, VectorBT, AI Hedge Fund, FinRL-X, FinRL and Backtrader. The matrix reports adapter,
+dependency, startup, computation and validation states independently. The local PaperReplay engine
+owns fills, cash, fees, slippage and corporate actions; QuantStats is analytics-only and cannot be
+treated as a second execution engine. `ForwardPaperStore` freezes source-hashed paper signals and
+evaluates predeclared T+5/T+20/T+60 horizons with frozen cost assumptions. See
+[BATCH5_FRAMEWORK_AND_ALPHA_VALIDATION.md](BATCH5_FRAMEWORK_AND_ALPHA_VALIDATION.md) for the
+dated audit, real-data evidence and blockers.
+
 ## Plugin and remote MCP
 
 The portable package contains `plugin.json`, `mcp.json`, and four skills. Every skill calls a named MCP tool and instructs the assistant to preserve sourced-or-missing values and provider statuses. The remote server exposes `/health` and authenticated `/mcp`, enforces a bearer token of at least 16 characters, request rate limits, a 4 MiB body limit, bounded sessions and localhost defaults. It does not expose shell, arbitrary files, credentials, or broker orders.
@@ -62,3 +73,29 @@ The portable package contains `plugin.json`, `mcp.json`, and four skills. Every 
 - `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or `GOOGLE_API_KEY`: optional model authorization for TradingAgents; the adapter remains `NOT_CONFIGURED` when absent.
 
 No real broker token, account data, or API key belongs in this repository.
+
+## Architecture and limits
+
+The CLI and MCP transports call one `ApplicationService`; providers and optional integrations sit
+behind protocols, while reporting stores immutable run bundles. MCP exposes read-only research and
+paper diagnostics only. Values remain sourced or missing, timestamps are timezone-aware, and
+point-in-time, survivorship, corporate-action, licensing, and provider-availability limits remain
+visible in every report. This repository is public; no visibility change is required.
+
+## Roadmap
+
+Next work is operator-owned HTTPS deployment verification, licensed point-in-time datasets, and
+independent forward evidence. Those are prerequisites for any future evidence promotion and are
+not configured or claimed by this release. See [BATCH6_PLATFORM_ACCEPTANCE.md](BATCH6_PLATFORM_ACCEPTANCE.md)
+for measured checks and remaining deployment conditions.
+
+## Integration checkpoint
+
+The current integration branch includes the Batch 5 replay/forward foundation, the official Danelfin MCP client adapter, isolated TradingAgents structured research, SEC EDGAR opt-in evidence, six opportunity archetypes, and the bounded opportunity pipeline. See [INTEGRATION_ACCEPTANCE_20261011.md](INTEGRATION_ACCEPTANCE_20261011.md) for measured evidence and limits.
+
+Run a bounded real-data sample with:
+
+```powershell
+uv run alphamosaic opportunities --mode FAST --universe-limit 6 --top 6 --symbols AAPL,MSFT,GOOGL,AVGO,AMZN,NVDA
+uv run alphamosaic backtest AAPL --strategy momentum --fee-bps 10 --slippage-bps 5
+```

@@ -99,3 +99,17 @@ Run a bounded real-data sample with:
 uv run alphamosaic opportunities --mode FAST --universe-limit 6 --top 6 --symbols AAPL,MSFT,GOOGL,AVGO,AMZN,NVDA
 uv run alphamosaic backtest AAPL --strategy momentum --fee-bps 10 --slippage-bps 5
 ```
+
+## Forward evaluation
+
+Freeze a research signal into the paper store, then append current provider observations with:
+
+```powershell
+uv run alphamosaic forward-evaluate <signal-id>
+```
+
+The command is idempotent. Pending states are append-only observations; only mature T+5/T+20/T+60 results enter the immutable mature-results table. It never creates broker orders.
+
+## Continuation checkpoint
+
+The continuation branch is based on PR #1 HEAD `de2fe0c`. It adds cross-day forward state evolution, strict factor aliases and benchmark regime evidence, evidence-gated deep reranking, same-period SEC annual fact selection, and a provider-backed forward evaluation command. Optional external services remain explicitly unconfigured when credentials are absent.

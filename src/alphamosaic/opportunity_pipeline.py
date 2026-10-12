@@ -12,6 +12,7 @@ from alphamosaic.core.contracts import (
     OpportunityPipelineReport,
     OpportunitySummary,
     ResearchDecision,
+    SignalDirection,
     Status,
 )
 from alphamosaic.screening.archetypes import OpportunityArchetypeRegistry
@@ -49,6 +50,38 @@ class OpportunityDiscoveryPipeline:
         (directory / "opportunity_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
         return directory
 
+    @staticmethod
+    def _validated_deep_score(candidate: Any, decision: ResearchDecision | None) -> tuple[float | None, str]:
+        """Return a bounded research-priority adjustment only with sourced evidence.
+
+        TradingAgents prose alone cannot move a ranking. A Danelfin observation
+        or an actual SEC result may participate, while unavailable/model-only
+        research leaves the baseline rank unchanged.
+        """
+        if decision is None or decision.fused_signal.direction in {
+            SignalDirection.CONFLICTED,
+            SignalDirection.INSUFFICIENT_EVIDENCE,
+        }:
+            return None, "no validated independent deep evidence"
+        verified = any(
+            outcome.status == Status.OK
+            and (
+                outcome.observation is not None
+                or outcome.source == "SEC EDGAR XBRL"
+            )
+            for outcome in decision.outcomes
+        )
+        if not verified:
+            return None, "external research unavailable or model-only"
+        adjustment = {
+            SignalDirection.BULLISH: 0.05,
+            SignalDirection.BEARISH: -0.05,
+            SignalDirection.NEUTRAL: 0.0,
+        }.get(decision.fused_signal.direction)
+        if adjustment is None:
+            return None, "unsupported deep direction"
+        return max(0.0, min(1.0, float(candidate.score) + adjustment)), "validated evidence adjusted baseline"
+
     def run(self, mode: str = "FAST", universe_limit: int = 30, top: int = 10, deep: int = 3,
             pool: UniversePool = UniversePool.BROAD_LIQUIDITY, symbols: list[str] | None = None,
             resume: bool = False) -> OpportunityPipelineReport:
@@ -84,6 +117,7 @@ class OpportunityDiscoveryPipeline:
                     deep_outcomes[candidate.ticker] = results[0] if results else {"status": "EMPTY"}
                 except Exception as exc:  # isolate optional research failures per symbol
                     deep_outcomes[candidate.ticker] = {"status": "FAILED", "diagnostics": [type(exc).__name__]}
+        deep_scores: dict[str, float] = {}
         for candidate in scan.candidates:
             outcome = deep_outcomes.get(candidate.ticker, {})
             decision = None
@@ -94,7 +128,6 @@ class OpportunityDiscoveryPipeline:
                     decision = None
             verdict = outcome.get("verdict") if isinstance(outcome, dict) else None
             direction = verdict.get("verdict") if isinstance(verdict, dict) else None
-            reasons = ["No deep-research call requested in FAST mode"] if mode == "FAST" else ["Deep research executed; no independent rerank score configured"]
             no_action: list[str] = []
             provider_statuses = {"openbb": scan.status.value}
             if decision is not None:
@@ -105,6 +138,11 @@ class OpportunityDiscoveryPipeline:
                 no_action.append("deep research returned no validated decision")
             if direction in {"BLOCKED", "INSUFFICIENT_EVIDENCE", "REVIEW"}:
                 no_action.append(f"research verdict {direction}")
+            deep_score, deep_reason = self._validated_deep_score(candidate, decision) if mode == "DEEP" else (None, "FAST mode preserves baseline")
+            if deep_score is not None:
+                deep_scores[candidate.ticker] = deep_score
+            if mode == "DEEP" and deep_score is None:
+                no_action.append(deep_reason)
             trend = "positive" if (candidate.factors.get("trend_20_60") or 0) > 0 else "negative or unavailable"
             summaries.append(OpportunitySummary(
                 symbol=candidate.ticker, initial_rank=candidate.rank,
@@ -117,13 +155,32 @@ class OpportunityDiscoveryPipeline:
                 scenarios={"bear": "Trend reversal or data-quality failure", "base": "Signal persists within stated horizon", "bull": "Independent fundamentals and catalyst confirmation"},
                 holding_horizon="2-16 weeks (archetype dependent)", invalidations=["stale data", "identity or adjustment mismatch", "trend reversal"],
                 factors=candidate.factors, evidence_ids=[], provider_statuses=provider_statuses,
-                no_action_reasons=no_action, rerank_reason=reasons[0] if reasons else None,
+                no_action_reasons=no_action, rerank_reason=deep_reason,
                 archetype_gaps={item.value: ["verified prerequisites unavailable"] for item in self.registry.categorize(candidate.factors)},
                 archetype_scores={item.value: None for item in self.registry.categorize(candidate.factors)},
-                fundamentals=None, deep_decision=decision, data_timestamp=candidate.data_timestamp, risks=candidate.risks,
+                fundamentals=None, deep_decision=decision, deep_score=deep_score,
+                data_timestamp=candidate.data_timestamp, risks=candidate.risks,
             ))
-        # Deep rank is deliberately unchanged until a validated independent score exists.
+        if mode == "DEEP" and deep_scores:
+            final_order = sorted(
+                scan.candidates,
+                key=lambda candidate: (
+                    -(
+                        deep_scores[candidate.ticker]
+                        if candidate.ticker in deep_scores
+                        else candidate.score
+                    ),
+                    candidate.ticker,
+                ),
+            )
+            final_ranks = {candidate.ticker: index for index, candidate in enumerate(final_order, 1)}
+            summaries = [
+                item.model_copy(update={"deep_rank": final_ranks[item.symbol]})
+                for item in summaries
+            ]
         warnings = list(scan.warnings) + ["Current universe is survivorship-biased and not historical index membership", "SEC, analyst estimates, news and paid research are optional and may be unavailable", "No candidate is an order or a guaranteed opportunity"]
+        if mode == "DEEP" and not deep_scores:
+            warnings.append("No evidence-gated deep score was available; baseline ranking retained")
         health = {item["name"]: item["status"] for item in self.service.providers()}
         completed = datetime.now(UTC)
         report = OpportunityPipelineReport(

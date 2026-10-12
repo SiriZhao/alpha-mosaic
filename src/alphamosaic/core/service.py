@@ -6,7 +6,7 @@ import platform
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
-from datetime import timedelta
+from datetime import date, timedelta
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from typing import Any
@@ -300,6 +300,34 @@ class ApplicationService:
     def forward_performance(self, symbol: str | None = None) -> dict[str, Any]:
         store = ForwardPaperStore(self.home / "paper")
         return {"symbol": symbol, **store.status(), "outcomes": store.outcomes()}
+
+    def evaluate_forward(self, signal_id: str) -> dict[str, Any]:
+        """Append a real provider observation batch to one frozen paper signal."""
+        store = ForwardPaperStore(self.home / "paper")
+        signal = next((item for item in store.signals() if item["signal_id"] == signal_id), None)
+        if signal is None:
+            return {"status": "NOT_CONFIGURED", "signal_id": signal_id, "diagnostics": ["unknown frozen signal"], "broker_enabled": False}
+        cutoff = utc_now()
+        start = date.fromisoformat(signal["as_of"][:10]) + timedelta(days=1)
+        end = cutoff.date()
+        batch = self.provider.history(signal["symbol"], start, end)
+        benchmark_batch = self.provider.history(signal["benchmark"], start, end)
+        if batch.status != Status.OK or benchmark_batch.status != Status.OK or not batch.bars or not benchmark_batch.bars:
+            return {
+                "status": "DEGRADED",
+                "signal_id": signal_id,
+                "diagnostics": [f"price provider: {batch.status.value}", f"benchmark provider: {benchmark_batch.status.value}"],
+                "broker_enabled": False,
+            }
+        outcomes = store.evaluate(signal_id, batch.bars, benchmark_batch.bars, cutoff=cutoff)
+        return {
+            "status": "READY" if any(item["status"] == "AT_HORIZON" for item in outcomes) else "DEGRADED",
+            "signal_id": signal_id,
+            "outcomes": outcomes,
+            "broker_enabled": False,
+            "data_cutoff": cutoff.isoformat(),
+            "source": [batch.bars[-1].source, benchmark_batch.bars[-1].source] if batch.bars and benchmark_batch.bars else [],
+        }
 
     def investment_report(self, symbols: list[str], profile: str = "FAST") -> dict[str, Any]:
         result = self.research_portfolio(symbols, profile)

@@ -32,3 +32,13 @@ sync pass, wheel/sdist build pass, clean-wheel doctor pass, secret scan pass, MC
 pass, and forward-store initialization pass. The bounded six-symbol live sample found
 6/6 validated bars and produced a persisted FAST report; optional deep providers were
 not configured. See [INTEGRATION_ACCEPTANCE_20261011.md](INTEGRATION_ACCEPTANCE_20261011.md).
+
+## Continuation acceptance (2026-10-12)
+
+- Baseline: PR #1 head `de2fe0c`; dirty concurrent worktree preserved in a separate branch.
+- Forward P0 fixed with append-only `observations`, immutable `mature_outcomes`, legacy migration compatibility, persisted bar idempotency, late-data handling, cutoff checks, exchange-session validation and frozen-result conflict protection.
+- Factor aliases now define `volume_ratio`, `volatility_20d` and date-aligned `market_regime`; archetype prerequisites abstain when evidence is missing.
+- Deep opportunity ranking only changes when a validated Danelfin observation or same-period SEC result is present. Model-only or unavailable services leave baseline ordering and emit NO_ACTION.
+- SEC facts are constrained to annual forms, fiscal end, fiscal year, duration and filing cutoff; revisions after cutoff and mixed periods are excluded.
+- Full local regression: 50 passed; Ruff passed; Pyright passed with zero diagnostics. Warnings are dependency deprecations and an existing MCP transport cleanup warning.
+- Real providers were not re-called in this continuation because the bounded evidence run already exists and optional research credentials are not configured. No alpha or advisory eligibility is claimed.

@@ -151,6 +151,12 @@ def forward_init(initial_cash: float = 100_000) -> None:
     output(ApplicationService().initialize_forward(initial_cash))
 
 
+@app.command("forward-evaluate")
+def forward_evaluate(signal_id: str) -> None:
+    """Evaluate one frozen signal using newly fetched provider observations."""
+    output(ApplicationService().evaluate_forward(signal_id))
+
+
 @app.command()
 def report() -> None:
     """Query the latest validated local report (no new request)."""

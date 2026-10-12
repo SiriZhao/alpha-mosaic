@@ -130,6 +130,10 @@ def create_server(service: ApplicationService | None = None) -> MCPServer:
         return application.forward_performance(symbol)
 
     @server.tool(annotations=_annotations(False))
+    def evaluate_forward(signal_id: str) -> dict[str, Any]:
+        return application.evaluate_forward(signal_id)
+
+    @server.tool(annotations=_annotations(False))
     def generate_investment_report(symbols: list[str], profile: str = "FAST") -> dict[str, Any]:
         checked = _symbols(symbols, minimum=1, maximum=5)
         if isinstance(checked, dict):

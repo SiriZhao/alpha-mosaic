@@ -21,3 +21,14 @@
 All replay/forward tests use fixtures or reconstructed data and are engineering evidence only. OpenBB current-history diagnostics are not PIT-certified because adjustment, delisting, historical-universe and corporate-action coverage is incomplete. No demonstrated alpha, advisory eligibility, broker execution or real-account return is claimed.
 
 `uv`, `pip-audit` and GitHub push are unavailable in this continuation: `uv`/audit tooling is absent and the GitHub CLI token returns HTTP 401. The exact checks remain in [BATCH5_FRAMEWORK_AND_ALPHA_VALIDATION.md](BATCH5_FRAMEWORK_AND_ALPHA_VALIDATION.md).
+
+## Integration continuation (2026-10-12)
+
+The release branch `codex/integration-alpha-next-20261012` was created from
+`origin/main` and reconciles Batch 5, platform delivery, opportunity QA, and adapter
+work without modifying the occupied legacy integration worktree. Current measured
+baseline is 43 passing tests, Ruff pass, Pyright pass with zero diagnostics, locked uv
+sync pass, wheel/sdist build pass, clean-wheel doctor pass, secret scan pass, MCP smoke
+pass, and forward-store initialization pass. The bounded six-symbol live sample found
+6/6 validated bars and produced a persisted FAST report; optional deep providers were
+not configured. See [INTEGRATION_ACCEPTANCE_20261011.md](INTEGRATION_ACCEPTANCE_20261011.md).

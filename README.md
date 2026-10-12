@@ -88,3 +88,14 @@ Next work is operator-owned HTTPS deployment verification, licensed point-in-tim
 independent forward evidence. Those are prerequisites for any future evidence promotion and are
 not configured or claimed by this release. See [BATCH6_PLATFORM_ACCEPTANCE.md](BATCH6_PLATFORM_ACCEPTANCE.md)
 for measured checks and remaining deployment conditions.
+
+## Integration checkpoint
+
+The current integration branch includes the Batch 5 replay/forward foundation, the official Danelfin MCP client adapter, isolated TradingAgents structured research, SEC EDGAR opt-in evidence, six opportunity archetypes, and the bounded opportunity pipeline. See [INTEGRATION_ACCEPTANCE_20261011.md](INTEGRATION_ACCEPTANCE_20261011.md) for measured evidence and limits.
+
+Run a bounded real-data sample with:
+
+```powershell
+uv run alphamosaic opportunities --mode FAST --universe-limit 6 --top 6 --symbols AAPL,MSFT,GOOGL,AVGO,AMZN,NVDA
+uv run alphamosaic backtest AAPL --strategy momentum --fee-bps 10 --slippage-bps 5
+```

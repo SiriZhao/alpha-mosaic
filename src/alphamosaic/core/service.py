@@ -32,7 +32,12 @@ from alphamosaic.providers.protocol import DataProvider
 from alphamosaic.reporting.store import ReportStore
 from alphamosaic.research_engine import ResearchEngine
 from alphamosaic.screening.scanner import OpportunityScanner, ResearchQueue
-from alphamosaic.screening.universe import Universe, UniverseManager, normalize_symbols
+from alphamosaic.screening.universe import (
+    Universe,
+    UniverseManager,
+    UniversePool,
+    normalize_symbols,
+)
 
 
 class ApplicationService:
@@ -42,6 +47,8 @@ class ApplicationService:
         self.store = ReportStore(self.home / "reports")
         self.lock = threading.RLock()
         self.research_engine = ResearchEngine(self.provider, self.home)
+        from alphamosaic.opportunity_pipeline import OpportunityDiscoveryPipeline
+        self.opportunity_pipeline = OpportunityDiscoveryPipeline(self)
 
     def status(self) -> dict[str, Any]:
         now = utc_now()
@@ -78,7 +85,15 @@ class ApplicationService:
         }
 
     def providers(self) -> list[dict[str, Any]]:
-        return [self.provider.health().model_dump(mode="json")]
+        from alphamosaic.providers.sec_edgar import SecEdgarAdapter
+        return [self.provider.health().model_dump(mode="json"), SecEdgarAdapter(self.home / "sec-cache").health().model_dump(mode="json")]
+
+    def discover_opportunities(
+        self, mode: str = "FAST", universe_limit: int = 30, top: int = 10, deep: int = 3,
+        pool: str = "BROAD_LIQUIDITY", symbols: list[str] | None = None, resume: bool = False,
+    ) -> dict[str, Any]:
+        report = self.opportunity_pipeline.run(mode, universe_limit, top, deep, UniversePool(pool), symbols, resume)
+        return report.model_dump(mode="json")
 
     def provider_health(self) -> dict[str, Any]:
         return {

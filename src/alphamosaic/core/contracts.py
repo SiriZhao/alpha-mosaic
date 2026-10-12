@@ -36,6 +36,15 @@ class Status(StrEnum):
     RATE_LIMITED = "RATE_LIMITED"
 
 
+class ResearchJobStatus(StrEnum):
+    QUEUED = "QUEUED"
+    RUNNING = "RUNNING"
+    COMPLETED = "COMPLETED"
+    DEGRADED = "DEGRADED"
+    FAILED = "FAILED"
+    CANCELLED = "CANCELLED"
+
+
 class Contract(BaseModel):
     model_config = ConfigDict(extra="forbid", allow_inf_nan=False, frozen=True)
 
@@ -132,6 +141,15 @@ class CompanyFundamentals(Evidence):
     market_cap: float | None = Field(default=None, gt=0)
     pe_ratio: float | None = None
     return_on_equity: float | None = None
+    revenue_growth: float | None = None
+    operating_margin: float | None = None
+    free_cash_flow: float | None = None
+    return_on_invested_capital: float | None = None
+    net_debt: float | None = None
+    valuation_multiple: float | None = None
+    filing_date: date | None = None
+    fiscal_year: int | None = None
+    net_margin: float | None = None
     missing_fields: list[str] = Field(default_factory=list)
 
 
@@ -178,6 +196,32 @@ class ProviderHealth(Contract):
     capabilities: list[str]
     diagnostics: list[str]
     version: str | None = None
+    lifecycle: dict[str, str] = Field(default_factory=dict)
+    last_test: dict[str, str] = Field(default_factory=dict)
+    installed: bool = False
+    configured: bool = False
+    connected: bool = False
+    data_validated: bool = False
+    research_ready: bool = False
+    last_test_at: datetime | None = None
+    last_test_status: Status | None = None
+
+
+class DanelfinScore(Contract):
+    symbol: str = Field(pattern=r"^[A-Z][A-Z0-9.-]{0,14}$")
+    score: float = Field(ge=1, le=10)
+    technical_score: float | None = Field(default=None, ge=1, le=10)
+    fundamental_score: float | None = Field(default=None, ge=1, le=10)
+    sentiment_score: float | None = Field(default=None, ge=1, le=10)
+    low_risk_score: float | None = Field(default=None, ge=1, le=10)
+    rating_date: date
+    observed_at: datetime
+    known_at: datetime
+    valid_until: datetime | None = None
+    source_url: str
+    evidence_ids: list[str] = Field(default_factory=list)
+    identity_verified: bool = False
+    diagnostics: list[str] = Field(default_factory=list)
 
 
 class SignalObservation(Evidence):
@@ -185,6 +229,30 @@ class SignalObservation(Evidence):
     value: float | None
     methodology: str
     validated_predictive_probability: bool = False
+
+
+class DanelfinScoreObservation(SignalObservation):
+    """Strict, point-in-time representation of a Danelfin score response."""
+
+    ai_score: float = Field(ge=1, le=10)
+    sub_scores: dict[str, float | None] = Field(default_factory=dict)
+    score_date: date
+    valid_until: datetime
+    identity_match: bool
+    capability: Literal["STOCK_SCORE", "ETF_SCORE", "SCORE_HISTORY"]
+    response_id: str | None = None
+    content_fingerprint: str
+
+    @model_validator(mode="after")
+    def validity(self) -> Self:
+        if self.valid_until is not None and self.valid_until < self.known_at:
+            raise ValueError("score validity ends before it is known")
+        if self.score_date > self.as_of.date():
+            raise ValueError("rating date is after research cutoff")
+        for name, value in self.sub_scores.items():
+            if value is not None and not 1 <= value <= 10:
+                raise ValueError(f"sub-score {name} must be between 1 and 10")
+        return self
 
 
 class OpportunityCandidate(Contract):
@@ -201,6 +269,7 @@ class OpportunityCandidate(Contract):
     identity: SecurityIdentity
     data_quality: DataQuality
     score_type: Literal["HEURISTIC_PERCENTILE"] = "HEURISTIC_PERCENTILE"
+    archetypes: list[str] = Field(default_factory=list)
 
 
 class ResearchVerdict(Evidence):
@@ -217,6 +286,12 @@ class ResearchVerdict(Evidence):
     validated_alpha: bool = False
     evidence_ids: list[str] = Field(default_factory=list)
     time_horizon: str | None = None
+    investment_thesis: list[str] = Field(default_factory=list)
+    counterarguments: list[str] = Field(default_factory=list)
+    catalysts: list[str] = Field(default_factory=list)
+    risks: list[str] = Field(default_factory=list)
+    model_information: dict[str, str] = Field(default_factory=dict)
+    cost_usd: float | None = Field(default=None, ge=0)
 
 
 class ResearchOutcome(Contract):
@@ -228,6 +303,10 @@ class ResearchOutcome(Contract):
     diagnostics: list[str] = Field(default_factory=list)
     requested_at: datetime
     completed_at: datetime
+    metadata: dict[str, str | int | float | bool | None] = Field(default_factory=dict)
+    danelfin_score: DanelfinScore | None = None
+    observation: DanelfinScoreObservation | None = None
+    execution: dict[str, str | int | float | bool | None] = Field(default_factory=dict)
 
 
 class SignalDirection(StrEnum):
@@ -250,6 +329,9 @@ class FusionSignal(Contract):
     observed_at: datetime
     known_at: datetime
     rationale: list[str] = Field(default_factory=list)
+    dependency_keys: list[str] = Field(default_factory=list)
+    content_fingerprint: str | None = None
+    derived_from: list[str] = Field(default_factory=list)
 
 
 class FusedSignal(Contract):
@@ -368,3 +450,80 @@ class ScanReport(Contract):
     acceptance: Literal["REAL_DATA", "FIXTURE"]
     warnings: list[str]
     broker_enabled: Literal[False] = False
+
+
+class OpportunityArchetype(StrEnum):
+    QUALITY_GROWTH = "QUALITY_GROWTH"
+    EARNINGS_REVISION = "EARNINGS_REVISION"
+    VALUATION_DISLOCATION = "VALUATION_DISLOCATION"
+    MOMENTUM_BREAKOUT = "MOMENTUM_BREAKOUT"
+    EVENT_CATALYST = "EVENT_CATALYST"
+    MEAN_REVERSION = "MEAN_REVERSION"
+
+
+class OpportunityArchetypeSpec(Contract):
+    name: OpportunityArchetype
+    suitable_regimes: list[str]
+    required_data: list[str]
+    prerequisites: list[str]
+    failure_risks: list[str]
+    holding_period: str
+    research_priority: Literal["HIGH", "NORMAL"]
+
+
+class OpportunitySummary(Contract):
+    symbol: str
+    initial_rank: int
+    deep_rank: int | None = None
+    archetypes: list[OpportunityArchetype]
+    business_drivers: list[str]
+    thesis: list[str]
+    expectations: list[str]
+    overlooked_factors: list[str]
+    valuation_risks: list[str]
+    catalysts: list[str]
+    trend: str
+    scenarios: dict[str, str]
+    holding_horizon: str
+    invalidations: list[str]
+    observation_range: dict[str, float | str] | None = None
+    factors: dict[str, float | None] = Field(default_factory=dict)
+    evidence_ids: list[str] = Field(default_factory=list)
+    provider_statuses: dict[str, str] = Field(default_factory=dict)
+    no_action_reasons: list[str] = Field(default_factory=list)
+    rerank_reason: str | None = None
+    archetype_gaps: dict[str, list[str]] = Field(default_factory=dict)
+    archetype_scores: dict[str, float | None] = Field(default_factory=dict)
+    fundamentals: CompanyFundamentals | None = None
+    deep_decision: ResearchDecision | None = None
+    data_timestamp: datetime
+    risks: list[str] = Field(default_factory=list)
+
+
+class OpportunityPipelineReport(Contract):
+    run_id: str
+    mode: Literal["FAST", "DEEP"]
+    started_at: datetime
+    completed_at: datetime
+    cutoff: datetime
+    universe_name: str
+    universe_source: str
+    universe_count: int = Field(ge=0)
+    data_success_count: int = Field(ge=0)
+    excluded_count: int = Field(ge=0)
+    preliminary_count: int = Field(ge=0)
+    deep_count: int = Field(ge=0)
+    elapsed_seconds: float = Field(ge=0)
+    initial_run_id: str
+    initial_cutoff: datetime
+    summaries: list[OpportunitySummary]
+    archetypes: list[OpportunityArchetypeSpec]
+    provider_health: dict[str, str]
+    warnings: list[str] = Field(default_factory=list)
+    status: Literal["READY", "DEGRADED", "NO_ACTION", "FAILED"]
+    acceptance: Literal["REAL_DATA", "FIXTURE"]
+    broker_enabled: Literal[False] = False
+    scan: ScanReport
+    external_call_count: int = Field(default=0, ge=0)
+    cost: dict[str, float | None] = Field(default_factory=dict)
+    resume_count: int = Field(default=0, ge=0)

@@ -3,6 +3,7 @@
 import csv
 import re
 from dataclasses import dataclass
+from enum import StrEnum
 from pathlib import Path
 
 from alphamosaic.providers.protocol import DataProvider
@@ -24,6 +25,15 @@ class Universe:
     symbols: list[str]
 
 
+class UniversePool(StrEnum):
+    BROAD_LIQUIDITY = "BROAD_LIQUIDITY"
+    SP500_CURRENT = "SP500_CURRENT"
+    QUALITY_GROWTH = "QUALITY_GROWTH"
+    EARNINGS_REVISION = "EARNINGS_REVISION"
+    EVENT_CATALYST = "EVENT_CATALYST"
+    USER_WATCHLIST = "USER_WATCHLIST"
+
+
 class UniverseManager:
     def __init__(self, provider: DataProvider):
         self.provider = provider
@@ -33,8 +43,13 @@ class UniverseManager:
             raise ValueError("universe limit must be 1..100")
         identities, source = self.provider.universe(limit)
         return Universe(
-            "US current market-cap sample", source, [item.symbol for item in identities]
+            "US broad liquid current sample", source, [item.symbol for item in identities]
         )
+
+    def discover_pool(self, pool: UniversePool, limit: int = 30) -> Universe:
+        if pool == UniversePool.BROAD_LIQUIDITY:
+            return self.discover(limit)
+        raise ValueError(f"{pool.value} requires a licensed or user-supplied symbol list")
 
     def specified(self, symbols: list[str], name: str = "User watchlist") -> Universe:
         return Universe(

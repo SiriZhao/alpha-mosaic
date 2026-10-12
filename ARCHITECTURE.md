@@ -26,3 +26,20 @@ real-account returns.
 No module can create broker orders. MCP exposes six read-only tools and has no arbitrary file,
 shell, credential or order surface. AI-generated commentary is not accepted as a market
 observation.
+
+## Integrated release boundary
+
+```mermaid
+flowchart LR
+  P[Providers: OpenBB / SEC / optional Danelfin] --> V[Identity, freshness and PIT validation]
+  V --> F[Deterministic factors and archetype screening]
+  F --> R[Top-10 ranking and bounded Top-3 research]
+  R --> S[Signal fusion and risk checks]
+  S --> O[Immutable JSON/Markdown report]
+  O --> M[CLI and read-only MCP]
+```
+
+The opportunity pipeline is an additive orchestration path under the existing
+`ApplicationService`. Optional model and commercial providers are isolated behind
+adapters, and unavailable evidence is represented explicitly rather than replaced by
+fixtures. The release remains research and paper-evaluation only.

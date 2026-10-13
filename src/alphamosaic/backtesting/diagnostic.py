@@ -56,6 +56,7 @@ def trend_diagnostic(
             comparisons[symbol] = adapter.metrics(aligned)
     metrics = adapter.metrics(net)
     metrics["exposure"] = float(signal.reindex(net.index).mean())
+    metrics["slippage_return_deduction"] = float((turnover * slippage_bps / 10_000).reindex(net.index).sum())
     for symbol, values in comparisons.items():
         if values["return"] is not None and metrics["return"] is not None:
             metrics[f"excess_return_{symbol}"] = metrics["return"] - values["return"]
@@ -66,8 +67,8 @@ def trend_diagnostic(
         metrics=metrics,
         benchmarks=comparisons,
         turnover=float(turnover.reindex(net.index).sum()),
-        fees=float(cost.reindex(net.index).sum()),
-        signal_coverage=float(np.mean(valid_signal.shift(2).fillna(False).astype(bool))),
+        fees=float((turnover * fee_bps / 10_000).reindex(net.index).sum()),
+        signal_coverage=float(np.mean(valid_signal.shift(2, fill_value=False).astype(bool))),
         observations=len(net),
         limitations=[
             "Research implementation diagnostic; not evidence of scanner profitability",

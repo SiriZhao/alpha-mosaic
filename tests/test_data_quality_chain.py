@@ -10,6 +10,7 @@ from typing import Any, cast
 import pytest
 from test_opportunity_pipeline import FixtureProvider
 
+from alphamosaic.backtesting.diagnostic import trend_diagnostic
 from alphamosaic.core.contracts import DataBatch, Status
 from alphamosaic.core.service import ApplicationService
 from alphamosaic.data.validation import validate_batch
@@ -180,6 +181,21 @@ def test_evaluation_requested_success_and_failure_are_distinct(tmp_path: Path, m
     failed = service.scan(symbols=["AAA"], evaluate=True)
     assert failed.evaluation is None and failed.evaluation_status == "BLOCKED_DIAGNOSTIC"
     assert "ImportError" in failed.evaluation_diagnostics[0]
+
+
+def test_fee_and_slippage_have_separate_accounting_and_no_alpha_claim() -> None:
+    provider = FixtureProvider()
+    bars = provider.history("AAA", None, None).bars
+    free = trend_diagnostic(bars, {}, fee_bps=0, slippage_bps=0)
+    fee_only = trend_diagnostic(bars, {}, fee_bps=20, slippage_bps=0)
+    costly = trend_diagnostic(bars, {}, fee_bps=20, slippage_bps=20)
+    assert fee_only.fees == costly.fees > 0
+    slip = costly.metrics["slippage_return_deduction"]
+    net, fees_net, free_net = costly.metrics["return"], fee_only.metrics["return"], free.metrics["return"]
+    assert slip is not None and slip > 0
+    assert net is not None and fees_net is not None and free_net is not None
+    assert net < fees_net < free_net
+    assert not costly.validated_alpha
 
 
 def test_all_excluded_and_empty_pool_never_appear_ready(tmp_path: Path) -> None:

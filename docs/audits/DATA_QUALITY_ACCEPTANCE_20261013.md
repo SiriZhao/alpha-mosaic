@@ -122,3 +122,16 @@ ETF exchange fields remain UNKNOWN. Adjustment and corporate actions, historical
 constituents, delistings and strict PIT data are incomplete. No strategy promotion,
 qualified forward outcome, advisory eligibility, trading instruction or broker
 operation is claimed. broker_enabled remains false.
+
+## Remote CI checkpoint
+
+PR #3 is stacked on the continuation development branch. Source/engineering checks
+passed in https://github.com/SiriZhao/alpha-mosaic/actions/runs/38417014880 and
+https://github.com/SiriZhao/alpha-mosaic/actions/runs/38416829439, including the actual
+MCP protocol handshake. The original CI dependency audit reported no known
+vulnerabilities for its exported base/dev dependencies and skipped the unpublished
+AlphaMosaic package. A follow-up CI change exports all extras and omits the project
+itself, so optional OpenBB/analytics dependencies are included without pretending to
+perform a PyPI vulnerability audit of this source repository. Final check status is
+verified on the published HEAD separately. These CI results do not promote any
+financial-data or strategy-validation state.

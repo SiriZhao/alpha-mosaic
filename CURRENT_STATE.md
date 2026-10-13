@@ -54,3 +54,8 @@ relative SPY/QQQM factors present. The frozen-source six-symbol run
 72 tests, Ruff, Pyright, build, clean-wheel doctor and real stdio MCP passed.
 Overall research remains PARTIAL / PRELIMINARY_RESEARCH_ONLY / NO_ACTION because
 basic financial evidence, exchange mapping and investment-grade PIT coverage are incomplete.
+
+CI evidence for this data-quality branch: PR #3 checks passed in Actions runs
+38417014880 and 38416829439. Dependency-audit export now includes optional extras
+and omits the unpublished project itself. Software checks do not turn reconstructed
+market data into PIT certification or establish alpha.

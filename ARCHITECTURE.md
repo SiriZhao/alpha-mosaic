@@ -43,3 +43,12 @@ The opportunity pipeline is an additive orchestration path under the existing
 `ApplicationService`. Optional model and commercial providers are isolated behind
 adapters, and unavailable evidence is represented explicitly rather than replaced by
 fixtures. The release remains research and paper-evaluation only.
+
+## Data-quality contracts
+
+ScanReport schema 2.0 stores raw adapter snapshots as audit inputs, distinct from
+validated factor evidence. Null-volume benchmarks use price-only validation; stock
+volume-dependent factors abstain. SPY/QQQM validation and NO_ACTION are independent
+of report-verification/software status. Immutable reports publish by staging and
+atomic rename; explicit-run derived bundles record input/source/generator hashes.
+Legacy report formats remain readable without fabricating a runtime source version.

@@ -63,15 +63,21 @@ def scan(
     symbols: str | None = None,
     universe_file: Path | None = typer.Option(None, exists=True, dir_okay=False),
     evaluate: bool = True,
+    strata_json: str | None = None,
 ) -> None:
     """Discover a live US pool or use an explicit list; save JSON/Markdown research."""
-    if symbols is not None and universe_file is not None:
+    if sum(value is not None for value in (symbols, universe_file, strata_json)) > 1:
         raise typer.BadParameter("choose symbols or universe-file")
     service = ApplicationService()
     try:
         universe = (
             UniverseManager(service.provider).imported(universe_file) if universe_file else None
         )
+        if strata_json:
+            strata = json.loads(strata_json)
+            if not isinstance(strata, dict) or any(not isinstance(values, list) or any(not isinstance(symbol, str) for symbol in values) for values in strata.values()):
+                raise ValueError("strata-json must map style names to symbol arrays")
+            universe = UniverseManager(service.provider).stratified(strata, universe_limit)
         report = service.scan(
             universe_limit,
             top,
@@ -158,9 +164,16 @@ def forward_evaluate(signal_id: str) -> None:
 
 
 @app.command()
-def report() -> None:
+def report(run_id: str | None = None, finalize: bool = False) -> None:
     """Query the latest validated local report (no new request)."""
-    output(ApplicationService().latest_report())
+    service = ApplicationService()
+    if finalize:
+        if run_id is None:
+            raise typer.BadParameter("finalize requires explicit run-id")
+        output({"report_directory": str(service.store.finalize(run_id))})
+    else:
+        result = service.store.get(run_id) if run_id else service.store.latest()
+        output(result.model_dump(mode="json") if result else {"status": "NO_REPORT"})
 
 
 @mcp_app.command("serve")

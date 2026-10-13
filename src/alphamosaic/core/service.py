@@ -17,7 +17,15 @@ from alphamosaic.backtesting.diagnostic import trend_diagnostic
 from alphamosaic.backtesting.models import ReplayConfig, ReplayDataset
 from alphamosaic.backtesting.replay import PaperReplayEngine
 from alphamosaic.backtesting.strategies import StrategyRegistry
-from alphamosaic.core.contracts import DataQuality, DecisionProposal, ScanReport, Status, utc_now
+from alphamosaic.core.contracts import (
+    DataBatch,
+    DataQuality,
+    DecisionProposal,
+    ProviderEvidence,
+    ScanReport,
+    Status,
+    utc_now,
+)
 from alphamosaic.data.validation import completed_session, market_state, validate_batch
 from alphamosaic.evaluation.engine_comparison import compare_engine_paths
 from alphamosaic.evaluation.registry import EvaluationEvidence, EvaluationRegistry
@@ -29,7 +37,8 @@ from alphamosaic.portfolio.forward import ForwardPaperStore
 from alphamosaic.portfolio.risk import assess_risk
 from alphamosaic.providers.openbb import OpenBBDataProvider
 from alphamosaic.providers.protocol import DataProvider
-from alphamosaic.reporting.store import ReportStore
+from alphamosaic.reporting.provenance import runtime_manifest
+from alphamosaic.reporting.store import ReportStore, verify
 from alphamosaic.research_engine import ResearchEngine
 from alphamosaic.screening.scanner import OpportunityScanner, ResearchQueue
 from alphamosaic.screening.universe import (
@@ -363,12 +372,28 @@ class ApplicationService:
                 list(dict.fromkeys([*selected.symbols, "SPY", "QQQM"])) if selected.symbols else []
             )
             # At most three bounded read-only workers; no retries or provider substitution.
+            def fetch_history(symbol: str) -> DataBatch:
+                requested_at = utc_now()
+                try:
+                    return self.provider.history(symbol, start, end)
+                except (OSError, RuntimeError, ValueError) as exc:
+                    finished = utc_now()
+                    status = Status.TIMEOUT if isinstance(exc, TimeoutError) else Status.NETWORK_ERROR
+                    evidence = ProviderEvidence(
+                        symbol=symbol, source=self.provider.health().name,
+                        source_url="", observed_at=finished, known_at=finished, as_of=finished,
+                        data_quality=DataQuality.MISSING, adjustment_policy="UNKNOWN",
+                        provenance={"error_type": type(exc).__name__}, license_scope="NOT_VERIFIED",
+                        endpoint="history", requested_at=requested_at, completed_at=finished,
+                        status=status, row_count=0, fields=[], diagnostics=[f"provider exception: {type(exc).__name__}"],
+                    )
+                    return DataBatch(status=status, evidence=[evidence])
             with ThreadPoolExecutor(max_workers=3) as executor:
                 batches = dict(
                     zip(
                         requested,
                         executor.map(
-                            lambda symbol: self.provider.history(symbol, start, end), requested
+                            fetch_history, requested
                         ),
                         strict=True,
                     )
@@ -379,7 +404,23 @@ class ApplicationService:
                 batches.get("SPY"),
                 cutoff,
                 top,
+                qqqm=batches.get("QQQM"),
             )
+            benchmark_validity = {}
+            for symbol in ("SPY", "QQQM"):
+                batch = batches.get(symbol)
+                flags = validate_batch(batch.identity, batch.bars, cutoff, purpose="PRICE_BENCHMARK") if batch else ["NOT_REQUESTED"]
+                valid = batch is not None and batch.status == Status.OK and not flags
+                benchmark_validity[symbol] = {
+                    "status": "VALID_PRICE_SERIES" if valid else "BLOCKED",
+                    "provider_status": batch.status.value if batch else "NOT_REQUESTED",
+                    "flags": flags,
+                    "diagnostics": [diagnostic for item in batch.evidence for diagnostic in item.diagnostics] if batch else [],
+                    "missing_volume": sum(bar.volume is None for bar in batch.bars) if batch else None,
+                    "exchange": batch.identity.exchange if batch and batch.identity else None,
+                    "basis": "PRICE_RETURN_DIAGNOSTIC_NOT_TOTAL_RETURN",
+                }
+            benchmarks_ready = all(item["status"] == "VALID_PRICE_SERIES" for item in benchmark_validity.values())
             decisions = [
                 DecisionProposal(
                     symbol=item.ticker,
@@ -404,6 +445,8 @@ class ApplicationService:
                 "News, AI multi-agent verdicts and forward performance not connected",
             ]
             evaluation = None
+            evaluation_status = "DISABLED_BY_REQUEST" if not evaluate else "BLOCKED_NO_CANDIDATES"
+            evaluation_diagnostics = []
             if evaluate and candidates:
                 try:
                     # Deterministic ticker choice, NOT selecting the highest-ranked winner.
@@ -413,14 +456,17 @@ class ApplicationService:
                         {
                             symbol: batches[symbol].bars
                             for symbol in ("SPY", "QQQM")
-                            if symbol in batches and batches[symbol].status == Status.OK
+                            if symbol in batches and benchmark_validity[symbol]["status"] == "VALID_PRICE_SERIES"
                         },
                     )
                     warnings.append(
                         f"Diagnostic instrument: {target}; current-universe selection is survivorship-biased"
                     )
+                    evaluation_status = "RECONSTRUCTED_DIAGNOSTIC" if benchmarks_ready else "DEGRADED_BENCHMARK_DIAGNOSTIC"
                 except (ImportError, ValueError) as exc:
                     warnings.append(f"Evaluation unavailable: {type(exc).__name__}")
+                    evaluation_status = "BLOCKED_DIAGNOSTIC"
+                    evaluation_diagnostics = [f"{type(exc).__name__}: {exc}"]
             quality = {item.data_quality for item in candidates}
             if DataQuality.FIXTURE in quality and len(quality) > 1:
                 raise ValueError("real and fixture candidates cannot be mixed")
@@ -433,7 +479,7 @@ class ApplicationService:
                 created_at=cutoff,
                 cutoff=cutoff,
                 status=Status.OK
-                if candidates and not exclusions
+                if candidates and not exclusions and benchmarks_ready and all(item.factor_coverage == 1 for item in candidates)
                 else Status.PARTIAL
                 if candidates
                 else Status.EMPTY,
@@ -449,8 +495,27 @@ class ApplicationService:
                 evaluation=evaluation,
                 acceptance="FIXTURE" if quality == {DataQuality.FIXTURE} else "REAL_DATA",
                 warnings=warnings,
+                benchmark_validity=benchmark_validity,
+                evaluation_status=evaluation_status,
+                evaluation_diagnostics=evaluation_diagnostics,
+                assessment={
+                    "PROVIDER_HEALTH": "PER_PROVIDER_NOT_SIGNAL_VALIDITY",
+                    "MARKET_DATA_VALIDITY": "VALIDATED" if eligible else "BLOCKED",
+                    "BENCHMARK_VALIDITY": "VALIDATED" if benchmarks_ready else "DEGRADED",
+                    "FACTOR_COVERAGE": "COMPLETE" if candidates and all(item.factor_coverage == 1 for item in candidates) else "INCOMPLETE",
+                    "RESEARCH_READINESS": "PRELIMINARY_RESEARCH_ONLY" if candidates else "INSUFFICIENT_EVIDENCE",
+                    "SIGNAL_VALIDITY": "NO_DEMONSTRATED_ALPHA",
+                    "REPORT_VERIFICATION": "NOT_VERIFIED",
+                    "SOFTWARE_ACCEPTANCE": "NOT_VERIFIED",
+                    "INVESTMENT_ACTION": "NO_ACTION",
+                },
+                runtime_manifest=runtime_manifest(),
+                exposure_diagnostics={"sector": "NOT_CONFIGURED", "style": "PRICE_FACTOR_DOMINATED", "universe": "CURRENT_SURVIVORS_NOT_HISTORICAL", "concentration": "Review sector/size exposure; no sector data inferred from ticker"},
+                source_batches={symbol: batch.model_dump(mode="json") for symbol, batch in batches.items()},
             )
             if persist:
+                verify(report)
+                report = report.model_copy(update={"assessment": {**report.assessment, "REPORT_VERIFICATION": "PASSED"}})
                 self.store.save(report)
             return report
 
@@ -483,14 +548,16 @@ class ApplicationService:
             else {"status": "NO_REPORT", "broker_enabled": False}
         )
 
-    def ranking(self) -> dict[str, Any]:
-        report = self.store.latest()
+    def ranking(self, run_id: str | None = None) -> dict[str, Any]:
+        report = self.store.get(run_id) if run_id is not None else self.store.latest()
         return (
             {
                 "status": report.status.value,
                 "run_id": report.run_id,
                 "cutoff": report.cutoff.isoformat(),
                 "candidates": [item.model_dump(mode="json") for item in report.candidates],
+                "assessment": report.assessment,
+                "benchmark_validity": report.benchmark_validity,
             }
             if report
             else {"status": "NO_REPORT", "candidates": []}

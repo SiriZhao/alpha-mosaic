@@ -48,6 +48,7 @@ class OpenBBDataProvider:
         self.timeout = timeout
         self.fundamentals = fundamentals
         self.last_universe_evidence: list[ProviderEvidence] = []
+        self.last_history_test: dict[str, str] = {}
 
     def health(self) -> ProviderHealth:
         try:
@@ -58,9 +59,15 @@ class OpenBBDataProvider:
             installed, status = None, Status.NOT_INSTALLED
         return ProviderHealth(
             name="openbb-nasdaq",
-            status=status,
+            status=Status.PARTIAL if status == Status.OK and self.last_history_test.get("data_validated") != "true" else status,
             checked_at=utc_now(),
             version=installed,
+            installed=installed is not None,
+            configured=installed is not None,
+            connected=self.last_history_test.get("connected") == "true",
+            data_validated=self.last_history_test.get("data_validated") == "true",
+            research_ready=False,
+            last_test=self.last_history_test,
             capabilities=[
                 "US_UNIVERSE",
                 "HISTORICAL_OHLCV",
@@ -81,7 +88,7 @@ class OpenBBDataProvider:
         self, operation: str, **params: Any
     ) -> tuple[dict[str, Any], datetime, datetime, Status]:
         requested = utc_now()
-        if self.health().status != Status.OK:
+        if self.health().status not in {Status.OK, Status.PARTIAL}:
             return (
                 {"diagnostics": ["OpenBB extra missing or unsupported version"]},
                 requested,
@@ -233,6 +240,7 @@ class OpenBBDataProvider:
             diagnostics,
         )
         if status != Status.OK:
+            self.last_history_test = {"symbol": symbol, "tested_at": completed.isoformat(), "status": status.value, "connected": "false", "data_validated": "false"}
             return DataBatch(evidence=[evidence], status=status)
         try:
             profile = (response.get("profile") or [{}])[0]
@@ -244,7 +252,9 @@ class OpenBBDataProvider:
                 currency="USD",
                 active=bool(profile.get("name")) or etf,
                 identity_source=SOURCE + " current profile",
-                identity_verified=bool(exchange and profile.get("name")),
+                identity_verified=bool(profile.get("name") and (
+                    (etf and profile.get("symbol") == symbol) or (not etf and exchange)
+                )),
                 security_type="ETF" if etf else "STOCK",
                 as_of=completed,
             )
@@ -276,9 +286,12 @@ class OpenBBDataProvider:
                         high=row["high"],
                         low=row["low"],
                         close=row["close"],
-                        volume=row["volume"],
+                        volume=row.get("volume"),
                     )
                 )
+            missing_volume = sum(bar.volume is None for bar in bars)
+            if missing_volume:
+                evidence = evidence.model_copy(update={"diagnostics": [*diagnostics, f"MISSING_VOLUME: {missing_volume} bars; price use only"]})
             fundamental = None
             raw = response.get("fundamentals") or {}
             if raw:
@@ -306,6 +319,9 @@ class OpenBBDataProvider:
                     missing_fields=[key for key, value in fields.items() if value is None]
                     + ["pe_ratio", "equity", "debt", "market_cap", "published_at"],
                 )
+            from alphamosaic.data.validation import validate_batch
+            flags = validate_batch(identity, bars, completed, purpose="PRICE_BENCHMARK" if etf else "STOCK_FACTORS")
+            self.last_history_test = {"symbol": symbol, "tested_at": completed.isoformat(), "status": "OK" if not flags else "INVALID_DATA", "connected": "true", "data_validated": "true" if not flags else "false"}
             return DataBatch(
                 identity=identity,
                 bars=bars,
@@ -314,6 +330,7 @@ class OpenBBDataProvider:
                 status=Status.OK if bars else Status.EMPTY,
             )
         except (ValueError, KeyError, TypeError) as exc:
+            self.last_history_test = {"symbol": symbol, "tested_at": completed.isoformat(), "status": "INVALID_DATA", "connected": "true", "data_validated": "false"}
             invalid = evidence.model_copy(
                 update={
                     "status": Status.INVALID_DATA,

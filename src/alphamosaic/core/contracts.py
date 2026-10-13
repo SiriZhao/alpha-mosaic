@@ -132,6 +132,16 @@ class CorporateAction(Evidence):
     cash_amount: float | None = Field(default=None, ge=0)
 
 
+class FinancialField(Contract):
+    value: float | None
+    unit: str
+    period_end: date
+    known_at: datetime
+    source_url: str
+    evidence_ids: list[str]
+    definition: str
+
+
 class CompanyFundamentals(Evidence):
     fiscal_period: date | None = None
     revenue: float | None = None
@@ -150,6 +160,9 @@ class CompanyFundamentals(Evidence):
     filing_date: date | None = None
     fiscal_year: int | None = None
     net_margin: float | None = None
+    assets: float | None = None
+    operating_cash_flow: float | None = None
+    field_evidence: dict[str, FinancialField] = Field(default_factory=dict)
     missing_fields: list[str] = Field(default_factory=list)
 
 
@@ -255,6 +268,18 @@ class DanelfinScoreObservation(SignalObservation):
         return self
 
 
+class FactorEvidence(Contract):
+    value: float | None
+    source: str
+    as_of: datetime
+    known_at: datetime
+    status: Literal["AVAILABLE", "MISSING", "BLOCKED"]
+    missing_reason: str | None = None
+    evidence_id: str
+    group: Literal["PRICE", "RISK", "LIQUIDITY", "QUALITY", "VALUE", "GROWTH"]
+    independence: Literal["SHARED_PRICE_SERIES", "SHARED_FINANCIAL_FILING"]
+
+
 class OpportunityCandidate(Contract):
     ticker: str
     rank: int = Field(ge=1)
@@ -270,6 +295,14 @@ class OpportunityCandidate(Contract):
     data_quality: DataQuality
     score_type: Literal["HEURISTIC_PERCENTILE"] = "HEURISTIC_PERCENTILE"
     archetypes: list[str] = Field(default_factory=list)
+    factor_evidence: dict[str, FactorEvidence] = Field(default_factory=dict)
+    effective_factor_weight: float | None = None
+    factor_coverage: float | None = None
+    research_score: float | None = None
+    research_rank: int | None = None
+    ranking_status: str = "LEGACY_NOT_VERIFIED"
+    ranking_method: str = "BASELINE_AVAILABLE_WEIGHT_NORMALIZATION"
+    research_scoring_method: str = "FIXED_WEIGHT_MISSING_INPUT_PENALTY_V1"
 
 
 class ResearchVerdict(Evidence):
@@ -422,6 +455,8 @@ class BacktestResult(Contract):
     observations: int = Field(ge=0)
     limitations: list[str]
     validated_alpha: Literal[False] = False
+    validation_level: Literal["RECONSTRUCTED_DIAGNOSTIC"] = "RECONSTRUCTED_DIAGNOSTIC"
+    dataset_fingerprint: str | None = None
 
 
 class DataBatch(Contract):
@@ -450,6 +485,15 @@ class ScanReport(Contract):
     acceptance: Literal["REAL_DATA", "FIXTURE"]
     warnings: list[str]
     broker_enabled: Literal[False] = False
+    benchmark_validity: dict[str, dict[str, object]] = Field(default_factory=dict)
+    assessment: dict[str, str] = Field(default_factory=dict)
+    evaluation_status: str = "LEGACY_NOT_VERIFIED"
+    evaluation_diagnostics: list[str] = Field(default_factory=list)
+    runtime_manifest: dict[str, object] = Field(default_factory=dict)
+    exposure_diagnostics: dict[str, object] = Field(default_factory=dict)
+    # Raw adapter snapshots may contain rejected fields. They are audit inputs,
+    # never implicitly revalidated into accepted financial observations.
+    source_batches: dict[str, dict[str, object]] = Field(default_factory=dict)
 
 
 class OpportunityArchetype(StrEnum):

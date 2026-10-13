@@ -11,6 +11,7 @@ import httpx
 from alphamosaic.core.contracts import (
     CompanyFundamentals,
     DataQuality,
+    FinancialField,
     ProviderHealth,
     Status,
     utc_now,
@@ -156,6 +157,8 @@ class SecEdgarAdapter:
         # different fiscal year into one fundamentals object.
         net_income, net_income_item = same_value("NetIncomeLoss")
         assets, assets_item = same_value("Assets")
+        equity, equity_item = same_value("StockholdersEquity")
+        cash, cash_item = same_value("CashAndCashEquivalentsAtCarryingValue")
         debt_items = [same_value(name) for name in ("LongTermDebt", "LongTermDebtCurrent", "LongTermDebtNoncurrent", "ShortTermBorrowings")]
         # LongTermDebt may already include the current portion. Never add the
         # aggregate and its components. Report incomplete coverage as null.
@@ -170,7 +173,7 @@ class SecEdgarAdapter:
         capex, capex_item = same_value("PaymentsToAcquirePropertyPlantAndEquipment")
         if revenue is None and net_income is None:
             return None
-        selected_items = [rev_item, net_income_item, assets_item, operating_income_item, operating_cf_item, capex_item]
+        selected_items = [rev_item, net_income_item, assets_item, equity_item, cash_item, operating_income_item, operating_cf_item, capex_item]
         selected_items.extend(item[1] for item in debt_items if item[1] is not None)
         filed = max(
             date.fromisoformat(str(item.get("filed", cutoff.date()))[:10])
@@ -179,15 +182,43 @@ class SecEdgarAdapter:
         )
         fiscal_year = (rev_item or {}).get("fy")
         fcf = operating_cf - abs(capex) if operating_cf is not None and capex is not None else None
+        end_date = date.fromisoformat(str(rev_item["end"]))
+        prior_units = []
+        for name in ("Revenues", "RevenueFromContractWithCustomerExcludingAssessedTax"):
+            for item in usgaap.get(name, {}).get("units", {}).get("USD", []):
+                try:
+                    if 300 <= (end_date - date.fromisoformat(item["end"])).days <= 400:
+                        prior_units.append(item)
+                except (KeyError, TypeError, ValueError):
+                    continue
+        prior_revenue, prior_item = self._latest(prior_units, cutoff)
+        growth = revenue / prior_revenue - 1 if revenue is not None and prior_revenue is not None and prior_revenue > 0 else None
+        if prior_item:
+            selected_items.append(prior_item)
+            filed = max(filed, date.fromisoformat(str(prior_item["filed"])))
+        known = datetime.combine(filed + timedelta(days=1), datetime.min.time(), tzinfo=UTC)
+        source_url = f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik:010d}.json"
+        values = {
+            "revenue": revenue, "net_income": net_income, "assets": assets,
+            "equity": equity, "debt": debt, "operating_cash_flow": operating_cf,
+            "free_cash_flow": fcf, "revenue_growth": growth,
+            "net_margin": net_income / revenue if net_income is not None and revenue and revenue > 0 else None,
+            "operating_margin": operating_income / revenue if operating_income is not None and revenue and revenue > 0 else None,
+            "net_debt": debt - cash if debt is not None and cash is not None else None,
+        }
+        ids = sorted({str(item.get("accn", "UNAVAILABLE")) + ":" + str(item.get("end")) + ":" + str(item.get("filed")) for item in selected_items if item})
+        evidence = {name: FinancialField(value=number, unit="ratio" if name in {"revenue_growth", "net_margin", "operating_margin"} else "USD", period_end=end_date, known_at=known, source_url=source_url, evidence_ids=ids, definition={"free_cash_flow": "annual operating cash flow minus absolute capex", "revenue_growth": "same-unit consecutive annual revenue ratio minus one", "net_margin": "same-period annual net income/revenue", "net_debt": "nonoverlapping covered debt minus cash"}.get(name, "same-period annual US-GAAP USD fact; no ROE/ROIC inferred")) for name, number in values.items()}
         observed = utc_now()
         return CompanyFundamentals(
             symbol=symbol, source="SEC EDGAR companyfacts", source_url=f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik:010d}.json",
-            observed_at=min(observed, cutoff), known_at=datetime.combine(filed + timedelta(days=1), datetime.min.time(), tzinfo=UTC), as_of=cutoff,
+            observed_at=observed, known_at=known, as_of=max(observed, cutoff),
             currency="USD", data_quality=DataQuality.HISTORICAL, adjustment_policy="NOT_APPLICABLE",
             provenance={"cik": f"{cik:010d}", "selection": "same fiscal end annual facts filed by cutoff", "anchor_end": str(rev_item.get("end"))}, license_scope="SEC public data; verify downstream use",
             fiscal_period=(rev_item or {}).get("end"), fiscal_year=int(fiscal_year) if fiscal_year else None,
-            revenue=revenue, net_income=net_income, debt=debt, net_debt=None,
-            free_cash_flow=fcf, filing_date=filed,
-            operating_margin=(operating_income / revenue) if revenue and operating_income is not None else None,
-            missing_fields=[name for name, item in {"revenue": revenue, "net_income": net_income, "assets": assets, "debt": debt, "operating_margin": operating_income, "free_cash_flow": fcf}.items() if item is None],
+            revenue=values["revenue"], net_income=values["net_income"], assets=values["assets"],
+            equity=values["equity"], debt=values["debt"], operating_cash_flow=values["operating_cash_flow"],
+            free_cash_flow=values["free_cash_flow"], revenue_growth=values["revenue_growth"],
+            net_margin=values["net_margin"], operating_margin=values["operating_margin"], net_debt=values["net_debt"],
+            filing_date=filed, field_evidence=evidence,
+            missing_fields=[name for name, item in values.items() if item is None] + ["return_on_equity", "return_on_invested_capital", "pe_ratio"],
         )

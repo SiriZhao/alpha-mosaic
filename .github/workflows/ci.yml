@@ -26,6 +26,8 @@ jobs:
       - run: uv run ruff check .
       - run: uv run pyright
       - run: uv run pytest -q
+      - name: Local MCP protocol handshake
+        run: uv run python scripts/mcp_smoke.py
       - run: uv build
       - name: Clean wheel smoke
         shell: bash
@@ -35,7 +37,7 @@ jobs:
           "$RUNNER_TEMP/alphamosaic-wheel/bin/python" -m pip install dist/*.whl
           "$RUNNER_TEMP/alphamosaic-wheel/bin/alphamosaic" doctor
       - name: Dependency audit
-        run: uvx --from pip-audit pip-audit --requirement <(uv export --format requirements-txt --no-hashes)
+        run: uvx --from pip-audit pip-audit --requirement <(uv export --locked --all-extras --format requirements-txt --no-hashes --no-emit-project)
         shell: bash
       - name: Credential and secret scan
         run: uv run python scripts/secret_scan.py

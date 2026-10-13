@@ -42,3 +42,30 @@ not configured. See [INTEGRATION_ACCEPTANCE_20261011.md](INTEGRATION_ACCEPTANCE_
 - SEC facts are constrained to annual forms, fiscal end, fiscal year, duration and filing cutoff; revisions after cutoff and mixed periods are excluded.
 - Full local regression: 50 passed; Ruff passed; Pyright passed with zero diagnostics. Warnings are dependency deprecations and an existing MCP transport cleanup warning.
 - Real providers were not re-called in this continuation because the bounded evidence run already exists and optional research credentials are not configured. No alpha or advisory eligibility is claimed.
+
+## Data chain repair (2026-10-13)
+
+See docs/audits/DATA_QUALITY_ACCEPTANCE_20261013.md for the latest continuation evidence.
+Null-volume SPY prices now participate in price-only validation; QQQM is independent.
+Reports expose separate benchmark, factor, research, action and software states.
+The real bounded run 2955da45109a443e9ac16ba8a2d5c6eb produced 30/29/10 with all
+relative SPY/QQQM factors present. The frozen-source six-symbol run
+1a7d0349fbd646a7ba5b3b5dae3c1201 produced both-benchmark historical diagnostics.
+72 tests, Ruff, Pyright, build, clean-wheel doctor and real stdio MCP passed.
+Overall research remains PARTIAL / PRELIMINARY_RESEARCH_ONLY / NO_ACTION because
+basic financial evidence, exchange mapping and investment-grade PIT coverage are incomplete.
+
+CI evidence for this data-quality branch: PR #3 checks passed in Actions runs
+38417014880 and 38416829439. Dependency-audit export now includes optional extras
+and omits the unpublished project itself. Software checks do not turn reconstructed
+market data into PIT certification or establish alpha.
+
+Expanded security audit found diskcache through an unused openbb-sec dependency.
+Removed that unused optional dependency (the direct official SEC JSON adapter remains)
+and regenerated the locked graph from 152 to 111 packages with retained versions.
+Earlier base-only CI success is not sufficient; final all-extras CI is the gate.
+
+2026-10-14 follow-up: post-security network run 427f3524a46d43a78920383abc2a52a0
+returned provider OK but stale price histories. Both benchmarks were BLOCKED;
+zero candidates / NO_ACTION. The 10-13 success remains historical evidence only.
+After dependency pruning, 72 tests and all local software/build/MCP checks passed.

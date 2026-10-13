@@ -58,6 +58,22 @@ class UniverseManager:
             normalize_symbols(symbols),
         )
 
+    def stratified(self, strata: dict[str, list[str]], limit: int = 30) -> Universe:
+        """User-declared research styles; membership is not a quality claim."""
+        if not 1 <= limit <= 100 or not strata:
+            raise ValueError("nonempty strata and limit 1..100 required")
+        pools = {name: normalize_symbols(values) for name, values in sorted(strata.items())}
+        selected: list[str] = []
+        for index in range(max(map(len, pools.values()), default=0)):
+            for values in pools.values():
+                if index < len(values) and values[index] not in selected:
+                    selected.append(values[index])
+                if len(selected) == limit:
+                    break
+            if len(selected) == limit:
+                break
+        return Universe("User-declared stratified research pool", "Deterministic round robin: " + ",".join(pools) + "; styles unverified; current members only", selected)
+
     def imported(self, path: Path) -> Universe:
         if path.suffix.lower() == ".csv":
             with path.open(encoding="utf-8-sig", newline="") as handle:

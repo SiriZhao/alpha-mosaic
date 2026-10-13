@@ -61,8 +61,10 @@ async def execute(request: dict[str, Any]) -> dict[str, Any]:
             "NasdaqEtfHistoricalFetcher" if etf else "NasdaqEquityHistoricalFetcher",
             {"symbol": symbol, "start_date": request["start"], "end_date": request["end"]},
         )
-        profile = (
-            [] if etf else await fetch("equity_info", "NasdaqEquityInfoFetcher", {"symbol": symbol})
+        profile = await fetch(
+            "etf_info" if etf else "equity_info",
+            "NasdaqEtfInfoFetcher" if etf else "NasdaqEquityInfoFetcher",
+            {"symbol": symbol},
         )
         fundamental: dict[str, Any] = {}
         errors: list[str] = []
@@ -76,7 +78,12 @@ async def execute(request: dict[str, Any]) -> dict[str, Any]:
                         model, name, {"symbol": symbol, "limit": 1, "period": "annual"}
                     )
                     if rows:
-                        fundamental.update(rows[0])
+                        if model == "income_statement":
+                            fundamental = rows[0]
+                        elif fundamental.get("date") and rows[0].get("date") == fundamental["date"]:
+                            fundamental.update(rows[0])
+                        else:
+                            errors.append("financial_ratios: PERIOD_ALIGNMENT_NOT_VERIFIED; not merged")
                 except Exception as exc:
                     errors.append(f"{model}: {type(exc).__name__}")
         return {

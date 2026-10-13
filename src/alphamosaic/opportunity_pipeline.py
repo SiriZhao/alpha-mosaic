@@ -192,6 +192,8 @@ class OpportunityDiscoveryPipeline:
             provider_health=health, warnings=warnings, status="READY" if summaries and not scan.exclusions else "DEGRADED" if summaries else "NO_ACTION",
             acceptance=scan.acceptance, scan=scan, external_call_count=len(deep_outcomes),
         )
+        if scan.status != Status.OK and report.status == "READY":
+            report = report.model_copy(update={"status": "DEGRADED"})
         self._write(report)
         checkpoint.parent.mkdir(parents=True, exist_ok=True)
         checkpoint.write_text(report.model_dump_json(indent=2), encoding="utf-8")

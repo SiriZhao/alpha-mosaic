@@ -17,6 +17,7 @@ from alphamosaic.core.contracts import (
     Status,
 )
 from alphamosaic.core.service import ApplicationService
+from alphamosaic.data.validation import completed_session
 from alphamosaic.factors.engine import FactorEngine
 from alphamosaic.opportunity_pipeline import OpportunityDiscoveryPipeline
 from alphamosaic.providers.sec_edgar import SecEdgarAdapter
@@ -27,7 +28,7 @@ class FixtureProvider:
     def __init__(self) -> None:
         self.now = datetime.now(UTC)
         calendar = xcals.get_calendar("XNYS")
-        sessions = calendar.sessions_in_range((self.now - timedelta(days=140)).date(), self.now.date())[-90:]
+        sessions = calendar.sessions_in_range((self.now - timedelta(days=140)).date(), completed_session(self.now))[-90:]
         self.sessions = [item.date() for item in sessions]
 
     def health(self) -> ProviderHealth:

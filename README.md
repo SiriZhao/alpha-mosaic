@@ -113,3 +113,23 @@ The command is idempotent. Pending states are append-only observations; only mat
 ## Continuation checkpoint
 
 The continuation branch is based on PR #1 HEAD `de2fe0c`. It adds cross-day forward state evolution, strict factor aliases and benchmark regime evidence, evidence-gated deep reranking, same-period SEC annual fact selection, and a provider-backed forward evaluation command. Optional external services remain explicitly unconfigured when credentials are absent.
+
+## Auditable scan and daily report
+
+Use the tested worktree/package rather than an older editable audit installation.
+Each scan records Python/import paths, dependency versions, Git SHA and source hash.
+
+```powershell
+uv run alphamosaic scan --universe-limit 30 --top 10 --no-evaluate
+uv run alphamosaic report --run-id <32-character-run-id> --finalize
+uv run python scripts/verify_scan_snapshot.py --home runtime --run-id <run-id>
+uv run python scripts/mcp_smoke.py --home runtime --run-id <run-id>
+```
+
+Finalization is explicit-run, deterministic and immutable; derived JSON/Markdown bundles
+include source/generator/input hashes. Missing ETF volume is permitted only for price
+calculations. Invalid SPY does not disable QQQM, and benchmark degradation propagates to
+ranking and MCP. Baseline ranking and fixed-weight missing-input research scores remain
+separate heuristics. `PRELIMINARY_RESEARCH_ONLY` and `NO_ACTION` are independent states.
+Use `scan --strata-json '{"quality":["AAPL"],"growth":["MSFT"],"watchlist":["GOOGL"]}'`
+for deterministic user-declared style sampling; these labels do not verify fundamentals.

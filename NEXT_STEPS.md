@@ -21,3 +21,12 @@
 3. Add a licensed point-in-time universe and corporate-action/delisting history before any strategy status promotion.
 4. Investigate the existing MCP transport cleanup warning and add job expiry/cancellation metrics before remote deployment.
 5. Push this continuation branch and open a separate PR; do not merge PR #1 automatically.
+
+## Active data-quality follow-up (2026-10-13)
+
+1. Use the tested integration/continuation branches and import-path manifest for daily runs; the dirty audit worktree still has an older non-nullable volume contract.
+2. Operator-configure a truthful SEC contact User-Agent; verify annual filings and per-field evidence before enabling live fundamental research.
+3. Obtain an authorized exchange/security master, sectors and adjustment/corporate-action data. Keep UNKNOWN and NOT_CONFIGURED visible until then.
+4. Add licensed PIT constituents/delistings and independent forward observations before strategy certification; no alpha or advisory promotion is permitted.
+5. Investigate inherited Danelfin MCP transport cleanup warnings, forward data provenance and job lifecycle limits in a separately tested change.
+6. Review the new branch's CI and stacked PR before merge; no automatic main merge or public deployment.

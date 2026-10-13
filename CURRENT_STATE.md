@@ -42,3 +42,15 @@ not configured. See [INTEGRATION_ACCEPTANCE_20261011.md](INTEGRATION_ACCEPTANCE_
 - SEC facts are constrained to annual forms, fiscal end, fiscal year, duration and filing cutoff; revisions after cutoff and mixed periods are excluded.
 - Full local regression: 50 passed; Ruff passed; Pyright passed with zero diagnostics. Warnings are dependency deprecations and an existing MCP transport cleanup warning.
 - Real providers were not re-called in this continuation because the bounded evidence run already exists and optional research credentials are not configured. No alpha or advisory eligibility is claimed.
+
+## Data chain repair (2026-10-13)
+
+See docs/audits/DATA_QUALITY_ACCEPTANCE_20261013.md for the latest continuation evidence.
+Null-volume SPY prices now participate in price-only validation; QQQM is independent.
+Reports expose separate benchmark, factor, research, action and software states.
+The real bounded run 2955da45109a443e9ac16ba8a2d5c6eb produced 30/29/10 with all
+relative SPY/QQQM factors present. The frozen-source six-symbol run
+1a7d0349fbd646a7ba5b3b5dae3c1201 produced both-benchmark historical diagnostics.
+72 tests, Ruff, Pyright, build, clean-wheel doctor and real stdio MCP passed.
+Overall research remains PARTIAL / PRELIMINARY_RESEARCH_ONLY / NO_ACTION because
+basic financial evidence, exchange mapping and investment-grade PIT coverage are incomplete.

@@ -39,7 +39,7 @@ def main() -> None:
     generated = store.finalize(report.run_id)
     if generated != store.finalize(report.run_id):
         raise ValueError("nonreproducible daily report")
-    print(json.dumps({"run_id": report.run_id, "factor_replay": "PASSED", "candidates_checked": len(report.candidates), "cutoff": report.cutoff.isoformat(), "input_sha256": hashlib.sha256((store.root / report.run_id / "report.json").read_bytes()).hexdigest(), "generated": str(generated), "investment_action": "NO_ACTION"}, indent=2))
+    print(json.dumps({"run_id": report.run_id, "factor_replay": "PASSED" if report.candidates else "NOT_RUN_NO_CANDIDATES", "candidates_checked": len(report.candidates), "cutoff": report.cutoff.isoformat(), "input_sha256": hashlib.sha256((store.root / report.run_id / "report.json").read_bytes()).hexdigest(), "generated": str(generated), "investment_action": "NO_ACTION"}, indent=2))
 
 
 if __name__ == "__main__":

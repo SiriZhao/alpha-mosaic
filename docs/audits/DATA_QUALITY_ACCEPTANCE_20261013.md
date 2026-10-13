@@ -149,3 +149,22 @@ still truthfully record the old installation; the new environment reports openbb
 NOT_INSTALLED. The final expanded CI audit must pass before merge readiness.
 
 Primary advisory: https://github.com/pypa/advisory-database/blob/main/vulns/diskcache/PYSEC-2026-2447.yaml
+
+## Follow-up on 2026-10-14 (Asia/Shanghai)
+
+After pruning the vulnerable unused dependency, the locked environment, 72-test full
+suite, Ruff/Pyright, wheel/sdist, clean-wheel doctor, stdio handshake and secret scan
+passed again. No retained dependency versions were upgraded.
+
+Fresh six-symbol network probe: run `427f3524a46d43a78920383abc2a52a0`, cutoff
+2026-10-13 21:45:21 UTC (2026-10-14 in Asia/Shanghai). All eight history requests
+returned OK, but their bars did not cover the latest completed exchange session.
+All six stocks and SPY/QQQM were blocked by STALE_HISTORY: zero eligible, zero
+candidates, EMPTY / INSUFFICIENT_EVIDENCE / NO_ACTION. This is a real data-quality
+rejection, not a network success being promoted into valid market data. The prior
+2026-10-13 successful reports remain immutable historical evidence.
+
+GitHub CLI subsequently returned HTTP 401. The public repository REST API and
+ls-remote were used to verify the published remediation SHA and Actions runs
+38473048834 / 38473042017; no login, force push or main modification was attempted.
+Final CI results are reported from those exact-head runs separately.

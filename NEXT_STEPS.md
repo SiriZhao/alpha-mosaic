@@ -30,3 +30,8 @@
 4. Add licensed PIT constituents/delistings and independent forward observations before strategy certification; no alpha or advisory promotion is permitted.
 5. Investigate inherited Danelfin MCP transport cleanup warnings, forward data provenance and job lifecycle limits in a separately tested change.
 6. Review the new branch's CI and stacked PR before merge; no automatic main merge or public deployment.
+
+For daily operation, wait for a source history covering the latest completed
+exchange session. An HTTP/SDK OK result cannot override STALE_HISTORY; do not pad
+or substitute old daily prices. GitHub CLI needs operator reauthentication if its
+HTTP 401 persists; public read-only CI verification is available in the meantime.

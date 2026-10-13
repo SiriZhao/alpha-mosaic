@@ -64,3 +64,8 @@ Expanded security audit found diskcache through an unused openbb-sec dependency.
 Removed that unused optional dependency (the direct official SEC JSON adapter remains)
 and regenerated the locked graph from 152 to 111 packages with retained versions.
 Earlier base-only CI success is not sufficient; final all-extras CI is the gate.
+
+2026-10-14 follow-up: post-security network run 427f3524a46d43a78920383abc2a52a0
+returned provider OK but stale price histories. Both benchmarks were BLOCKED;
+zero candidates / NO_ACTION. The 10-13 success remains historical evidence only.
+After dependency pruning, 72 tests and all local software/build/MCP checks passed.

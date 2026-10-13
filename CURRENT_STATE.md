@@ -59,3 +59,8 @@ CI evidence for this data-quality branch: PR #3 checks passed in Actions runs
 38417014880 and 38416829439. Dependency-audit export now includes optional extras
 and omits the unpublished project itself. Software checks do not turn reconstructed
 market data into PIT certification or establish alpha.
+
+Expanded security audit found diskcache through an unused openbb-sec dependency.
+Removed that unused optional dependency (the direct official SEC JSON adapter remains)
+and regenerated the locked graph from 152 to 111 packages with retained versions.
+Earlier base-only CI success is not sufficient; final all-extras CI is the gate.

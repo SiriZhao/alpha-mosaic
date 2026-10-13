@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-openbb = ["openbb-core[pandas]==2.0.1", "openbb-nasdaq==2.0.0", "openbb-sec==2.0.0"]
+openbb = ["openbb-core[pandas]==2.0.1", "openbb-nasdaq==2.0.0"]
 analytics = ["quantstats==0.0.86"]
 
 [dependency-groups]

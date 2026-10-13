@@ -135,3 +135,17 @@ itself, so optional OpenBB/analytics dependencies are included without pretendin
 perform a PyPI vulnerability audit of this source repository. Final check status is
 verified on the published HEAD separately. These CI results do not promote any
 financial-data or strategy-validation state.
+
+## Expanded audit failure and remediation
+
+The all-extras audit found PYSEC-2026-2447 in diskcache 5.6.3 through openbb-sec 2.0.0
+(Actions run 38417557092). It was not ignored. Source inspection confirmed no
+openbb_sec or diskcache import in AlphaMosaic; the optional openbb-sec dependency was
+unnecessary because the implemented SEC adapter consumes official companyfacts JSON
+via httpx. Removed this unused dependency and regenerated uv.lock without upgrading
+retained packages, reducing the lock graph from 152 to 111 packages. The OpenBB/Nasdaq
+Fetcher and direct SEC evidence path remain available. Historical preflight files
+still truthfully record the old installation; the new environment reports openbb-sec
+NOT_INSTALLED. The final expanded CI audit must pass before merge readiness.
+
+Primary advisory: https://github.com/pypa/advisory-database/blob/main/vulns/diskcache/PYSEC-2026-2447.yaml

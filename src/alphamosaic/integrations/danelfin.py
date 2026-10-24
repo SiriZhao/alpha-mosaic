@@ -11,9 +11,12 @@ import json
 import os
 import threading
 import time
+from collections.abc import AsyncIterator
+from contextlib import AsyncExitStack, asynccontextmanager
 from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
+import anyio
 import httpx
 from mcp import ClientSession
 from mcp.client.streamable_http import streamable_http_client
@@ -182,52 +185,40 @@ class DanelfinAdapter:
     def quota(self) -> dict[str, int | None]:
         return {"requests": self._request_count, "monthly_budget": self.monthly_budget}
 
-    async def _session_tools(self) -> tuple[ClientSession, Any, Any, list[Any]]:
+    @asynccontextmanager
+    async def _session_tools(self) -> AsyncIterator[tuple[ClientSession, list[Any]]]:
         if not self.api_key:
             raise RuntimeError("NOT_CONFIGURED")
         headers = {"Authorization": f"Bearer {self.api_key}"}
-        # MCP 2.3.0's private helper is typed against its own transport httpx
-        # compatibility package.  Do not import that package here: the adapter
-        # owns request bounds with ``asyncio.wait_for`` and remains importable
-        # from a clean wheel using only declared project dependencies.
+        # Keep AnyIO transport scopes and their cleanup in the same task. An
+        # outer native deadline bounds negotiation, tool calls and cleanup.
         client = self._client or create_mcp_http_client(headers=headers)
-        streams = streamable_http_client(self.endpoint, http_client=client)
-        read_stream, write_stream = await streams.__aenter__()
-        session = ClientSession(read_stream, write_stream, read_timeout_seconds=self.timeout)
-        await session.__aenter__()
         try:
-            init = await asyncio.wait_for(session.initialize(), timeout=self.timeout)
-            tools = (await asyncio.wait_for(session.list_tools(), timeout=self.timeout)).tools
-            self._last_test = {
-                "checked_at": utc_now().isoformat(),
-                "protocol_version": str(init.protocol_version),
-                "tool_count": str(len(tools)),
-                "data_validated": "false",
-            }
-            return session, streams, client, tools
-        except asyncio.CancelledError as exc:
-            # MCP's AnyIO transport can surface the cancellation used by
-            # ``wait_for`` directly instead of translating it to TimeoutError.
-            # Normalize that transport-specific detail so callers receive the
-            # adapter's stable timeout status and do not mistake it for a
-            # caller-requested task cancellation.
-            raise TimeoutError("Danelfin MCP session timeout") from exc
-        except Exception:
-            # A cancelled MCP task group cannot safely be exited from the caller's
-            # task (AnyIO raises a cross-task cancel-scope error). The transport
-            # owns cleanup for production clients; injected clients are test-only.
-            if self._client is None:
-                try:
-                    await client.aclose()
-                except Exception:
-                    pass
+            with anyio.fail_after(self.timeout):
+                async with AsyncExitStack() as stack:
+                    if self._client is None:
+                        await stack.enter_async_context(client)
+                    streams = streamable_http_client(self.endpoint, http_client=client)
+                    read_stream, write_stream = await stack.enter_async_context(streams)
+                    session = await stack.enter_async_context(
+                        ClientSession(read_stream, write_stream, read_timeout_seconds=self.timeout)
+                    )
+                    init = await session.initialize()
+                    tools = (await session.list_tools()).tools
+                    self._last_test = {
+                        "checked_at": utc_now().isoformat(),
+                        "protocol_version": str(init.protocol_version),
+                        "tool_count": str(len(tools)),
+                        "data_validated": "false",
+                    }
+                    yield session, tools
+        except ExceptionGroup as exc:
+            # Task groups wrap transport errors. Preserve mixed failures rather
+            # than misclassifying a non-timeout fault as a deadline expiration.
+            timed_out, other = exc.split((TimeoutError, httpx.TimeoutException))
+            if timed_out is not None and other is None:
+                raise TimeoutError("Danelfin MCP transport timeout") from exc
             raise
-
-    async def _close_session(self, session: ClientSession, streams: Any, client: Any) -> None:
-        await session.__aexit__(None, None, None)
-        await streams.__aexit__(None, None, None)
-        if self._client is None:
-            await client.aclose()
 
     async def _call(
         self, capability: str, symbol: str, arguments: dict[str, Any] | None = None
@@ -247,8 +238,7 @@ class DanelfinAdapter:
             self._last_request = time.monotonic()
             self._request_count += 1
             try:
-                session, streams, client, tools = await self._session_tools()
-                try:
+                async with self._session_tools() as (session, tools):
                     tool_name = OFFICIAL_TOOLS[capability]
                     advertised = next((tool for tool in tools if tool.name == tool_name), None)
                     if advertised is None:
@@ -256,21 +246,18 @@ class DanelfinAdapter:
                     call_args = arguments or _schema_arguments(advertised.input_schema, symbol)
                     if call_args is None:
                         return Status.UNSUPPORTED, None, [f"required schema fields for {tool_name} are unknown"]
-                    result = await asyncio.wait_for(
-                        session.call_tool(tool_name, call_args), timeout=self.timeout
-                    )
+                    result = await session.call_tool(tool_name, call_args)
                     payload = _payload(result)
                     if payload is None:
                         return Status.INVALID_DATA, None, [f"{tool_name} returned an MCP error or no structured JSON"]
-                    self._cache[key] = (time.monotonic() + self.cache_ttl.total_seconds(), payload)
-                    return Status.OK, payload, []
-                finally:
-                    await self._close_session(session, streams, client)
+                # A failed cleanup must not leave an apparently successful cache hit.
+                self._cache[key] = (time.monotonic() + self.cache_ttl.total_seconds(), payload)
+                return Status.OK, payload, []
             except TimeoutError:
                 return Status.TIMEOUT, None, ["Danelfin MCP ClientSession timeout"]
             except httpx.TimeoutException:
                 return Status.TIMEOUT, None, ["Danelfin MCP transport timeout"]
-            except (httpx.HTTPError, OSError, RuntimeError, ValueError) as exc:
+            except (httpx.HTTPError, OSError, RuntimeError, ValueError, ExceptionGroup) as exc:
                 text = str(exc).lower()
                 status = Status.RATE_LIMITED if "429" in text or "quota" in text else Status.UNAVAILABLE
                 return status, None, [f"Danelfin MCP {type(exc).__name__}"]
@@ -279,9 +266,10 @@ class DanelfinAdapter:
         if not self.api_key:
             return Status.NOT_CONFIGURED, [], ["DANELFIN_API_KEY is absent"]
         try:
-            session, streams, client, tools = await self._session_tools()
-            await self._close_session(session, streams, client)
-            return Status.OK, [_jsonable(tool) for tool in tools], []
+            async with self._session_tools() as (_, tools):
+                return Status.OK, [_jsonable(tool) for tool in tools], []
+        except TimeoutError:
+            return Status.TIMEOUT, [], ["Danelfin MCP session timeout"]
         except Exception as exc:
             return Status.UNAVAILABLE, [], [f"Danelfin MCP session: {type(exc).__name__}"]
 

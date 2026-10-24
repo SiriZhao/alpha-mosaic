@@ -1,5 +1,31 @@
 # AlphaMosaic
 
+## Renaissance research milestone
+
+The daily research prototype now includes immutable local datasets, causal event/cash accounting,
+three explicit cost scenarios, fixed baseline strategies, independently tested analytics,
+chronological validation/holdout review, reproducible experiment exports and an optional local
+Streamlit/Plotly terminal. Evidence remains Exploratory. Strict real-data performance is blocked
+by incomplete adjustment/PIT/corporate-action/delisting evidence; synthetic cases are **FIXTURE**,
+not historical results for their familiar ticker labels. Full AI planner, weekly data,
+closed-trade statistics and advanced optimization remain roadmap items.
+
+```powershell
+uv sync --locked --all-extras --dev
+uv run python scripts/run_research_cases.py --home runtime/renaissance-demo
+$env:ALPHAMOSAIC_HOME = (Join-Path (Get-Location) 'runtime/renaissance-demo')
+uv run python -m streamlit run src/alphamosaic/ui/app.py --theme.base dark
+```
+
+Core offline research also works from a base wheel without optional extras or paid LLM access.
+The eight terminal pages cover overview, data, strategy setup, results, comparison, risk, critic
+and report downloads. Only local research jobs are run. See [reproduction](REPRODUCIBILITY.md),
+[accounting assumptions](BACKTEST_ASSUMPTIONS.md), [metric formulas](RISK_ANALYTICS.md),
+[tests](TESTING.md), [framework/license decisions](docs/OPEN_SOURCE_EVALUATION.md) and
+[measured delivery and remaining gaps](ALPHA_MOSAIC_DELIVERY_REPORT.md).
+
+![Local research terminal with explicitly synthetic evidence](docs/evidence/renaissance-20261024/01-research-overview.png)
+
 AlphaMosaic is an independent, evidence-first investment research platform. It discovers a
 bounded current US equity universe, computes deterministic factors, ranks opportunities and
 produces JSON/Markdown research bundles. It is research and paper evaluation only: there is no

@@ -1,5 +1,21 @@
 # Current state (2026-10-11)
 
+## Authoritative Renaissance checkpoint — 2026-10-24
+
+The sections below are retained historical evidence. The current work is isolated on
+`codex/renaissance-20261024`, recovered from ccd369e; the older root dirty checkout is untouched.
+See ALPHA_MOSAIC_DELIVERY_REPORT.md and docs/evidence/renaissance-20261024/acceptance.json.
+
+- 168 passed, zero failures/errors/skips, with RuntimeWarning treated as an error; four upstream calendar deprecation warnings remain visible.
+- Ruff passed; Pyright0 errors; full nonignored secret-pattern scan passed. Source SHA256 `06ee532642910d385759c6ca9ceb751d6946119914777e7690dcb680faba5a8e`.
+- Immutable datasets, explicit quality/quarantine, causal event/cash/position replay, gap-aware constraints and split revisions,16 fixed strategy rules, independent metrics/scientific controls, versioned experiments/reports and optional eight-page local terminal are implemented within documented limits.
+- Independent reconstruction:48 seeded FIXTURE scenarios/879 fills. Eight reproducible FIXTURE cases plus a failed control; exact result/analytics equality across profiling optimization.
+- Wheel/sdist built with runtime excluded. Clean base wheel imported from site-packages and completed doctor, offline experiment and real stdio MCP handshake with26 tools; OpenBB/QuantStats/Streamlit/Plotly were absent. Core needs no paid LLM.
+- OSV initially found vulnerable certifi/Pillow; minimums/lock upgraded. Final139 third-party distributions plus local package collection audited with no known vulnerabilities and no skipped dependency records; exact package count is in evidence JSON.
+- Browser navigation, populated charts/tables and mobile report layout verified. Screenshots are synthetic research only.
+- Real capture SPY/QQQM706 rows each/UNKNOWN adjustment, TLT EMPTY: no dataset/return published. Strict real historical acceptance remains BLOCKED by PIT/action/membership/delisting evidence.
+- Full AI planner, weekly research, closed-lot statistics and advanced optimization/selection correction remain Partial/Planned. Hosted CI and remote ChatGPT are separate verification gates; release status is recorded in the delivery addendum.
+
 ## Batch 5 delivered
 
 - Added `FrameworkIntegrationMatrix` and `alphamosaic frameworks` for the seven requested upstream resources. Adapter, install, startup, computation and validation states are independent fields.

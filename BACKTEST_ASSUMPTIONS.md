@@ -1,0 +1,15 @@
+# Daily cash-equity simulation assumptions
+
+Universe: explicit USD stocks/ETFs; long-only, no leverage, no options or brokerage. One XNYS session grid, finite positive OHLC and required volume; unaligned/missing sessions are rejected instead of receiving ideal fills. Inactive/delisting/symbol-change economics without reliable support are rejected. A current surviving basket is not an unbiased historical universe.
+
+Timing: close observations become strategy history only when available. Close-generated signals create proposals; orders become eligible at a later session open (default one session, configurable 1..20). Pending reservations prevent overselling. Fills link to original order and signal identifiers. Changing future bars must not alter earlier signals/fills. Warmup history may precede evaluation; no simulated positions/cash are imported from training.
+
+Execution: opening price plus adverse per-side slippage and half of configured full spread; commission is basis points of filled notional. Round quantities to configured lot, reject/unfill infeasible quantities, and cap participation at a fraction of **the day's completed volume**. This last field is an ex-post capacity assumption, not information available at the opening auction. Daily bars cannot validate executable liquidity or market impact. Pending orders have explicit disposition rather than guaranteed 100% ideal execution.
+
+Default ReplayConfig: USD100,000 initial cash, 10bp commission, 5bp slippage, zero explicit spread, 1% daily-volume participation, lot1, no borrowing/shorts, maximum target gross1 and maximum single target1. Strategy Lab and benchmark cases use named `realistic`: 10/5/2bp commission/slippage/full spread with 2% cash buffer. `stress`:25/25/10bp, 5% cash, 0.5% volume. `zero` is a control. These scenarios jointly change cost/cash/capacity; a causal cost-monotonicity claim needs an identical fill path and other assumptions held fixed, as tested separately.
+
+Portfolio constraints cap targets, retain residual cash and bound new buys using opening valuations and after-cost NAV. Limited sells cannot fund invented buys. Market drift after fills can exceed target weights or cash percentages; diagnostics record this. The system does not claim continuous intraday rebalancing, sector enforcement or full risk parity.
+
+Accounting: NAV = cash + sum(quantity × close). Buy/sell cash changes by signed filled notional plus commission; spread and slippage are already inside fill price and must not be debited a second time. Average acquisition cost includes fees. Splits scale shares and inverse-scale average costs; pending order revisions are append-only. Fractional split holdings remain held; no cash-in-lieu. Raw cash dividends accrue at effective-session open to shares held before that open; payment-date delay/taxes are not modeled. Adjusted/total-return inputs cannot also receive duplicate cash dividends.
+
+No interest/financing/tax/FX/borrow model. No delisting returns, opening-auction certification, securities-lending benefits or real-account synchronization. Simulated orders are research proposals only.

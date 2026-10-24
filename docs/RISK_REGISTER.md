@@ -1,0 +1,13 @@
+# Risk register
+
+- R1 High / Blocked: real input adjustment, PIT availability, complete actions and delistings. Owner: data. Gate: no strict real replay without explicit reviewed provenance. Next: licensed snapshots and independent checks.
+- R2 High / Mitigated in tested scope: future leakage and same-close execution. Owner: accounting. Gate: next eligible session, availability checks, future perturbation tests. Residual: provider timestamps are assertions, not independent certification.
+- R3 High / Mitigated in tested scope: cash/quantity corruption, opening-gap constraints, overlapping sells and split order changes. Owner: accounting plus independent QA. Evidence: independent reconstruction of 48 scenarios/879 fills. Residual: no cash-in-lieu, payment delay or delisting economic model.
+- R4 Medium / Explicit approximation: same-day daily volume caps are ex-post capacity assumptions; opening liquidity is unknown. No fill guarantee or capacity certification.
+- R5 Medium / Mitigated: missing/corrupt/incomplete artifacts. Content hashes and required files detect ordinary corruption; local checksums are not cryptographic authenticity against an attacker rewriting both data and hashes. Corrupt datasets cannot replay.
+- R6 Medium / Explicit limitation: price drift can exceed weight targets after fills; engine records diagnostics. Sector mapping and continuous intraday hard risk enforcement are not implemented.
+- R7 High / Blocked: overfit/repeated holdout claims. Local append-only audit propagates tuning contamination across overlapping same-hash sessions. Out-of-band inspections and revised-dataset contamination require human review. Bootstrap is a stationary-mean diagnostic, not selection-adjusted proof.
+- R8 Medium / Partial: AI planner/tool governance. Only typed bounded simulation tools, ModelAdapter protocol and deterministic critic are present. No arbitrary command/file/broker tool. Full autonomous planner/global quota system remains Planned.
+- R9 Medium / Verification gate: source files and installed environment must be frozen and the UI restarted. Before/after disk hashes cannot prove that old Python objects were not cached in memory. Reproducibility is verified on fresh processes.
+- R10 Low / Open: exchange-calendars NumPy deprecation. Keep visible; upgrade only with correctness regression. The separate MCP coroutine leak was reproduced and repaired rather than suppressed.
+- R11 Medium / External: GitHub CLI authentication invalid, existing repo public, hosted CI/remote ChatGPT separate gates. No runtime market payload or credentials may enter the commit. Publication outcome is in the delivery report.

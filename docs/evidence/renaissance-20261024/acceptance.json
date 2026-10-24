@@ -1,0 +1,343 @@
+{
+  "scope": "SOFTWARE_AND_SYNTHETIC_FIXTURE_ONLY",
+  "tests": {
+    "tests": 168,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "financial_runtime_warnings": "TREATED_AS_ERRORS",
+  "source_hash": "06ee532642910d385759c6ca9ceb751d6946119914777e7690dcb680faba5a8e",
+  "fixture_suite": {
+    "acceptance": "FIXTURE",
+    "market_performance_inference": "PROHIBITED",
+    "dataset_id": "3a5edaeb21f5156e83a2be9a37d0543ed88248048ab208d0f867bc68abe2b38e",
+    "cases": [
+      {
+        "case": "A_buy_hold",
+        "experiment_id": "4aae236394cf478fa779a0a2442ccff9",
+        "status": "COMPLETED",
+        "acceptance": "FIXTURE",
+        "error": null
+      },
+      {
+        "case": "B_trend",
+        "experiment_id": "0d572bc5c4034a2ab7d8f53ede21babb",
+        "status": "COMPLETED",
+        "acceptance": "FIXTURE",
+        "error": null
+      },
+      {
+        "case": "C_allocation",
+        "experiment_id": "6f19ad7e1b1848a19ef2975736fcc653",
+        "status": "COMPLETED",
+        "acceptance": "FIXTURE",
+        "error": null
+      },
+      {
+        "case": "cost_zero",
+        "experiment_id": "1af7752bc1fe4f97a1329c327c9c06f6",
+        "status": "COMPLETED",
+        "acceptance": "FIXTURE",
+        "error": null
+      },
+      {
+        "case": "cost_stress",
+        "experiment_id": "c0c310cc7e834ea28f982f0df864c2ec",
+        "status": "COMPLETED",
+        "acceptance": "FIXTURE",
+        "error": null
+      },
+      {
+        "case": "parameter_42",
+        "experiment_id": "23fd73c5ebd645329158a9f61681b5bc",
+        "status": "COMPLETED",
+        "acceptance": "FIXTURE",
+        "error": null
+      },
+      {
+        "case": "parameter_84",
+        "experiment_id": "691c51cec3ee4520bdc661dd9b1acfab",
+        "status": "COMPLETED",
+        "acceptance": "FIXTURE",
+        "error": null
+      },
+      {
+        "case": "declared_holdout",
+        "experiment_id": "ac0c4e6e57124ce2854eb7d3b3f68506",
+        "status": "COMPLETED",
+        "acceptance": "FIXTURE",
+        "error": null
+      }
+    ],
+    "failed_control": {
+      "experiment_id": "1777ed5a83bf4082871efe8c55fdb1c4",
+      "status": "FAILED"
+    },
+    "comparison": {
+      "status": "COMPARABLE",
+      "warnings": [],
+      "experiments": [
+        {
+          "experiment_id": "4aae236394cf478fa779a0a2442ccff9",
+          "strategy": "buy_and_hold",
+          "cost_model": {
+            "fee_bps": 10.0,
+            "initial_cash": 100000.0,
+            "lookback": 63,
+            "lot_size": 1,
+            "max_gross_exposure": 1.0,
+            "max_positions": 10,
+            "max_single_weight": 1.0,
+            "max_turnover": 2.0,
+            "max_volume_fraction": 0.01,
+            "min_cash_buffer": 0.02,
+            "order_delay_sessions": 1,
+            "rebalance_sessions": 21,
+            "seed": 42,
+            "slippage_bps": 5.0,
+            "spread_bps": 2.0,
+            "volatility_target": 0.15
+          },
+          "metrics": {
+            "alpha_annualized_arithmetic": 1.7076184216646695e-18,
+            "average_holding_period_sessions": null,
+            "beta": 1.0000000000000002,
+            "cagr": -0.018321238287401398,
+            "calmar": -0.10799066194494891,
+            "correlation": 1.0,
+            "drawdown_duration_sessions": 274.0,
+            "fill_count": 1.0,
+            "information_ratio": null,
+            "market_exposure": 0.9782960648974017,
+            "max_drawdown": -0.16965576428025908,
+            "profit_factor": null,
+            "return": -0.03063309404916481,
+            "sharpe": -0.05217125009585771,
+            "sortino": -0.07545289533296017,
+            "tracking_error": 0.0,
+            "trade_count": null,
+            "transaction_cost_drag_initial_capital": 0.001565536732469282,
+            "turnover": 0.9786805288696512,
+            "volatility": 0.14726375111818205,
+            "win_rate": null
+          }
+        },
+        {
+          "experiment_id": "0d572bc5c4034a2ab7d8f53ede21babb",
+          "strategy": "trend",
+          "cost_model": {
+            "fee_bps": 10.0,
+            "initial_cash": 100000.0,
+            "lookback": 63,
+            "lot_size": 1,
+            "max_gross_exposure": 1.0,
+            "max_positions": 10,
+            "max_single_weight": 1.0,
+            "max_turnover": 2.0,
+            "max_volume_fraction": 0.01,
+            "min_cash_buffer": 0.02,
+            "order_delay_sessions": 1,
+            "rebalance_sessions": 21,
+            "seed": 42,
+            "slippage_bps": 5.0,
+            "spread_bps": 2.0,
+            "volatility_target": 0.15
+          },
+          "metrics": {
+            "alpha_annualized_arithmetic": 0.020371118387092043,
+            "average_holding_period_sessions": null,
+            "beta": 0.3657464796417207,
+            "cagr": 0.013678147929176099,
+            "calmar": 0.14730557875967804,
+            "correlation": 0.6031867016750275,
+            "drawdown_duration_sessions": 128.0,
+            "fill_count": 7.0,
+            "information_ratio": 0.2149188554205016,
+            "market_exposure": 0.34876890881244577,
+            "max_drawdown": -0.09285560020432992,
+            "profit_factor": null,
+            "return": 0.02312129995794998,
+            "sharpe": 0.19666531208752372,
+            "sortino": 0.283056141886203,
+            "tracking_error": 0.11745849970822958,
+            "trade_count": null,
+            "transaction_cost_drag_initial_capital": 0.00786261164189024,
+            "turnover": 4.892680250637732,
+            "volatility": 0.08929440652577217,
+            "win_rate": null
+          }
+        },
+        {
+          "experiment_id": "6f19ad7e1b1848a19ef2975736fcc653",
+          "strategy": "low_volatility",
+          "cost_model": {
+            "fee_bps": 10.0,
+            "initial_cash": 100000.0,
+            "lookback": 63,
+            "lot_size": 1,
+            "max_gross_exposure": 1.0,
+            "max_positions": 10,
+            "max_single_weight": 1.0,
+            "max_turnover": 2.0,
+            "max_volume_fraction": 0.01,
+            "min_cash_buffer": 0.02,
+            "order_delay_sessions": 1,
+            "rebalance_sessions": 21,
+            "seed": 42,
+            "slippage_bps": 5.0,
+            "spread_bps": 2.0,
+            "volatility_target": 0.15
+          },
+          "metrics": {
+            "alpha_annualized_arithmetic": -0.0056555409001305176,
+            "average_holding_period_sessions": null,
+            "beta": 0.3504883001138665,
+            "cagr": -0.010177810354492833,
+            "calmar": -0.13474844201605743,
+            "correlation": 0.8404059198705118,
+            "drawdown_duration_sessions": 413.0,
+            "fill_count": 63.0,
+            "information_ratio": -0.0065700588845430405,
+            "market_exposure": 0.9786662637334539,
+            "max_drawdown": -0.07553193344736397,
+            "profit_factor": null,
+            "return": -0.017065025392381084,
+            "sharpe": -0.13593108214250402,
+            "sortino": -0.19197316334940942,
+            "tracking_error": 0.10127540652205798,
+            "trade_count": null,
+            "transaction_cost_drag_initial_capital": 0.0029208295848076934,
+            "turnover": 1.8586171681247525,
+            "volatility": 0.06141582368405465,
+            "win_rate": null
+          }
+        }
+      ]
+    },
+    "trials_attempted": 8,
+    "selection": "ALL_PREDECLARED_CASES_RETAINED",
+    "holdout": "Declared chronological synthetic evaluation only; no model fitting or independent market validation",
+    "completed": 8,
+    "metrics_available": true,
+    "performance": {
+      "elapsed_seconds": 27.526436700019985,
+      "peak_traced_bytes": 97170932,
+      "includes": "dataset validation, replay, analytics, serialization and HTML chart generation",
+      "optimization": "No optimization claimed; profile establishes baseline"
+    }
+  },
+  "profile_before": {
+    "elapsed_seconds": 81.30648510000901,
+    "peak_traced_bytes": 101379789,
+    "includes": "dataset validation, replay, analytics, serialization and HTML chart generation",
+    "optimization": "No optimization claimed; profile establishes baseline"
+  },
+  "profile_after": {
+    "elapsed_seconds": 39.88089889998082,
+    "peak_traced_bytes": 99497616,
+    "includes": "dataset validation, replay, analytics, serialization and HTML chart generation",
+    "optimization": "No optimization claimed; profile establishes baseline"
+  },
+  "exact_result_comparison": [
+    {
+      "case": "A_buy_hold",
+      "result_equal": true,
+      "analysis_equal": true
+    },
+    {
+      "case": "B_trend",
+      "result_equal": true,
+      "analysis_equal": true
+    },
+    {
+      "case": "C_allocation",
+      "result_equal": true,
+      "analysis_equal": true
+    },
+    {
+      "case": "cost_zero",
+      "result_equal": true,
+      "analysis_equal": true
+    },
+    {
+      "case": "cost_stress",
+      "result_equal": true,
+      "analysis_equal": true
+    },
+    {
+      "case": "parameter_42",
+      "result_equal": true,
+      "analysis_equal": true
+    },
+    {
+      "case": "parameter_84",
+      "result_equal": true,
+      "analysis_equal": true
+    },
+    {
+      "case": "declared_holdout",
+      "result_equal": true,
+      "analysis_equal": true
+    }
+  ],
+  "clean_base_wheel": {
+    "status": "PASSED",
+    "package_path": "runtime\\clean-wheel-final\\Lib\\site-packages\\alphamosaic\\__init__.py",
+    "python": "3.12.14",
+    "optional": {
+      "openbb-core": "NOT_INSTALLED",
+      "quantstats": "NOT_INSTALLED",
+      "streamlit": "NOT_INSTALLED",
+      "plotly": "NOT_INSTALLED"
+    },
+    "experiment_id": "39f8f39702ed4edf9f05be80f6227221",
+    "acceptance": "FIXTURE",
+    "broker_enabled": false
+  },
+  "clean_wheel_mcp": {
+    "status": "PASSED",
+    "protocol_version": "2025-11-25",
+    "tool_count": 26,
+    "invocation": "get_system_status",
+    "ranking_run_id": null,
+    "broker_enabled": false,
+    "remote_chatgpt": "NOT_VERIFIED"
+  },
+  "dependency_audit": {
+    "service": "OSV",
+    "packages": 140,
+    "known_findings": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "status": "PASSED",
+    "pages": [
+      "Research Overview",
+      "Data Explorer",
+      "Strategy Lab",
+      "Backtest Results",
+      "Experiment Comparison",
+      "Risk Lab",
+      "AI Research",
+      "Reports"
+    ],
+    "browser_errors": [],
+    "screenshots": 9,
+    "scope": "Navigation, render, populated local fixture reports and mobile degradation; not every interactive action"
+  },
+  "build": {
+    "alphamosaic-0.1.0-py3-none-any.whl": {
+      "bytes": 134466,
+      "sha256": "70ce36a2b99822b3745a85fd0577377ee6d4144fb9dba183f52d7c1eb274b268"
+    },
+    "alphamosaic-0.1.0.tar.gz": {
+      "bytes": 283398,
+      "sha256": "6b0bca66c198c6f5826a6d510b7e88b2762756eae1126834f5b42b178ebd1d99"
+    }
+  },
+  "sdist_runtime_excluded": true,
+  "real_data_acceptance": "BLOCKED_PIT_ACTION_ADJUSTMENT_UNIVERSE_DELISTING",
+  "remote_chatgpt": "NOT_VERIFIED",
+  "hosted_ci": "NOT_VERIFIED"
+}

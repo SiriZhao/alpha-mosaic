@@ -73,6 +73,27 @@ def create_server(service: ApplicationService | None = None) -> MCPServer:
     def framework_matrix() -> list[dict[str, Any]]:
         return application.framework_matrix()
 
+    @server.tool(annotations=_annotations())
+    def research_datasets() -> list[dict[str, Any]]:
+        """List local versioned datasets; no arbitrary filesystem access."""
+        return application.research_datasets()
+
+    @server.tool(annotations=_annotations())
+    def research_experiments() -> list[dict[str, Any]]:
+        return application.research_experiments()
+
+    @server.tool(annotations=_annotations(False))
+    def run_research_experiment(config: dict[str, Any]) -> dict[str, Any]:
+        """Run a typed bounded local simulation; no broker or external code execution."""
+        from alphamosaic.experiments.runner import ExperimentConfig
+        checked = ExperimentConfig.model_validate(config).model_dump(mode="json")
+        job_id = jobs.submit(lambda: application.research_experiment(checked))
+        return {"status": "READY", "job_id": job_id, "message": "local research only; poll job_status"}
+
+    @server.tool(annotations=_annotations())
+    def compare_research_experiments(experiment_ids: list[str]) -> dict[str, Any]:
+        return application.research_comparison(experiment_ids)
+
     @server.tool(annotations=_annotations(False))
     async def scan_market(universe_limit: int = 30, top: int = 10) -> dict[str, Any]:
         report = await asyncio.to_thread(application.scan, universe_limit=universe_limit, top=top, persist=True)

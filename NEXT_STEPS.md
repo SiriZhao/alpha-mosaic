@@ -1,5 +1,15 @@
 # Next steps
 
+## Renaissance next checkpoint
+
+1. Read ALPHA_MOSAIC_DELIVERY_REPORT.md, docs/PROGRESS.md and docs/RISK_REGISTER.md before resuming. Preserve all worktrees and runtime evidence. Do not restart from the older root audit branch.
+2. Highest-value P0: legally licensed raw-plus-actions snapshots with reviewed PIT timestamps, historical constituents and delistings. Current network capture is PARTIAL/UNKNOWN adjustment; do not bypass qualification or substitute FIXTURE returns.
+3. Extend independent golden-data/accounting tests, dividend payment-date/cash-in-lieu handling and closed-lot/asset contribution analytics. Weekly research needs explicit resampling and annualization tests.
+4. Broaden terminal action/long-job/cancellation tests and durable global quotas. Full model-driven planner is not yet implemented; deterministic critic and typed simulation tools do not certify that stage.
+5. Observe hosted CI and authenticated branch/PR delivery separately from local checks. GitHub CLI token is invalid; connector ADMIN identity is verified; actual Git push result is in the release addendum. Remote ChatGPT remains NOT_VERIFIED.
+
+The older roadmap below is retained as history; its provider/credential/CI assertions are not current verification.
+
 1. Operator-configure Docker/LEAN, a pinned project and licensed point-in-time data; run a same-input fill comparison before considering an independent execution engine.
 2. Add a reviewed point-in-time dataset with historical constituents, delistings, corporate actions and transaction-cost evidence; rerun walk-forward and regime diagnostics.
 3. Record forward signals daily in the immutable store and wait for predeclared T+5/T+20/T+60 observations; require independent replication and human review.

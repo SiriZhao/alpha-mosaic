@@ -267,7 +267,14 @@ class DatasetStore:
         return payload
 
     def list(self) -> list[dict[str, Any]]:
-        return [self.manifest(p.name) for p in sorted(self.root.iterdir()) if p.is_dir() and _ID.fullmatch(p.name)]
+        rows = []
+        for path in sorted(self.root.iterdir()):
+            if path.is_dir() and _ID.fullmatch(path.name):
+                try:
+                    rows.append(self.manifest(path.name))
+                except (ValueError, OSError, KeyError, TypeError):
+                    rows.append({"dataset_id": path.name, "state": "CORRUPT", "replay_allowed": False})
+        return rows
 
     def capture_provider(
         self,

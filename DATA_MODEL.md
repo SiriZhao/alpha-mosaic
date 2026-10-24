@@ -1,0 +1,13 @@
+# Data model and trust boundaries
+
+Core contracts are frozen Pydantic models with forbidden unknown fields and non-finite values. `ReplayDataset` contains instrument-keyed chronological HistoricalBars, verified SecurityIdentity records, CorporateActions, DatedSignals, aware UTC cutoff, mode and explicit historical-universe/action coverage assertions. Replay revalidates nested input even after model_copy.
+
+Each bar records symbol/session/OHLCV, currency, provider/source URL, observation/publication/known/as-of timestamps, adjustment policy, evidence class, license scope, PIT status and provenance. `known_at` is availability, not a synonym for market date. Raw price, split-adjusted price and total-return series remain distinct. Reconstructed downloads cannot silently become certified historical knowledge.
+
+DatasetStore hashes canonical `{schema_version, dataset}` JSON, assigns that SHA256 as dataset_id/version, stages publication into a unique directory and never replaces an existing snapshot with different metadata. A separately hashed manifest records providers, reported source versions or NOT_REPORTED, acquisition/as-of time, identities, adjustment, calendar XNYS, timezone UTC, daily frequency, evidence class, licensing, universe method and quality policy. Capture retains normalized provider responses, not original HTTP bytes. Acquisition errors remain explicit.
+
+Policies: REJECT refuses review flags; QUARANTINE retains evidence but prohibits replay; WARN and ACCEPT_WITH_PROVENANCE retain review flags but cannot override structural invalidity. Duplicate/out-of-order/missing/non-session bars, invalid price/volume, misaligned assets, mixed identity/currency/adjustment, future availability and corporate-action problems fail closed. No anomaly is silently interpolated. Large jumps and mixed sources require explicit review policy. A corrupt manifest is listed CORRUPT, while load still rejects it.
+
+STRICT_PIT requires causal availability and declared complete historical universe/action evidence; real strict data must use raw prices with complete actions. FIXTURE strict tests only validate software mechanics. RECONSTRUCTED_DIAGNOSTIC retains revision/survivorship/adjustment limitations. The current source adapter does not establish complete delisting or historical-membership coverage.
+
+Outputs: SignalEvent → OrderEvent → Fill, optional OrderAdjustment, CashEntry and LedgerEvent snapshots; EquityPoint stores cash, positions, average costs, market values and NAV. Experiment configuration is validated separately from immutable result artifacts. Financial missing values remain null, never fixture estimates or model assertions.

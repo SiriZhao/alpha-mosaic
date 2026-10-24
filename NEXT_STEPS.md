@@ -2,6 +2,8 @@
 
 ## Renaissance next checkpoint
 
+Release note: draft PR #4 exists and implementation CI run40135345657 passed. Review the stacked PR chain without auto-merging. Observe later evidence-only commit CI separately; no additional model/data credential is required for offline research.
+
 1. Read ALPHA_MOSAIC_DELIVERY_REPORT.md, docs/PROGRESS.md and docs/RISK_REGISTER.md before resuming. Preserve all worktrees and runtime evidence. Do not restart from the older root audit branch.
 2. Highest-value P0: legally licensed raw-plus-actions snapshots with reviewed PIT timestamps, historical constituents and delistings. Current network capture is PARTIAL/UNKNOWN adjustment; do not bypass qualification or substitute FIXTURE returns.
 3. Extend independent golden-data/accounting tests, dividend payment-date/cash-in-lieu handling and closed-lot/asset contribution analytics. Weekly research needs explicit resampling and annualization tests.

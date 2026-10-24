@@ -15,3 +15,5 @@ Resume date: 2026-10-24. Working branch: codex/renaissance-20261024. Base: ccd36
 - Real capture: SPY/QQQM 706 HISTORICAL rows each, UNKNOWN adjustment; TLT EMPTY. No dataset or historical performance published from this attempt.
 
 Final commands, counts, artifact locations, CI/publication status and blockers are maintained in ../ALPHA_MOSAIC_DELIVERY_REPORT.md. Resume from that report rather than rerunning old branches or assuming this roadmap is complete.
+
+Publication checkpoint2026-10-25: integration commit a6dd38e pushed and remote verified; draft PR #4 stacked on #3; implementation CI40135345657 passed. A clean committed eight-case rerun matched exact accounting/analytics. Its anomalous elapsed interval is explicitly unusable for performance comparison. Full production acceptance remains incomplete because strict real data and documented research capabilities remain blocked/planned.

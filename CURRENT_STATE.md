@@ -2,6 +2,8 @@
 
 ## Authoritative Renaissance checkpoint — 2026-10-24
 
+Publication update (2026-10-25 Asia/Shanghai): implementation `a6dd38e` is pushed with matching remote SHA; draft PR #4 is stacked on #3. Hosted CI run40135345657 passed every quality gate. Clean-commit eight-case reproduction retained exact results/analytics. Later evidence-only commits have separate CI runs. Remote ChatGPT and strict real-data research remain unverified/blocked respectively.
+
 The sections below are retained historical evidence. The current work is isolated on
 `codex/renaissance-20261024`, recovered from ccd369e; the older root dirty checkout is untouched.
 See ALPHA_MOSAIC_DELIVERY_REPORT.md and docs/evidence/renaissance-20261024/acceptance.json.

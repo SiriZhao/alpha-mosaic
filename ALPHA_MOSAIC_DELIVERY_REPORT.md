@@ -84,3 +84,12 @@ Actual screenshot evidence, FIXTURE only:
 ![Overview](docs/evidence/renaissance-20261024/01-research-overview.png)
 ![Result chart with costs and provenance](docs/evidence/renaissance-20261024/04-backtest-results.png)
 ![Mobile report](docs/evidence/renaissance-20261024/09-mobile-reports.png)
+
+### Publication verified — 2026-10-25 (Asia/Shanghai)
+
+- Implementation commit `a6dd38e24ab421493ef056d582490abee62d80f8` was pushed normally; `git ls-remote` matched the local SHA. No main or existing worktree was changed.
+- [Draft PR #4](https://github.com/SiriZhao/alpha-mosaic/pull/4), stacked on the still-open data-quality PR #3 (`codex/data-quality-20261013`), was created and observed mergeable. The connector's PR write returned403; a separately verified existing Git transport identity/permission successfully created it without exposing or persisting credentials. No paid provisioning or visibility change.
+- [Hosted CI](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40135345657) **PASSED**: lock/sync, Ruff, Pyright, tests, offline repeat/performance smoke, real local MCP handshake, build, clean-wheel smoke, dependency audit and secret scan. Machine-readable capture: docs/evidence/renaissance-20261024/ci-implementation.json. Remote ChatGPT remains NOT_VERIFIED.
+- Repeated all eight cases from the clean committed implementation: `git_dirty=false`, same source hash, exact result and analytics equality. Timing had an anomalous long interval of unknown cause; raw metadata is retained and excluded from performance claims. See committed-reproduction.json.
+- Latest rebuilt distributions at `runtime/release-a6dd38e/` include review evidence; all49 packaged Python files match the clean-wheel-tested code exactly. Runtime exclusion and artifact hashes are in release-build.json. This supersedes the earlier local package output paths for source-archive completeness.
+- Documentation-only publication evidence is committed separately after implementation CI; current branch/PR status should be checked against its actual latest commit. Financial/data limitations above remain unchanged and full production-grade research acceptance is still not claimed.

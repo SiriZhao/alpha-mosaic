@@ -12,6 +12,7 @@ from alphamosaic.evaluation.analytics import analyze, benchmark_metrics, returns
 from alphamosaic.evaluation.scientific import (
     DEFAULT_RANKING_WEIGHTS,
     HoldoutAudit,
+    Standardizer,
     block_bootstrap_mean,
     chronological_split,
     fit_standardizer,
@@ -217,6 +218,15 @@ def test_bootstrap_is_reproducible_and_reports_uncertainty_limits() -> None:
     constant = block_bootstrap_mean([0.01] * 10, resamples=100)
     assert constant["mean_95pct_interval"] == pytest.approx([0.01, 0.01])
     assert any("repeated trials" in limit for limit in first["limitations"])
+
+
+def test_extreme_feature_and_bootstrap_statistics_fail_before_emitting_infinity() -> None:
+    with pytest.raises(ValueError, match="fitted statistics"):
+        fit_standardizer(np.full((10, 2), 1e308), chronological_split(10))
+    with pytest.raises(ValueError, match="bootstrap statistics"):
+        block_bootstrap_mean([1e308] * 10, resamples=100)
+    with pytest.raises(ValueError, match="standardized"):
+        Standardizer((0,), (1e-100,), (0,)).transform([[1e308]])
 
 
 def test_ranking_missing_dimensions_remain_unscored_and_custom_weights_are_explicit() -> None:

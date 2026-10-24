@@ -79,7 +79,11 @@ class Standardizer:
         array = np.asarray(values, dtype=float)
         if array.ndim != 2 or array.shape[1] != len(self.mean) or not np.isfinite(array).all():
             raise ValueError("finite two-dimensional features with fitted width required")
-        return (array - self.mean) / self.scale
+        with np.errstate(over="ignore", invalid="ignore", divide="ignore"):
+            result = (array - self.mean) / self.scale
+        if not np.isfinite(result).all():
+            raise ValueError("non-finite standardized features")
+        return result
 
 
 def fit_standardizer(
@@ -96,9 +100,13 @@ def fit_standardizer(
     if max(split.train) >= min(split.validation) or max(split.validation) >= min(split.holdout):
         raise ValueError("chronological training, validation, holdout required")
     training = array[list(split.train)]
-    scale = training.std(axis=0, ddof=0)
+    with np.errstate(over="ignore", invalid="ignore"):
+        mean = training.mean(axis=0)
+        scale = training.std(axis=0, ddof=0)
+    if not np.isfinite(mean).all() or not np.isfinite(scale).all():
+        raise ValueError("non-finite fitted statistics from extreme feature magnitudes")
     scale[scale == 0] = 1
-    return Standardizer(tuple(float(v) for v in training.mean(axis=0)), tuple(float(v) for v in scale), split.train)
+    return Standardizer(tuple(float(v) for v in mean), tuple(float(v) for v in scale), split.train)
 
 
 def block_bootstrap_mean(
@@ -117,12 +125,16 @@ def block_bootstrap_mean(
     rng = np.random.default_rng(seed)
     samples = np.empty(resamples)
     blocks = math.ceil(len(array) / block_sessions)
-    for i in range(resamples):
-        starts = rng.integers(0, len(array), size=blocks)
-        indices = (starts[:, None] + np.arange(block_sessions)) % len(array)
-        samples[i] = array[indices.ravel()[:len(array)]].mean()
+    with np.errstate(over="ignore", invalid="ignore"):
+        mean = float(array.mean())
+        for i in range(resamples):
+            starts = rng.integers(0, len(array), size=blocks)
+            indices = (starts[:, None] + np.arange(block_sessions)) % len(array)
+            samples[i] = array[indices.ravel()[:len(array)]].mean()
+    if not math.isfinite(mean) or not np.isfinite(samples).all():
+        raise ValueError("non-finite bootstrap statistics from extreme magnitudes")
     return {
-        "mean": float(array.mean()),
+        "mean": mean,
         "mean_95pct_interval": [float(v) for v in np.quantile(samples, [0.025, 0.975])],
         "observations": len(array), "block_sessions": block_sessions, "resamples": resamples, "seed": seed,
         "method": "CIRCULAR_FIXED_BLOCK_PERCENTILE_BOOTSTRAP",

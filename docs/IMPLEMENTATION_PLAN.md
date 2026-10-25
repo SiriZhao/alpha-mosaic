@@ -16,7 +16,7 @@ Goal: bounded research cases, chronological splits, training-only fit, holdout c
 
 ## P3 — optional AI and advanced research
 
-Goal: controlled hypothesis/planning/execution/critic workflow without paid-LLM dependency. Dependencies: P0–P2 and auditable tool quotas. Implemented: frozen explicit hypothesis/grid, data/source version review, fixed worker tools, per-home global experiment lease, hard worker deadlines, durable hashed audit/counter validation, complete outcome retention and deterministic critics. Optional commentary cannot introduce numeric claims or investment-promotion phrases. Partial/Planned: adaptive model planning, independently validated selection corrections and safe interrupted-plan recovery. No attractive backtest automatically promotes a strategy.
+Goal: controlled hypothesis/planning/execution/critic workflow without paid-LLM dependency. Dependencies: P0–P2 and auditable tool quotas. Implemented: frozen explicit hypothesis/grid, data/source version review, fixed worker tools, per-home global experiment lease, hard worker deadlines, durable hashed audit/counter validation, complete outcome retention and deterministic critics. Planned dispatch is bound to a unique pending audit call under the execution lease; changed/late/duplicate/unidentified/unsealed attempts fail closed. Optional commentary cannot introduce numeric claims or investment-promotion phrases. Partial/Planned: explicit append-only interrupted-plan reconciliation, adaptive model planning and independently validated selection corrections. No attractive backtest automatically promotes a strategy.
 
 ## Release gate
 

@@ -1,5 +1,11 @@
 # AlphaMosaic Renaissance — engineering delivery
 
+## Latest frozen-dispatch safety checkpoint — 2026-10-25
+
+Six actual unauthorized/duplicate worker failures were reproduced and repaired, then independently reviewed. The shared executor now validates a unique pending frozen call and canonical config/request/source/manifest while holding its global OS lease. Missing context, late/duplicate attempts, corrupt/unidentified/unsealed artifacts and original experiment-directory junctions refuse new experiment creation. Full suite:361 passed, zero failed/error/skipped; independent dispatch run14 passed. Source `a26523a908f264868dee7eb4da6a3df92f4ab0b16a2bf65514c52d74b1b1c988`. See [dispatch acceptance](docs/RESEARCH_DISPATCH_ACCEPTANCE_20261025.md) for source-specific wheel/CI evidence and retained negative cases. UI/report files are unchanged from the prior browser-qualified milestone.
+
+Explicit interrupted-plan reconciliation remains Planned: dispatch refusal is only its prerequisite. A completed artifact cannot establish the unobserved original process exit, and workers can write late immutable responses after releasing the experiment lease. Full platform acceptance, real-data qualification and the other documented research requirements remain incomplete; no market-return or alpha claim is made.
+
 ## Latest ordinary-dividend payment checkpoint — 2026-10-25
 
 Published implementation `c63deb9` has matching local/remote SHA and [successful current hosted CI](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40201042155):346 Linux tests, fresh base-wheel payment/worker cases, MCP, build, dependency audit and secret scan. [Eight clean-commit reproductions](docs/evidence/dividend-payment-20261025/committed-reproduction.json) exactly matched replay/accounting/analysis; only separately validated identity/time metadata differs. [CI evidence](docs/evidence/dividend-payment-20261025/hosted-ci.json) names this implementation. [Draft PR #4](https://github.com/SiriZhao/alpha-mosaic/pull/4) was updated without merging. Later evidence-only commits have their own CI observation.

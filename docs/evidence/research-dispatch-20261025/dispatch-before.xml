@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="4" time="19.051" timestamp="2026-10-25T22:17:20.046046+08:00" hostname="YOGA"><testcase classname="tests.test_research_dispatch" name="test_worker_refuses_unauthorized_or_terminal_dispatch_before_creating_artifact[unknown_plan]" time="3.645"><failure message="AssertionError: assert 0 == 1&#10; +  where 0 = worker_main(WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-reproduced/test_worker_refuses_unauthoriz0'), WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-reproduced/...ker_refuses_unauthoriz0/research_plans/126efc21bbc44493abc144c453010647/d3b4a747775b422bb07df135463dc601-request.json'))">tmp_path = WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-reproduced/test_worker_refuses_unauthoriz0')
+change = 'unknown_plan'
+
+    @pytest.mark.parametrize("change", ["unknown_plan", "changed_config", "finished_plan"])
+    def test_worker_refuses_unauthorized_or_terminal_dispatch_before_creating_artifact(tmp_path: Path, change: str) -&gt; None:
+        workflow, plan, attempt, path, payload = dispatched(tmp_path)
+        if change == "unknown_plan":
+            payload["config"]["research_context"]["plan_id"] = "f" * 32
+        elif change == "changed_config":
+            payload["config"]["strategy"] = "trend"
+        else:
+            workflow.store.append(plan["plan_id"], "TOOL_RESULT", {
+                "ordinal": 0, "attempt_id": attempt, "status": "TIMED_OUT"})
+            workflow.store.append(plan["plan_id"], "RUN_FINISHED", {
+                "status": "FAILED", "attempted": 1, "declared": 1, "completed": 0})
+        path.write_bytes(canonical(payload))
+&gt;       assert worker_main(tmp_path, path) == 1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = worker_main(WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-reproduced/test_worker_refuses_unauthoriz0'), WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-reproduced/...ker_refuses_unauthoriz0/research_plans/126efc21bbc44493abc144c453010647/d3b4a747775b422bb07df135463dc601-request.json'))
+
+tests\test_research_dispatch.py:49: AssertionError</failure></testcase><testcase classname="tests.test_research_dispatch" name="test_worker_refuses_unauthorized_or_terminal_dispatch_before_creating_artifact[changed_config]" time="1.944"><failure message="AssertionError: assert 0 == 1&#10; +  where 0 = worker_main(WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-reproduced/test_worker_refuses_unauthoriz1'), WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-reproduced/...ker_refuses_unauthoriz1/research_plans/c6da3cec04664dd99f493be444b24c8b/10f3e91e18584f23942a99c062c1f2d0-request.json'))">tmp_path = WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-reproduced/test_worker_refuses_unauthoriz1')
+change = 'changed_config'
+
+    @pytest.mark.parametrize("change", ["unknown_plan", "changed_config", "finished_plan"])
+    def test_worker_refuses_unauthorized_or_terminal_dispatch_before_creating_artifact(tmp_path: Path, change: str) -&gt; None:
+        workflow, plan, attempt, path, payload = dispatched(tmp_path)
+        if change == "unknown_plan":
+            payload["config"]["research_context"]["plan_id"] = "f" * 32
+        elif change == "changed_config":
+            payload["config"]["strategy"] = "trend"
+        else:
+            workflow.store.append(plan["plan_id"], "TOOL_RESULT", {
+                "ordinal": 0, "attempt_id": attempt, "status": "TIMED_OUT"})
+            workflow.store.append(plan["plan_id"], "RUN_FINISHED", {
+                "status": "FAILED", "attempted": 1, "declared": 1, "completed": 0})
+        path.write_bytes(canonical(payload))
+&gt;       assert worker_main(tmp_path, path) == 1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = worker_main(WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-reproduced/test_worker_refuses_unauthoriz1'), WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-reproduced/...ker_refuses_unauthoriz1/research_plans/c6da3cec04664dd99f493be444b24c8b/10f3e91e18584f23942a99c062c1f2d0-request.json'))
+
+tests\test_research_dispatch.py:49: AssertionError</failure></testcase><testcase classname="tests.test_research_dispatch" name="test_worker_refuses_unauthorized_or_terminal_dispatch_before_creating_artifact[finished_plan]" time="1.792"><failure message="AssertionError: assert 0 == 1&#10; +  where 0 = worker_main(WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-reproduced/test_worker_refuses_unauthoriz2'), WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-reproduced/...ker_refuses_unauthoriz2/research_plans/94ec74d6208c430b90b770a8ed19ecb5/64e8ac9a8e65497e9a6c25eeab4a0840-request.json'))">tmp_path = WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-reproduced/test_worker_refuses_unauthoriz2')
+change = 'finished_plan'
+
+    @pytest.mark.parametrize("change", ["unknown_plan", "changed_config", "finished_plan"])
+    def test_worker_refuses_unauthorized_or_terminal_dispatch_before_creating_artifact(tmp_path: Path, change: str) -&gt; None:
+        workflow, plan, attempt, path, payload = dispatched(tmp_path)
+        if change == "unknown_plan":
+            payload["config"]["research_context"]["plan_id"] = "f" * 32
+        elif change == "changed_config":
+            payload["config"]["strategy"] = "trend"
+        else:
+            workflow.store.append(plan["plan_id"], "TOOL_RESULT", {
+                "ordinal": 0, "attempt_id": attempt, "status": "TIMED_OUT"})
+            workflow.store.append(plan["plan_id"], "RUN_FINISHED", {
+                "status": "FAILED", "attempted": 1, "declared": 1, "completed": 0})
+        path.write_bytes(canonical(payload))
+&gt;       assert worker_main(tmp_path, path) == 1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = worker_main(WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-reproduced/test_worker_refuses_unauthoriz2'), WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-reproduced/...ker_refuses_unauthoriz2/research_plans/94ec74d6208c430b90b770a8ed19ecb5/64e8ac9a8e65497e9a6c25eeab4a0840-request.json'))
+
+tests\test_research_dispatch.py:49: AssertionError</failure></testcase><testcase classname="tests.test_research_dispatch" name="test_duplicate_pending_attempt_cannot_create_second_experiment_after_parent_loss" time="3.472"><failure message="AssertionError: assert [{'experiment...d_hold', ...}] == [{'experiment...d_hold', ...}]&#10;  &#10;  At index 0 diff: {'experiment_id': '92a3d0861683425c9ece1a9cbfde1ae5', 'created_at': '2026-10-25T14:17:37.690022+00:00', 'status': 'COMPLETED', 'strategy': 'buy_and_hold', 'dataset_id': 'ec4373d4528ab64b3b75127f433570e9e2c8a73349910288d8122c0e99a2ecd1', 'acceptance': 'FIXTURE', 'validation': 'EXPLORATORY', 'error': None, 'research_context': {'attempt_id': 'f7b04ad369c24e88a3caac2a7b9aeb43', 'ordinal': 0, 'plan_id': '3122fc6021a046fdaab6d029dbfbdb64'}} != {'experiment_id': '606f1680f8484af78a3cf5bf4e174183', 'created_at': '2026-10-25T14:17:35.946703+00:00', 'status': 'CO...&#10;  &#10;  ...Full output truncated (3 lines hidden), use '-vv' to show">tmp_path = WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-reproduced/test_duplicate_pending_attempt0')
+
+    def test_duplicate_pending_attempt_cannot_create_second_experiment_after_parent_loss(tmp_path: Path) -&gt; None:
+        _, _, _, path, _ = dispatched(tmp_path)
+        assert worker_main(tmp_path, path) == 0
+        before = ExperimentStore(tmp_path / "experiments").list()
+        assert len(before) == 1 and before[0]["status"] == "COMPLETED"
+        # The first completed response is immutable; a late duplicate must not run
+        # another experiment before discovering that its response already exists.
+        with pytest.raises(FileExistsError):
+            worker_main(tmp_path, path)
+&gt;       assert ExperimentStore(tmp_path / "experiments").list() == before
+E       AssertionError: assert [{'experiment...d_hold', ...}] == [{'experiment...d_hold', ...}]
+E         
+E         At index 0 diff: {'experiment_id': '92a3d0861683425c9ece1a9cbfde1ae5', 'created_at': '2026-10-25T14:17:37.690022+00:00', 'status': 'COMPLETED', 'strategy': 'buy_and_hold', 'dataset_id': 'ec4373d4528ab64b3b75127f433570e9e2c8a73349910288d8122c0e99a2ecd1', 'acceptance': 'FIXTURE', 'validation': 'EXPLORATORY', 'error': None, 'research_context': {'attempt_id': 'f7b04ad369c24e88a3caac2a7b9aeb43', 'ordinal': 0, 'plan_id': '3122fc6021a046fdaab6d029dbfbdb64'}} != {'experiment_id': '606f1680f8484af78a3cf5bf4e174183', 'created_at': '2026-10-25T14:17:35.946703+00:00', 'status': 'CO...
+E         
+E         ...Full output truncated (3 lines hidden), use '-vv' to show
+
+tests\test_research_dispatch.py:62: AssertionError</failure></testcase></testsuite></testsuites>

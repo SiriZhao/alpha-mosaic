@@ -240,6 +240,50 @@ class ResearchWorkflow:
             self.store.append(plan_id, "RUN_FINISHED", {"status": state, "attempted": len(outcomes), "declared": len(plan["trials"]), "completed": passed, "selection": "ALL_OUTCOMES_RETAINED", "automatic_promotion": False})
             return self.status(plan_id)
 
+    def authorize_dispatch(self, config: ExperimentConfig) -> None:
+        """Validate one pending frozen call while the caller holds the global lease."""
+        from alphamosaic.experiments.runner import ExperimentStore
+        context = config.research_context
+        if context is None:
+            raise ValueError("planned dispatch requires a research context")
+        state = self.status(context.plan_id)
+        plan, events = state["plan"], state["events"]
+        if state["status"] != "INCOMPLETE_OR_RUNNING":
+            raise ValueError("research plan is not open for dispatch")
+        calls = [e["payload"] for e in events if e["kind"] == "TOOL_CALL" and e["payload"]["attempt_id"] == context.attempt_id]
+        if len(calls) != 1 or calls[0]["ordinal"] != context.ordinal:
+            raise ValueError("research attempt has no unique frozen authorization")
+        if any(e["kind"] == "TOOL_RESULT" and e["payload"]["attempt_id"] == context.attempt_id for e in events):
+            raise ValueError("research attempt already has a recorded outcome")
+        expected = {**plan["trials"][context.ordinal]["config"], "research_context": context.model_dump(mode="json")}
+        if config.model_dump(mode="json") != expected:
+            raise ValueError("research dispatch differs from the frozen configuration")
+        if source_manifest()["source_hash"] != plan["source_hash"]:
+            raise ValueError("frozen dispatch source changed")
+        if self.datasets.manifest(config.dataset_id)["manifest_hash"] != plan["manifest_hash"]:
+            raise ValueError("frozen dispatch dataset provenance changed")
+        directory = contained_child(self.store.root, context.plan_id)
+        path = contained_child(directory, context.attempt_id + "-request.json")
+        response = contained_child(directory, context.attempt_id + "-response.json")
+        request = {"config": expected, "expected_source_hash": plan["source_hash"],
+            "dataset_hash": plan["dataset_hash"], "response": response.name}
+        if path.read_bytes() != canonical(request):
+            raise ValueError("research dispatch request differs from its canonical authorization")
+        if response.exists():
+            raise ValueError("research attempt already has an immutable response")
+        experiments = ExperimentStore(unredirected(self.home / "experiments"))
+        # Globbed metadata listings omit empty/interrupted directories. An
+        # unidentified artifact is uncertainty, never proof of no earlier run.
+        for child in unredirected(experiments.root).iterdir():
+            child = unredirected(child)
+            if not child.is_dir():
+                raise ValueError("unidentified experiment artifact prevents safe planned dispatch")
+            item = experiments.load(child.name)
+            if item.get("integrity") == "INCOMPLETE_INTERRUPTED_OR_ACTIVE":
+                raise ValueError("unsealed experiment prevents safe planned dispatch")
+            if (item["config"].get("research_context") or {}).get("attempt_id") == context.attempt_id:
+                raise ValueError("research attempt already has an experiment; explicit reconciliation required")
+
     @staticmethod
     def _validate_audit(plan: dict[str, Any], events: list[dict[str, Any]]) -> None:
         calls: dict[str, int] = {}

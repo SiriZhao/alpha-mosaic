@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="15.407" timestamp="2026-10-25T22:19:24.318683+08:00" hostname="YOGA"><testcase classname="tests.test_research_dispatch" name="test_worker_refuses_unauthorized_or_terminal_dispatch_before_creating_artifact[context_removed]" time="3.573"><failure message="AssertionError: assert 0 == 1&#10; +  where 0 = worker_main(WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-review-before/test_worker_refuses_unauthoriz0'), WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-review-befo...ker_refuses_unauthoriz0/research_plans/672ca60b8ca947409f3fcd879e007445/e3965dd88db1478f9f59fef2017a6d4d-request.json'))">tmp_path = WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-review-before/test_worker_refuses_unauthoriz0')
+change = 'context_removed'
+
+    @pytest.mark.parametrize("change", ["unknown_plan", "changed_config", "finished_plan", "context_removed"])
+    def test_worker_refuses_unauthorized_or_terminal_dispatch_before_creating_artifact(tmp_path: Path, change: str) -&gt; None:
+        workflow, plan, attempt, path, payload = dispatched(tmp_path)
+        if change == "unknown_plan":
+            payload["config"]["research_context"]["plan_id"] = "f" * 32
+        elif change == "changed_config":
+            payload["config"]["strategy"] = "trend"
+        elif change == "context_removed":
+            payload["config"]["research_context"] = None
+        else:
+            workflow.store.append(plan["plan_id"], "TOOL_RESULT", {
+                "ordinal": 0, "attempt_id": attempt, "status": "TIMED_OUT"})
+            workflow.store.append(plan["plan_id"], "RUN_FINISHED", {
+                "status": "FAILED", "attempted": 1, "declared": 1, "completed": 0})
+        path.write_bytes(canonical(payload))
+&gt;       assert worker_main(tmp_path, path) == 1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = worker_main(WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-review-before/test_worker_refuses_unauthoriz0'), WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-review-befo...ker_refuses_unauthoriz0/research_plans/672ca60b8ca947409f3fcd879e007445/e3965dd88db1478f9f59fef2017a6d4d-request.json'))
+
+tests\test_research_dispatch.py:51: AssertionError</failure></testcase><testcase classname="tests.test_research_dispatch" name="test_unidentified_partial_experiment_directory_cannot_be_treated_as_no_prior_attempt" time="2.176"><failure message="AssertionError: assert 0 == 1&#10; +  where 0 = worker_main(WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-review-before/test_unidentified_partial_expe0'), WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-review-befo...dentified_partial_expe0/research_plans/4d22ff4151654c89b8bb9d7048d2ac3c/df46bdebd3f946d59fc16221b63b0b11-request.json'))">tmp_path = WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-review-before/test_unidentified_partial_expe0')
+
+    def test_unidentified_partial_experiment_directory_cannot_be_treated_as_no_prior_attempt(tmp_path: Path) -&gt; None:
+        _, _, _, path, _ = dispatched(tmp_path)
+        partial = tmp_path / "experiments" / ("a" * 32)
+        partial.mkdir()
+&gt;       assert worker_main(tmp_path, path) == 1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = worker_main(WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-review-before/test_unidentified_partial_expe0'), WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-dispatch-review-befo...dentified_partial_expe0/research_plans/4d22ff4151654c89b8bb9d7048d2ac3c/df46bdebd3f946d59fc16221b63b0b11-request.json'))
+
+tests\test_research_dispatch.py:71: AssertionError</failure></testcase></testsuite></testsuites>

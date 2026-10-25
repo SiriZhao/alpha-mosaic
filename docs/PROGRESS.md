@@ -1,5 +1,11 @@
 # Recoverable progress
 
+## Frozen-dispatch safety continuation — 2026-10-25
+
+Final fresh base-wheel/build/CLI/MCP acceptance passed; installed and wheel Python bytes match all59 frozen files. Optional providers/UI absent; four payment cases and four isolated trials completed. Default uv cache permission and stalled pip/proxy retrieval were resolved with explicit runtime cache and bounded uv install. Original attempts remain in runtime; no dependency changes or existing-environment substitution.
+
+Goal turn classification: PROGRESS; full goal ACTIVE. Independent recovery review exposed the delayed-child race and recommended an atomic dispatch fence prerequisite. Four actual pre-fix dispatch failures plus two independent counterexamples were retained and repaired; final review also closed original-path resolution and unsealed-record trust gaps. Final source a26523a908f264868dee7eb4da6a3df92f4ab0b16a2bf65514c52d74b1b1c988 passed361 full tests (including both Windows junction fixtures), Ruff/Pyright/lock checks; independent14-case dispatch run passed. No original artifacts, old outcomes or root dirty files were overwritten. Source-specific base-wheel/CI results are recorded separately from the prior payment346 checkpoint. Next: explicit append-only reconciliation without inferred exit status, silent retry or loss of late-response evidence.
+
 ## Ordinary-dividend payment continuation — 2026-10-25
 
 Implementation c63deb9 is published, remote SHA verified, and hosted CI40201042155 passed all gates with346 Linux tests and enhanced base-wheel payment workflow. Eight clean-commit cases/trials matched every replay and analytics field; critic record IDs are checked separately before exact comparison. Draft PR #4 now describes the final payment/source-evidence scope. The full goal remains ACTIVE. Next safe recovery boundary is undergoing independent read-only review; no uncertain attempt will be silently retried.

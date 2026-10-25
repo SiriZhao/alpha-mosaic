@@ -1,5 +1,7 @@
 # Verification commands and scope
 
+Latest dispatch checkpoint:361 full tests passed with RuntimeWarning as error, including both actual Windows junction cases; independent14-case dispatch review also passed. Six actual pre-fix worker failures are preserved alongside canonical request/identity/outcome/lease/unsealed-artifact regressions. See docs/RESEARCH_DISPATCH_ACCEPTANCE_20261025.md for scope and source-specific wheel/CI records. Earlier346/271/267 test counts apply to their named sources.
+
 Latest ordinary-payment checkpoint:346 full tests passed with RuntimeWarning as error. Independent hand ledgers, multiple lots/partial exits/splits/multiple payments, late/unsupported terms, future-price perturbation, daily/weekly/model comparison gates, strict-real legacy refusal, immutable old artifacts and actual cash/claim terminal actions are covered. Final source/evidence: docs/DIVIDEND_PAYMENT_ACCEPTANCE_20261025.md. Earlier271/267-test records remain historical; source-specific wheel/CI checks must be observed separately.
 
 Latest risk-terminal follow-up:271 tests passed with RuntimeWarning as error, including actual qualified/incompatible/corrupt comparison actions, immutable legacy gaps, and hand-verifiable flat-cash/mark reconciliation. Independent review used a legal15-session alternating-holdings replay to reproduce the old missing-date defect. Current source and browser/wheel evidence are in docs/TERMINAL_RISK_ACCEPTANCE_20261025.md; older267-test records remain historical.

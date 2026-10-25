@@ -1,6 +1,6 @@
 # AlphaMosaic
 
-Latest continuation: ordinary cash dividends earn non-spendable ex-date claims and settle under an explicit post-pay-date simulation policy, with independent FIFO/cash/claim/NAV reconciliation, immutable legacy reading and model comparison gates. Reports and terminal show cash, unpaid claims and market exposure separately.346 tests passed locally; see [payment-accounting verification](docs/DIVIDEND_PAYMENT_ACCEPTANCE_20261025.md). Risk/comparison viewing and frozen offline plans remain available. Full Renaissance scope and strict real-data acceptance remain incomplete.
+Latest continuation: frozen research workers require one pending audited call and unchanged request/config/source/data identity under the execution lease; duplicate, late and unsealed attempts fail closed.361 full tests and independent14-case dispatch review passed; see [dispatch verification](docs/RESEARCH_DISPATCH_ACCEPTANCE_20261025.md). Ordinary dividends retain separate earned claims and spendable cash with independent accounting and readable terminal/report evidence; see [payment verification](docs/DIVIDEND_PAYMENT_ACCEPTANCE_20261025.md). Explicit interrupted-plan reconciliation, strict real-data acceptance and the full Renaissance scope remain incomplete.
 
 ## Renaissance research milestone
 

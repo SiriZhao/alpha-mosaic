@@ -1,2 +1,3 @@
 # Preserve pytest's original diagnostic whitespace in archived evidence.
 docs/evidence/dividend-payment-20261025/*.xml whitespace=-blank-at-eol
+docs/evidence/research-dispatch-20261025/*before.xml whitespace=-blank-at-eol

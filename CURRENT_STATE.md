@@ -1,5 +1,11 @@
 # Current state (2026-10-25)
 
+## Latest frozen research dispatch checkpoint
+
+Fresh base-wheel acceptance also passed:59 source files match both wheel and installed bytes; CLI doctor,31-tool MCP, frozen worker workflow and all four dividend cases/four trials complete with optional provider/UI packages absent. Local installation failures were resolved through an explicit runtime cache and bounded uv retrieval; no dependencies were relaxed. Current implementation publication/hosted CI remains its own gate.
+
+Source `a26523a908f264868dee7eb4da6a3df92f4ab0b16a2bf65514c52d74b1b1c988` passed361 full tests with zero failures/errors/skips, including both real Windows junction fixtures; Ruff/Pyright/lock checks passed. Independent review passed14 additional dispatch cases. Six previously successful unauthorized/duplicate dispatch counterexamples now refuse experiment creation. Planned workers must match one pending frozen call/request/config/source/manifest under the global execution lease; unidentified/unsealed artifacts and original-path redirection fail closed. See `docs/RESEARCH_DISPATCH_ACCEPTANCE_20261025.md` and its own fresh-wheel/publication evidence; payment CI346 below applies to the older implementation. Explicit interrupted-plan reconciliation is still Planned, and the full goal remains ACTIVE.
+
 ## Latest ordinary-dividend payment checkpoint
 
 Publication: implementation `c63deb9c4d4f53399c4994d3e996c0e3bf3b56f1` was pushed with matching remote SHA. [Hosted CI40201042155](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40201042155) passed all gates, including346 Linux tests, payment cases in a fresh base wheel, dependency audit and secret scan. Eight clean-commit cases/trials exactly matched prior replay and analysis; critic equality excludes only the separately checked experiment ID. See the immutable `hosted-ci.json` and `committed-reproduction.json`. Draft PR #4 was updated and remains stacked on unmerged #3. This evidence-only follow-up does not change source bytes.

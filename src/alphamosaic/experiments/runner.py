@@ -25,6 +25,7 @@ from alphamosaic.backtesting.models import (
 from alphamosaic.backtesting.replay import PaperReplayEngine
 from alphamosaic.backtesting.strategies import StrategyRegistry
 from alphamosaic.common.locking import exclusive_lease
+from alphamosaic.common.paths import unredirected
 from alphamosaic.core.contracts import Contract, utc_now
 from alphamosaic.data.datasets import DatasetStore
 from alphamosaic.evaluation.analytics import analyze
@@ -176,6 +177,8 @@ def _csv(path: Path, rows: list[dict[str, Any]]) -> None:
 
 class ExperimentRunner:
     def __init__(self, home: Path):
+        home = unredirected(home)
+        unredirected(home / "experiments")
         self.datasets = DatasetStore(home / "datasets")
         self.store = ExperimentStore(home / "experiments")
         self._slot = threading.BoundedSemaphore(1)
@@ -186,6 +189,11 @@ class ExperimentRunner:
             raise ValueError("research quota: one active experiment per service")
         try:
             with exclusive_lease(self.store.root.parent / "research_execution.lease"):
+                if config.research_context is not None:
+                    from alphamosaic.agents.workflow import ResearchWorkflow
+                    # Keep authorization and experiment creation under the same
+                    # OS lease so a delayed child cannot cross a terminal fence.
+                    ResearchWorkflow(self.store.root.parent).authorize_dispatch(config)
                 return self._run(config)
         finally:
             self._slot.release()

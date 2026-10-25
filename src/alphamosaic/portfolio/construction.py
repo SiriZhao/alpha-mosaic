@@ -31,6 +31,11 @@ def inverse_volatility(volatilities: dict[str, float]) -> dict[str, float]:
     """Inverse volatility is a diagonal risk-budget approximation, not risk parity."""
     if any(not math.isfinite(v) or v < 0 for v in volatilities.values()):
         raise ValueError("finite nonnegative volatilities required")
-    scores = {s: 1 / v for s, v in volatilities.items() if v > 0}
+    positive = {s: v for s, v in volatilities.items() if v > 0}
+    if not positive:
+        return {}
+    # A common scale cancels in normalization and avoids overflowing 1 / tiny volatility.
+    smallest = min(positive.values())
+    scores = {s: smallest / v for s, v in positive.items()}
     total = sum(scores.values())
-    return {s: v / total for s, v in scores.items()} if total else {}
+    return {s: v / total for s, v in scores.items() if v > 0}

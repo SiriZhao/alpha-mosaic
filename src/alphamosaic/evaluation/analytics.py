@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import math
 from collections.abc import Sequence
+from numbers import Integral
 from typing import Any
 
 import numpy as np
@@ -23,13 +24,50 @@ def _returns(values: Sequence[float] | np.ndarray) -> np.ndarray:
     return result
 
 
+def _annualization(value: int | np.integer[Any]) -> int:
+    if isinstance(value, bool) or not isinstance(value, Integral) or not 0 < value <= 1_000_000:
+        raise ValueError("annualization must be an integer in 1..1000000")
+    return int(value)
+
+
+def _scaled_moments(values: np.ndarray) -> tuple[float, float, float, np.ndarray]:
+    """Normalize before computing mean/squares so finite representable moments survive."""
+    scale = float(np.max(np.abs(values))) or 1.0
+    normalized = values / scale
+    mean = float(normalized.mean())
+    centered = normalized - mean
+    deviation = math.sqrt(float(np.dot(centered, centered)) / (len(values) - 1)) if len(values) > 1 else 0.0
+    return scale, mean, deviation, centered
+
+
+def _scaled_ratio(numerators: tuple[float, ...], denominators: tuple[float, ...] = ()) -> float | None:
+    """Multiply/divide mantissas before restoring exponents, avoiding intermediate overflow."""
+    if any(value == 0 for value in denominators):
+        return None
+    if any(value == 0 for value in numerators):
+        return 0.0
+    mantissa, exponent = 1.0, 0
+    for values, direction in ((numerators, 1), (denominators, -1)):
+        for value in values:
+            part, power = math.frexp(value)
+            mantissa = mantissa * part if direction == 1 else mantissa / part
+            exponent += direction * power
+            mantissa, adjustment = math.frexp(mantissa)
+            exponent += adjustment
+    try:
+        return _finite(math.ldexp(mantissa, exponent))
+    except OverflowError:
+        return None
+
+
 def returns_metrics(
     returns: Sequence[float] | np.ndarray,
-    periods_per_year: int = 252,
+    periods_per_year: int | np.integer[Any] = 252,
     risk_free_annual: float = 0,
 ) -> dict[str, float | None]:
     """Use trading-period annualization and include starting capital in drawdown."""
-    if periods_per_year <= 0 or not math.isfinite(risk_free_annual) or risk_free_annual <= -1:
+    periods_per_year = _annualization(periods_per_year)
+    if not math.isfinite(risk_free_annual) or risk_free_annual <= -1:
         raise ValueError("positive annualization and finite risk-free rate > -1 required")
     x = _returns(returns)
     names = ("return", "cagr", "volatility", "sharpe", "sortino", "calmar", "max_drawdown", "drawdown_duration_sessions")
@@ -49,14 +87,20 @@ def returns_metrics(
         cagr = float(wealth[-1] ** (periods_per_year / len(x)) - 1)
         rf = (1 + risk_free_annual) ** (1 / periods_per_year) - 1
         excess = x - rf
-        std = float(x.std(ddof=1)) if len(x) > 1 else 0.0
-        downside = float(np.sqrt(np.mean(np.minimum(excess, 0) ** 2)))
+        scale, _, deviation, _ = _scaled_moments(x)
+        excess_scale, excess_mean, _, _ = _scaled_moments(excess)
+        downside = np.minimum(excess, 0)
+        downside_scale = float(np.max(np.abs(downside))) or 1.0
+        downside_deviation = float(np.sqrt(np.mean((downside / downside_scale) ** 2)))
+        std = _scaled_ratio((deviation, scale))
+        downside_std = _scaled_ratio((downside_deviation, downside_scale))
+        annual_root = math.sqrt(periods_per_year)
         result = {
             "return": _finite(wealth[-1] - 1),
             "cagr": _finite(cagr),
-            "volatility": _finite(std * np.sqrt(periods_per_year)) if len(x) > 1 else None,
-            "sharpe": _finite(excess.mean() / std * np.sqrt(periods_per_year)) if std > 1e-15 else None,
-            "sortino": _finite(excess.mean() / downside * np.sqrt(periods_per_year)) if downside > 1e-15 else None,
+            "volatility": _scaled_ratio((deviation, scale, annual_root)) if len(x) > 1 else None,
+            "sharpe": _scaled_ratio((excess_mean, excess_scale, annual_root), (deviation, scale)) if std is not None and std > 1e-15 else None,
+            "sortino": _scaled_ratio((excess_mean, excess_scale, annual_root), (downside_deviation, downside_scale)) if downside_std is not None and downside_std > 1e-15 else None,
             "calmar": _finite(cagr / abs(max_dd)) if max_dd < -1e-15 else None,
             "max_drawdown": _finite(max_dd),
             "drawdown_duration_sessions": float(longest),
@@ -67,25 +111,37 @@ def returns_metrics(
 def benchmark_metrics(
     returns: Sequence[float] | np.ndarray,
     benchmark_returns: Sequence[float] | np.ndarray,
-    periods_per_year: int = 252,
+    periods_per_year: int | np.integer[Any] = 252,
 ) -> dict[str, float | None]:
     """OLS daily excess-return intercept times annual periods, with zero RF."""
+    periods_per_year = _annualization(periods_per_year)
     x, b = _returns(returns), _returns(benchmark_returns)
-    if len(x) != len(b) or periods_per_year <= 0:
+    if len(x) != len(b):
         raise ValueError("equal aligned return lengths and positive annualization required")
     names = ("beta", "alpha_annualized_arithmetic", "tracking_error", "information_ratio", "correlation")
     if len(x) < 2:
         return dict.fromkeys(names)
     active = x - b
-    tracking = float(active.std(ddof=1))
-    variance = float(b.var(ddof=1))
-    beta = float(np.cov(x, b, ddof=1)[0, 1] / variance) if variance > 1e-30 else None
+    sx, mx, dx, cx = _scaled_moments(x)
+    sb, mb, db, cb = _scaled_moments(b)
+    sa, ma, da, _ = _scaled_moments(active)
+    tracking = _scaled_ratio((sa, da))
+    benchmark_std = _scaled_ratio((sb, db))
+    strategy_std = _scaled_ratio((sx, dx))
+    covariance = float(np.dot(cx, cb)) / (len(x) - 1)
+    variance = float(np.dot(cb, cb)) / (len(x) - 1)
+    beta = _scaled_ratio((covariance, sx), (variance, sb)) if benchmark_std is not None and benchmark_std > 1e-15 else None
+    mean_x = _scaled_ratio((sx, mx))
+    fitted_mean = _scaled_ratio((beta, sb, mb)) if beta is not None else None
+    alpha = _scaled_ratio((mean_x - fitted_mean, float(periods_per_year))) if mean_x is not None and fitted_mean is not None else None
+    correlation = _scaled_ratio((covariance,), (dx, db)) if benchmark_std is not None and benchmark_std > 1e-15 and strategy_std is not None and strategy_std > 1e-15 else None
+    annual_root = math.sqrt(periods_per_year)
     return {
-        "beta": _finite(beta) if beta is not None else None,
-        "alpha_annualized_arithmetic": _finite((x.mean() - beta * b.mean()) * periods_per_year) if beta is not None else None,
-        "tracking_error": _finite(tracking * np.sqrt(periods_per_year)),
-        "information_ratio": _finite(active.mean() / tracking * np.sqrt(periods_per_year)) if tracking > 1e-15 else None,
-        "correlation": _finite(np.corrcoef(x, b)[0, 1]) if variance > 1e-30 and x.var(ddof=1) > 1e-30 else None,
+        "beta": beta,
+        "alpha_annualized_arithmetic": alpha,
+        "tracking_error": _scaled_ratio((sa, da, annual_root)),
+        "information_ratio": _scaled_ratio((ma, annual_root), (da,)) if tracking is None or tracking > 1e-15 else None,
+        "correlation": max(-1.0, min(1.0, correlation)) if correlation is not None else None,
     }
 
 

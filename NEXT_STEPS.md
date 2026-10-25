@@ -7,7 +7,7 @@
 3. Ordinary payment accounting is implemented within its declared conservative boundary. Next P0/P1 work: source-qualified cash-in-lieu/special/delisting economics and causal action-aware RAW weekly adjustment (currently explicitly blocked), plus broader independently sourced golden evidence. Robustness/scenario job controls, benchmark choices, factor/sector data, robust portfolio construction and independently checked advanced statistics remain.
 4. Implement safe interrupted-plan reconciliation using authoritative process evidence; no record/lock file alone proves liveness. Retain the fixed-plan/no-silent-rerun safeguards and per-home global experiment lease.
 5. Adaptive model-driven hypothesis planning remains separate from the working deterministic frozen-grid workflow; no paid model authorization is assumed. Qualitative comments cannot introduce computed financial observations.
-6. Observe actual publication/CI for the latest payment implementation; implementation02133ef/733de64 CI is only prior evidence. Preserve independent implementation/QA worktrees and their failed snapshots, root dirty work and every finalized artifact. Sub-agent usage limits are not permission to buy credits or skip independent financial evidence.
+6. Payment implementation c63deb9 is published with matching remote SHA and successful CI40201042155 (346 Linux tests/all gates); clean-commit eight-case/trial reproduction passed. Observe subsequent evidence-only HEAD CI separately. Preserve independent implementation/QA worktrees and their failed snapshots, root dirty work and every finalized artifact. Sub-agent usage limits are not permission to buy credits or skip independent financial evidence.
 
 ## Renaissance next checkpoint
 

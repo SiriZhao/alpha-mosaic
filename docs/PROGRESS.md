@@ -2,6 +2,8 @@
 
 ## Ordinary-dividend payment continuation — 2026-10-25
 
+Implementation c63deb9 is published, remote SHA verified, and hosted CI40201042155 passed all gates with346 Linux tests and enhanced base-wheel payment workflow. Eight clean-commit cases/trials matched every replay and analytics field; critic record IDs are checked separately before exact comparison. Draft PR #4 now describes the final payment/source-evidence scope. The full goal remains ACTIVE. Next safe recovery boundary is undergoing independent read-only review; no uncertain attempt will be silently retried.
+
 Final evidence bundle now includes actual346-test source qualification, fresh base-wheel payment/worker/MCP acceptance, matching package bytes and13 viewer-source-hash-qualified browser captures. Six action-evidence and ten signal-evidence/source counterexamples are retained alongside repaired tests; observed-FIXTURE positive controls still execute. Numeric fixtures, failures and review policies remain explicit. No provider outage became fixture market evidence, and no old artifact was overwritten.
 
 Prior goal turn classification: PROGRESS. Full goal remains ACTIVE. Independent design bd41c20 led to separate implementation/QA worktrees; after both agents hit usage limits, parent preserved their changes, committed recovered core1633847 and integrated22c7617. Presentation preparation96d18e3 had273 passing baseline tests. Independent first snapshot passed37/38 and exposed a false benchmark compatibility claim; parent reproduced daily and weekly failures, repaired a shared accounting signature, and reproduced/refused legacy dividends entering strict real replay.

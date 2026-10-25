@@ -21,6 +21,8 @@ Reports and the terminal show model/payment assumptions, recorded claims/payment
 
 ## Actual verification
 
+Publication addendum: implementation c63deb9 is pushed with remote SHA verified. [CI40201042155](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40201042155) passed every quality gate and346 Linux tests. A clean committed rerun matched all replay/benchmark/analysis records for four direct cases and four frozen worker trials. The initial critic comparison correctly differed by experiment ID; that identity is validated separately and every remaining critic field matches exactly. `evidence/dividend-payment-20261025/hosted-ci.json` and `committed-reproduction.json` retain the final proof. Subsequent evidence-only commits do not change this source identity; the earlier pending statements below describe the prepublication record.
+
 Replay and independent accounting also reject corporate-action values marked MODEL_INFERENCE/MISSING and mixed observed/FIXTURE inputs. Dated features require observed/FIXTURE evidence, nonempty source/identity and strict PIT availability; a PIT flag alone cannot promote model comments or unknown numeric values. The strategy kernel independently refuses unqualified/mixed feature values. These checks follow reproduced negative tests; an explicit observed-FIXTURE positive control continues to allocate.
 
 Frozen source SHA256: `0c934375a1f29c85cdd4740bafec9015916bc0a43aaf3c5178e77fb34cbdffb2`.

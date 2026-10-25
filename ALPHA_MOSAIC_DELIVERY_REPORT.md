@@ -2,6 +2,8 @@
 
 ## Latest ordinary-dividend payment checkpoint — 2026-10-25
 
+Published implementation `c63deb9` has matching local/remote SHA and [successful current hosted CI](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40201042155):346 Linux tests, fresh base-wheel payment/worker cases, MCP, build, dependency audit and secret scan. [Eight clean-commit reproductions](docs/evidence/dividend-payment-20261025/committed-reproduction.json) exactly matched replay/accounting/analysis; only separately validated identity/time metadata differs. [CI evidence](docs/evidence/dividend-payment-20261025/hosted-ci.json) names this implementation. [Draft PR #4](https://github.com/SiriZhao/alpha-mosaic/pull/4) was updated without merging. Later evidence-only commits have their own CI observation.
+
 Read [machine acceptance](docs/evidence/dividend-payment-20261025/acceptance.json), [unpaid FIXTURE sample](docs/evidence/dividend-payment-20261025/sample-fixture-unpaid-report.md) and the retained failing/passing JUnit records. A fresh base wheel with optional providers/UI absent completed the payment cases, isolated plan and31-tool MCP. Browser verification records the viewer source hash and actual selected IDs. Action/feature evidence-class and identity gaps were independently reproduced and closed alongside the accounting work; real provider/PIT certification remains missing.
 
 ![Cash and unpaid dividend rights](docs/evidence/dividend-payment-20261025/12-dividend-accounting.png)

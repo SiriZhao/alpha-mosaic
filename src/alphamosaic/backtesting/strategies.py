@@ -1,11 +1,12 @@
 """Fixed baseline signals; strategy calculation has no execution authority."""
 
 from datetime import datetime
-from typing import Protocol
+from typing import Literal, Protocol, cast
 
 import numpy as np
 
 from alphamosaic.backtesting.models import DatedSignal, ReplayConfig, TargetAllocation
+from alphamosaic.backtesting.weekly_strategy import WeeklyBaselineStrategy
 from alphamosaic.core.contracts import HistoricalBar
 from alphamosaic.portfolio.construction import constrain_weights, inverse_volatility
 
@@ -37,12 +38,15 @@ STRATEGIES = {
     "risk_adjusted_momentum": "Positive trailing price return divided by trailing daily volatility",
     "low_volatility": "Inverse trailing volatility allocation; zero-volatility assets excluded",
     "ensemble": "Equal capital sleeves of time-series momentum, trend and inverse volatility; unused capital remains cash",
+    "weekly_equal_weight": "Complete XNYS natural-week equal weight; next eligible daily open execution",
+    "weekly_momentum": "Positive trailing completed-week price return; independently configured weekly lookback",
+    "weekly_trend": "Completed-week short/long SMA trend; weekly windows and calendar week-end decisions",
 }
 
 
 class BaselineStrategy:
     def __init__(self, name: str, ablate: str | None = None):
-        if name not in STRATEGIES:
+        if name not in STRATEGIES or name.startswith("weekly_"):
             raise ValueError("unknown strategy")
         if ablate not in {None, "trend", "volatility"}:
             raise ValueError("unknown ablation")
@@ -165,4 +169,8 @@ class StrategyRegistry:
         ]
 
     def get(self, name: str, ablate: str | None = None) -> Strategy:
+        if name in {"weekly_equal_weight", "weekly_momentum", "weekly_trend"}:
+            if ablate is not None:
+                raise ValueError("weekly baselines do not support daily feature ablation")
+            return WeeklyBaselineStrategy(cast(Literal["weekly_equal_weight", "weekly_momentum", "weekly_trend"], name))
         return BaselineStrategy(name, ablate)

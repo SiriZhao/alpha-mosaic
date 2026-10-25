@@ -4,26 +4,17 @@ from __future__ import annotations
 
 import math
 from datetime import datetime, timedelta
-from typing import Literal, Self
+from typing import Literal
 
-from pydantic import Field, model_validator
-
-from alphamosaic.backtesting.models import DatedSignal, ReplayConfig, TargetAllocation
-from alphamosaic.core.contracts import Contract, HistoricalBar
+from alphamosaic.backtesting.models import (
+    DatedSignal,
+    ReplayConfig,
+    TargetAllocation,
+    WeeklyStrategyParameters,
+)
+from alphamosaic.core.contracts import HistoricalBar
 from alphamosaic.data.weekly import aggregate_weekly_bars, aware_utc
 from alphamosaic.portfolio.construction import constrain_weights
-
-
-class WeeklyStrategyParameters(Contract):
-    lookback_weeks: int = Field(default=12, ge=2, le=104)
-    trend_short_weeks: int = Field(default=4, ge=2, le=103)
-    trend_long_weeks: int = Field(default=12, ge=3, le=104)
-
-    @model_validator(mode="after")
-    def windows(self) -> Self:
-        if self.trend_short_weeks >= self.trend_long_weeks:
-            raise ValueError("weekly trend short window must precede long window")
-        return self
 
 
 class WeeklyBaselineStrategy:
@@ -34,6 +25,8 @@ class WeeklyBaselineStrategy:
     No daily lookback/rebalance parameter is reinterpreted as a weekly parameter.
     """
 
+    decision_frequency = "WEEKLY"
+
     def __init__(
         self,
         name: Literal["weekly_momentum", "weekly_trend", "weekly_equal_weight"],
@@ -42,7 +35,7 @@ class WeeklyBaselineStrategy:
         if name not in {"weekly_momentum", "weekly_trend", "weekly_equal_weight"}:
             raise ValueError("unknown weekly baseline strategy")
         self.name = name
-        self.parameters = WeeklyStrategyParameters.model_validate((parameters or WeeklyStrategyParameters()).model_dump())
+        self.parameters = WeeklyStrategyParameters.model_validate(parameters.model_dump()) if parameters else None
 
     def allocation(
         self,
@@ -53,6 +46,9 @@ class WeeklyBaselineStrategy:
     ) -> TargetAllocation:
         at = aware_utc(at)
         config = ReplayConfig.model_validate(config.model_dump())
+        if self.parameters is not None and self.parameters != config.weekly_parameters:
+            raise ValueError("weekly constructor parameters differ from the recorded replay configuration")
+        parameters = self.parameters or config.weekly_parameters
         scores: dict[str, float] = {}
         aligned: tuple | None = None
         evidence_ids: list[str] = []
@@ -75,20 +71,20 @@ class WeeklyBaselineStrategy:
             prices = [b.close for b in rows]
             if self.name == "weekly_equal_weight":
                 scores[symbol] = 1
-            elif self.name == "weekly_momentum" and len(prices) >= self.parameters.lookback_weeks + 1:
-                momentum = prices[-1] / prices[-self.parameters.lookback_weeks - 1] - 1
+            elif self.name == "weekly_momentum" and len(prices) >= parameters.lookback_weeks + 1:
+                momentum = prices[-1] / prices[-parameters.lookback_weeks - 1] - 1
                 if not math.isfinite(momentum):
                     raise ValueError("non-finite weekly momentum")
                 if momentum > 0:
                     scores[symbol] = momentum
-            elif self.name == "weekly_trend" and len(prices) >= self.parameters.trend_long_weeks:
-                scale = max(prices[-self.parameters.trend_long_weeks:])
-                short = math.fsum(p / scale for p in prices[-self.parameters.trend_short_weeks:]) / self.parameters.trend_short_weeks
-                long = math.fsum(p / scale for p in prices[-self.parameters.trend_long_weeks:]) / self.parameters.trend_long_weeks
+            elif self.name == "weekly_trend" and len(prices) >= parameters.trend_long_weeks:
+                scale = max(prices[-parameters.trend_long_weeks:])
+                short = math.fsum(p / scale for p in prices[-parameters.trend_short_weeks:]) / parameters.trend_short_weeks
+                long = math.fsum(p / scale for p in prices[-parameters.trend_long_weeks:]) / parameters.trend_long_weeks
                 if short > long and prices[-1] / scale > long:
                     scores[symbol] = short / long - 1
             if symbol in scores:
-                evidence_ids.extend(b.source_hash for b in rows[-max(self.parameters.lookback_weeks + 1, self.parameters.trend_long_weeks):])
+                evidence_ids.extend(b.source_hash for b in rows[-max(parameters.lookback_weeks + 1, parameters.trend_long_weeks):])
         selected = sorted(scores, key=lambda s: (-scores[s], s))[:config.max_positions]
         weights = {s: 1 / len(selected) for s in selected} if selected else {}
         weights, _ = constrain_weights(weights, config)

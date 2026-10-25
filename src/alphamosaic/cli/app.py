@@ -46,6 +46,28 @@ def research_experiments() -> None:
     output(ApplicationService().research_experiments())
 
 
+@app.command("plan-research")
+def plan_research(config: Path = typer.Argument(..., exists=True, dir_okay=False)) -> None:
+    """Freeze an explicit bounded experiment grid before inspecting its results."""
+    output(ApplicationService().plan_research(json.loads(config.read_text(encoding="utf-8"))))
+
+
+@app.command("run-research-plan")
+def run_research_plan(plan_id: str) -> None:
+    """Execute a frozen local plan with per-worker deadlines and a durable audit."""
+    service = ApplicationService()
+    result = service.run_research_plan(plan_id)
+    output(service.research_plan_report(plan_id))
+    if result["status"] != "COMPLETED":
+        raise typer.Exit(1)
+
+
+@app.command("research-plans")
+def research_plans() -> None:
+    """List locally frozen research plans without executing them."""
+    output(ApplicationService().research_plans())
+
+
 @app.command()
 def providers() -> None:
     """Installed provider capabilities and availability boundaries."""

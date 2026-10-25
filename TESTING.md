@@ -1,5 +1,7 @@
 # Verification commands and scope
 
+Continuation coverage adds extreme finite-moment/OLS/denormal-volatility cases, validated split-derived history, FIFO golden matching/fees/dividends/reverse-split/complete-session accounting, real weekly decisions with Good Friday and next-open causality, source-view late action rejection and constructor/config reproducibility. Workflow tests execute actual worker processes, hard deadlines, global leases, immutable plans, corrupted audit sequences/final counters, old-schema preservation, untrusted-home module shadowing and junction containment. Permission to construct the junction fixture may be needed under a restricted Windows sandbox; it is not skipped to create a passing result.
+
 ```powershell
 uv sync --locked --all-extras --dev
 uv run ruff check .

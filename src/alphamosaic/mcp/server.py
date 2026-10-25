@@ -2,6 +2,7 @@
 
 import asyncio
 import re
+import threading
 from collections.abc import Callable
 from concurrent.futures import Future, ThreadPoolExecutor
 from datetime import UTC, datetime
@@ -15,19 +16,41 @@ from alphamosaic.core.service import ApplicationService
 
 
 class JobManager:
-    def __init__(self) -> None:
-        self._executor = ThreadPoolExecutor(max_workers=2, thread_name_prefix="alphamosaic-job")
+    def __init__(self, max_jobs: int = 32, max_workers: int = 2) -> None:
+        if not 1 <= max_workers <= max_jobs <= 128:
+            raise ValueError("bounded job/worker limits required")
+        self._executor = ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix="alphamosaic-job")
         self._jobs: dict[str, Future[Any]] = {}
+        self._max_jobs = max_jobs
+        self._lock = threading.RLock()
 
     def submit(self, function: Callable[[], Any]) -> str:
-        job_id = uuid4().hex
-        self._jobs[job_id] = self._executor.submit(function)
-        return job_id
+        with self._lock:
+            if len(self._jobs) >= self._max_jobs:
+                expired = next((key for key, future in self._jobs.items() if future.done()), None)
+                if expired is not None:
+                    del self._jobs[expired]
+                else:
+                    raise ValueError("local job quota exhausted; wait for an existing job")
+            job_id = uuid4().hex
+            self._jobs[job_id] = self._executor.submit(function)
+            return job_id
+
+    def cancel(self, job_id: str) -> dict[str, Any]:
+        with self._lock:
+            job = self._jobs.get(job_id)
+            if job is None:
+                return {"status": "UNKNOWN_OR_EXPIRED", "job_id": job_id}
+            cancelled = job.cancel()
+        return {"status": "CANCELLED" if cancelled else "ALREADY_FINISHED" if job.done() else "RUNNING_USE_DECLARED_WORKER_DEADLINE", "job_id": job_id}
 
     def status(self, job_id: str) -> dict[str, Any]:
-        job = self._jobs.get(job_id)
+        with self._lock:
+            job = self._jobs.get(job_id)
         if job is None:
-            return {"status": "FAILED", "job_id": job_id, "diagnostics": ["unknown job"]}
+            return {"status": "FAILED", "job_id": job_id, "diagnostics": ["unknown or expired job; persisted experiments/plans remain inspectable"]}
+        if job.cancelled():
+            return {"status": "CANCELLED", "job_id": job_id}
         if not job.done():
             return {"status": "RUNNING", "job_id": job_id}
         try:
@@ -49,8 +72,8 @@ def _symbols(values: list[str], *, minimum: int, maximum: int) -> list[str] | di
     return normalized
 
 
-def _annotations(idempotent: bool = True) -> ToolAnnotations:
-    return ToolAnnotations(read_only_hint=True, destructive_hint=False, idempotent_hint=idempotent, open_world_hint=True)
+def _annotations(idempotent: bool = True, *, read_only: bool = True, open_world: bool = True) -> ToolAnnotations:
+    return ToolAnnotations(read_only_hint=read_only, destructive_hint=False, idempotent_hint=idempotent, open_world_hint=open_world)
 
 
 def create_server(service: ApplicationService | None = None) -> MCPServer:
@@ -81,6 +104,27 @@ def create_server(service: ApplicationService | None = None) -> MCPServer:
     @server.tool(annotations=_annotations())
     def research_experiments() -> list[dict[str, Any]]:
         return application.research_experiments()
+
+    @server.tool(annotations=_annotations(False, read_only=False, open_world=False))
+    def plan_research(config: dict[str, Any]) -> dict[str, Any]:
+        return application.plan_research(config)
+
+    @server.tool(annotations=_annotations(False, read_only=False, open_world=False))
+    def run_research_plan(plan_id: str) -> dict[str, Any]:
+        application.research_plan(plan_id)
+        return {"status": "READY", "job_id": jobs.submit(lambda: application.run_research_plan(plan_id))}
+
+    @server.tool(annotations=_annotations(open_world=False))
+    def research_plan_status(plan_id: str) -> dict[str, Any]:
+        return application.research_plan(plan_id)
+
+    @server.tool(annotations=_annotations(open_world=False))
+    def research_plan_report(plan_id: str) -> dict[str, Any]:
+        return application.research_plan_report(plan_id)
+
+    @server.tool(annotations=_annotations(False, read_only=False, open_world=False))
+    def cancel_queued_job(job_id: str) -> dict[str, Any]:
+        return jobs.cancel(job_id)
 
     @server.tool(annotations=_annotations(False))
     def run_research_experiment(config: dict[str, Any]) -> dict[str, Any]:

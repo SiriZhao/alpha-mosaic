@@ -191,6 +191,11 @@ class PaperReplayEngine:
         # Revalidate copies at the trust boundary: model_copy deliberately skips validation.
         config = ReplayConfig.model_validate(config.model_dump())
         data = ReplayDataset.model_validate(data.model_dump())
+        strategy_frequency = getattr(strategy, "decision_frequency", "DAILY")
+        if strategy_frequency == "WEEKLY" and config.decision_frequency != "WEEKLY":
+            raise ValueError("weekly strategy requires an explicit WEEKLY decision configuration")
+        if config.decision_frequency == "WEEKLY" and strategy_frequency != "WEEKLY" and name != "buy_and_hold":
+            raise ValueError("WEEKLY decisions require a registered weekly strategy")
         flags = validate_dataset(data)
         flags.append("DAILY_OPEN_FILL_APPROXIMATION_NO_AUCTION_OR_ORDER_BOOK_DATA")
         flags.append("SAME_DAY_VOLUME_IS_EX_POST_CAPACITY_CAP_NOT_OPEN_KNOWN_LIQUIDITY")
@@ -206,6 +211,10 @@ class PaperReplayEngine:
         if len(selected) < 2:
             raise ValueError("insufficient replay sessions")
         first, last = selected[0], selected[-1]
+        if config.decision_frequency == "WEEKLY" and name != "buy_and_hold":
+            if any(a.effective_date <= sessions[last] for a in data.actions):
+                raise ValueError("weekly RAW corporate-action research requires a reviewed adjustment model")
+            flags.append("WEEKLY_COMPLETED_XNYS_WEEK_SIGNAL_NEXT_ELIGIBLE_DAILY_OPEN_FILL")
         cash = config.initial_cash
         positions = dict.fromkeys(data.bars, 0.0)
         average_costs = dict.fromkeys(data.bars, 0.0)
@@ -449,6 +458,9 @@ class PaperReplayEngine:
             if due > last or due < first:
                 continue
             rebalance = (due - first) % config.rebalance_sessions == 0
+            if config.decision_frequency == "WEEKLY":
+                from alphamosaic.data.weekly import is_week_close
+                rebalance = is_week_close(session)
             if name == "buy_and_hold":
                 # First partial purchase completes the single attempt; rejected attempts retry.
                 rebalance = not bought and not any(pending.values())

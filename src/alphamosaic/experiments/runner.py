@@ -19,10 +19,13 @@ from pydantic import Field, model_validator
 from alphamosaic.backtesting.models import ReplayConfig, ReplayDataset
 from alphamosaic.backtesting.replay import PaperReplayEngine
 from alphamosaic.backtesting.strategies import StrategyRegistry
+from alphamosaic.common.locking import exclusive_lease
 from alphamosaic.core.contracts import Contract, utc_now
 from alphamosaic.data.datasets import DatasetStore
 from alphamosaic.evaluation.analytics import analyze
 from alphamosaic.evaluation.scientific import HoldoutAudit
+from alphamosaic.evaluation.trades import analyze_trades
+from alphamosaic.evaluation.weekly import analyze_weekly
 
 
 def canonical(value: Any) -> bytes:
@@ -31,6 +34,12 @@ def canonical(value: Any) -> bytes:
 
 def digest(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
+
+
+class ResearchExecutionContext(Contract):
+    plan_id: str = Field(pattern=r"^[a-f0-9]{32}$")
+    attempt_id: str = Field(pattern=r"^[a-f0-9]{32}$")
+    ordinal: int = Field(ge=0, le=5)
 
 
 class ExperimentConfig(Contract):
@@ -43,6 +52,7 @@ class ExperimentConfig(Contract):
     start: date | None = None
     end: date | None = None
     validation: Literal["EXPLORATORY", "PREDECLARED_HOLDOUT"] = "EXPLORATORY"
+    research_context: ResearchExecutionContext | None = None
 
     @model_validator(mode="after")
     def dates(self) -> "ExperimentConfig":
@@ -52,6 +62,8 @@ class ExperimentConfig(Contract):
             raise ValueError("holdout requires explicit evaluation start")
         if len(set(self.symbols)) != len(self.symbols):
             raise ValueError("duplicate symbols")
+        if self.strategy.startswith("weekly_") and self.replay.decision_frequency != "WEEKLY":
+            raise ValueError("weekly strategies require explicit WEEKLY decisions and weekly parameters")
         return self
 
 
@@ -76,18 +88,25 @@ def code_manifest() -> dict[str, Any]:
     source = Path(__file__).resolve().parents[1]
     project = source.parents[1]
     lock = project / "uv.lock"
-    try:
-        sha = subprocess.check_output(["git", "-C", str(project), "rev-parse", "HEAD"], text=True, stderr=subprocess.DEVNULL, timeout=5).strip()
-        dirty = bool(subprocess.check_output(["git", "-C", str(project), "status", "--porcelain"], text=True, stderr=subprocess.DEVNULL, timeout=5).strip())
-    except (OSError, subprocess.SubprocessError):
-        sha, dirty = "NOT_AVAILABLE", None
+    checkout = source.parent.name == "src" and (project / "pyproject.toml").is_file()
+    sha, dirty = "NOT_AVAILABLE", None
+    if checkout:
+        try:
+            root = subprocess.check_output(["git", "-C", str(project), "rev-parse", "--show-toplevel"], text=True, stderr=subprocess.DEVNULL, timeout=5).strip()
+            if Path(root).resolve() != project.resolve():
+                raise ValueError("source checkout is nested inside a different Git repository")
+            sha = subprocess.check_output(["git", "-C", str(project), "rev-parse", "HEAD"], text=True, stderr=subprocess.DEVNULL, timeout=5).strip()
+            dirty = bool(subprocess.check_output(["git", "-C", str(project), "status", "--porcelain"], text=True, stderr=subprocess.DEVNULL, timeout=5).strip())
+        except (OSError, subprocess.SubprocessError, ValueError):
+            sha, dirty = "NOT_AVAILABLE", None
     installed = {}
     for distribution in distributions():
         metadata = distribution.metadata
         if metadata["Name"]:
             installed[metadata["Name"]] = metadata["Version"]
     return {"git_sha": sha, "git_dirty": dirty, "python": platform.python_version(),
-            "lock_hash": digest(lock.read_bytes()) if lock.exists() else None,
+            "source_kind": "SRC_CHECKOUT" if checkout else "INSTALLED_PACKAGE",
+            "lock_hash": digest(lock.read_bytes()) if checkout and lock.exists() else None,
             **source_manifest(), "installed_dependencies": installed}
 
 
@@ -115,6 +134,8 @@ class ExperimentStore:
         required = {"experiment.json", "config.json"}
         if payload.get("status") == "COMPLETED":
             required |= {"report.md", "report.html", "equity.csv", "fills.csv", "orders.csv", "cash_ledger.csv", "events.csv", "signals.csv", "unfilled_orders.csv", "order_adjustments.csv"}
+            if payload.get("artifact_schema_version", 1) >= 2:
+                required |= {"closed_lots.csv", "open_lots.csv", "asset_attribution.csv", "weekly_equity.csv"}
         if not isinstance(manifest, dict) or not required <= manifest.keys():
             raise ValueError("incomplete experiment artifact manifest")
         for name, expected in manifest.items():
@@ -132,6 +153,7 @@ class ExperimentStore:
                              "status": item["status"], "strategy": item["config"]["strategy"],
                              "dataset_id": item["config"]["dataset_id"], "acceptance": item.get("acceptance"),
                              "validation": item["config"]["validation"], "error": item.get("error")})
+                rows[-1]["research_context"] = item["config"].get("research_context")
             except (ValueError, OSError, KeyError):
                 rows.append({"experiment_id": path.parent.name, "status": "CORRUPT"})
         return sorted(rows, key=lambda r: r.get("created_at", ""), reverse=True)
@@ -156,7 +178,8 @@ class ExperimentRunner:
         if not self._slot.acquire(blocking=False):
             raise ValueError("research quota: one active experiment per service")
         try:
-            return self._run(config)
+            with exclusive_lease(self.store.root.parent / "research_execution.lease"):
+                return self._run(config)
         finally:
             self._slot.release()
 
@@ -166,6 +189,7 @@ class ExperimentRunner:
         path.mkdir()
         started = time.perf_counter()
         payload: dict[str, Any] = {"experiment_id": experiment_id, "created_at": utc_now().isoformat(),
+            "artifact_schema_version": 2,
             "config": config.model_dump(mode="json"),
             "status": "RUNNING", "broker_enabled": False, "evidence_grade": "Exploratory", "validated_alpha": False}
         # An interrupted process leaves a visible RUNNING record; it never appears successful.
@@ -187,6 +211,17 @@ class ExperimentRunner:
             policies = {b.adjustment_policy for bars in data.bars.values() for b in bars}
             basis = "RAW_WITH_CASH_ACTIONS" if policies == {"RAW"} else "TOTAL_RETURN" if policies == {"TOTAL_RETURN"} else "PRICE" if policies == {"SPLIT"} else None
             analysis = analyze(result, benchmark, return_basis=basis, benchmark_return_basis=basis)
+            trades = analyze_trades(result, selected)
+            if trades["status"] != "VERIFIED":
+                payload["rejected_result"] = result.model_dump(mode="json")
+                payload["trade_analysis"] = trades
+                raise ValueError("execution evidence failed independent lot/accounting reconciliation: " + trades["reason"])
+            analysis["trade_analysis"] = trades
+            analysis["metrics"].update(trades["metrics"])
+            analysis["attribution"]["asset_pnl"] = trades["asset_attribution"]
+            analysis["warnings"] = [w for w in analysis["warnings"] if not w.startswith("Trade statistics requiring matched closed lots are unavailable")]
+            analysis["warnings"].extend(trades["warnings"])
+            analysis["weekly"] = analyze_weekly(result, benchmark_result=benchmark, return_basis=basis, benchmark_return_basis=basis)
             if source_manifest()["source_hash"] != payload["reproducibility"]["source_hash"]:
                 raise ValueError("SOURCE_CHANGED_DURING_RUN: freeze code and restart service")
             payload.update(status="COMPLETED", acceptance=result.acceptance,
@@ -206,6 +241,8 @@ class ExperimentRunner:
             payload["review"] = critique(payload)
             for name in ("equity", "fills", "orders", "cash_ledger", "events", "signals", "unfilled_orders", "order_adjustments"):
                 _csv(path / f"{name}.csv", payload["result"].get(name, []))
+            for name, rows in (("closed_lots", trades["closed_lots"]), ("open_lots", trades["open_lots"]), ("asset_attribution", trades["asset_attribution"]), ("weekly_equity", analysis["weekly"]["weekly_equity"]["points"])):
+                _csv(path / f"{name}.csv", rows)
             from alphamosaic.reporting.research import write_report
             write_report(path, payload)
         except Exception as exc:

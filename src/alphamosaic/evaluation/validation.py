@@ -180,6 +180,8 @@ def experiment(
     data: ReplayDataset, benchmarks: dict[str, list[HistoricalBar]], config: ReplayConfig
 ) -> dict[str, Any]:
     registry, engine = StrategyRegistry(), PaperReplayEngine()
+    config = ReplayConfig.model_validate(config.model_dump())
+    daily_config = config.model_copy(update={"decision_frequency": "DAILY"})
     results: dict[str, Any] = {}
     replays: dict[str, ReplayResult] = {}
     requirements = {
@@ -203,22 +205,30 @@ def experiment(
                 "reason": "MISSING_LICENSED_VERIFIED_PIT_SIGNAL_SERIES",
             }
             continue
-        replay = engine.run(data, registry.get(name), name, config)
+        strategy_config = config.model_copy(update={"decision_frequency": "WEEKLY" if name.startswith("weekly_") else "DAILY"})
+        try:
+            replay = engine.run(data, registry.get(name), name, strategy_config)
+        except ValueError as exc:
+            if not name.startswith("weekly_"):
+                raise
+            results[name] = {"status": "BLOCKED", "reason": str(exc), "decision_frequency": "WEEKLY"}
+            continue
         replays[name] = replay
         results[name] = {
             "status": "COMPUTED",
             "acceptance": replay.acceptance,
+            "decision_frequency": strategy_config.decision_frequency,
             **summarize(replay, benchmarks, config.seed),
         }
     momentum = replays["momentum"]
     sensitivity = []
     for slippage in (0, 5, 20):
-        costs = ReplayConfig.model_validate({**config.model_dump(), "slippage_bps": slippage})
+        costs = ReplayConfig.model_validate({**daily_config.model_dump(), "slippage_bps": slippage})
         replay = engine.run(data, registry.get("momentum"), "momentum", costs)
         sensitivity.append({"slippage_bps": slippage, **summarize(replay, benchmarks, config.seed)})
-    ablated = engine.run(data, registry.get("multi_factor", "trend"), "multi_factor", config)
+    ablated = engine.run(data, registry.get("multi_factor", "trend"), "multi_factor", daily_config)
     summary = summarize(momentum, benchmarks, config.seed)
-    equal_weight = engine.run(data, registry.get("buy_and_hold"), "buy_and_hold", config)
+    equal_weight = engine.run(data, registry.get("buy_and_hold"), "buy_and_hold", daily_config)
     return {
         "status": "COMPUTED",
         "alpha_status": "INSUFFICIENT_EVIDENCE_NO_DEMONSTRATED_ALPHA",
@@ -226,7 +236,7 @@ def experiment(
         "analytics": "QuantStats",
         "acceptance": momentum.acceptance,
         "strategies": results,
-        "walk_forward": walk_forward(data, config),
+        "walk_forward": walk_forward(data, daily_config),
         "slippage_sensitivity": sensitivity,
         "ablation": {
             "removed_signal": "trend",

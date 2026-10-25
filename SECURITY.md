@@ -1,5 +1,9 @@
 # Research-only security boundary
 
+Bounded research workers execute a fixed module from a trusted package directory; the writable research home is never the child module-search working directory. The environment passes only required OS/runtime settings and an explicit trusted package path, not market/model credentials. Native OS leases coordinate new experiment entrypoints across processes. Existing path redirection through symlinks/junctions is rejected before opening plan databases, leases or request/response artifacts. Windows junction regression uses only isolated repository test directories and may require permission to construct the test fixture in a sandbox.
+
+These local checks and hash chains are for a single-user research environment, not multi-tenant authentication or proof against a hostile filesystem writer racing all checks. Interrupted records do not establish liveness and are never automatically rerun. Worker timeouts, process-exit failures, missing responses and audit inconsistencies remain explicit outcomes. No tests weaken financial assertions to accept these failures.
+
 No live orders, broker connectors, account credentials, portfolio synchronization or real-money execution tools. MCP accepts typed research parameters and identifiers; it offers no arbitrary shell, arbitrary file reader, credential accessor or unreviewed source-code execution. Optional LEAN is an operator-only local backtest boundary. Never connect it to a live brokerage.
 
 AlphaMosaic is independent of Meridian Alpha and must not read its credentials or alter its files. Provider workers use isolated local runtime configuration. Optional LLM/commercial authorization is operator-managed; missing credentials remain NOT_CONFIGURED. No paid provisioning is automatic.

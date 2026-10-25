@@ -53,6 +53,18 @@ class ReplayDataset(Contract):
         return value.astimezone(UTC)
 
 
+class WeeklyStrategyParameters(Contract):
+    lookback_weeks: int = Field(default=12, ge=2, le=104)
+    trend_short_weeks: int = Field(default=4, ge=2, le=103)
+    trend_long_weeks: int = Field(default=12, ge=3, le=104)
+
+    @model_validator(mode="after")
+    def windows(self) -> Self:
+        if self.trend_short_weeks >= self.trend_long_weeks:
+            raise ValueError("weekly trend short window must precede long window")
+        return self
+
+
 class ReplayConfig(Contract):
     initial_cash: float = Field(default=100_000, gt=0)
     fee_bps: float = Field(default=10, ge=0, le=1000)
@@ -69,6 +81,8 @@ class ReplayConfig(Contract):
     max_volume_fraction: float = Field(default=0.01, gt=0, le=1)
     lookback: int = Field(default=63, ge=20, le=252)
     rebalance_sessions: int = Field(default=21, ge=1, le=252)
+    decision_frequency: Literal["DAILY", "WEEKLY"] = "DAILY"
+    weekly_parameters: WeeklyStrategyParameters = Field(default_factory=WeeklyStrategyParameters)
     seed: int = 42
 
 

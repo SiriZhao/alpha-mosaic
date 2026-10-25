@@ -59,6 +59,30 @@ class ApplicationService:
         from alphamosaic.opportunity_pipeline import OpportunityDiscoveryPipeline
         self.opportunity_pipeline = OpportunityDiscoveryPipeline(self)
         self._experiment_runner: Any = None
+        self._research_workflow: Any = None
+
+    def research_workflow(self) -> Any:
+        from alphamosaic.agents.workflow import ResearchWorkflow
+        with self.lock:
+            if self._research_workflow is None:
+                self._research_workflow = ResearchWorkflow(self.home)
+            return self._research_workflow
+
+    def plan_research(self, config: dict[str, Any]) -> dict[str, Any]:
+        from alphamosaic.agents.workflow import ResearchPlanRequest
+        return self.research_workflow().create(ResearchPlanRequest.model_validate(config))
+
+    def run_research_plan(self, plan_id: str) -> dict[str, Any]:
+        return self.research_workflow().run(plan_id)
+
+    def research_plan(self, plan_id: str) -> dict[str, Any]:
+        return self.research_workflow().status(plan_id)
+
+    def research_plans(self) -> list[dict[str, Any]]:
+        return self.research_workflow().store.list()
+
+    def research_plan_report(self, plan_id: str) -> dict[str, Any]:
+        return self.research_workflow().report(plan_id)
 
     def experiment_runner(self) -> Any:
         """One bounded local research executor shared by every application surface."""

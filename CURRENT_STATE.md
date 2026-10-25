@@ -1,5 +1,11 @@
 # Current state (2026-10-11)
 
+## Current continuation checkpoint — 2026-10-25
+
+The overall platform goal remains active. New source hash `af12390cfe9579db641a354fee171afaa6d409c3c6bd56fa770a6f06ceca8f07` passed267 tests with RuntimeWarning treated as an error, Ruff and Pyright. Actual terminal weekly/plan actions, clean base-wheel offline workflow,31-tool MCP and eight-page browser render passed. See docs/CONTINUATION_ACCEPTANCE_20261025.md and docs/evidence/continuation-20261025/acceptance.json for exact scope.
+
+Calendar-week rules,52-period views, independently reconciled FIFO/asset accounting and a frozen6-trial offline research workflow are implemented. Independent numeric, derived-price, parameter, import-path, junction, audit and package-provenance defects were reproduced and repaired. No historic data/report was overwritten. Strict real-data research remains blocked; adaptive model planning, advanced risk/statistical/portfolio/report/recovery requirements remain unfinished. Earlier CI records below apply to their named commits, not automatically to this new tree.
+
 ## Authoritative Renaissance checkpoint — 2026-10-24
 
 Publication update (2026-10-25 Asia/Shanghai): implementation `a6dd38e` is pushed with matching remote SHA; draft PR #4 is stacked on #3. Hosted CI run40135345657 passed every quality gate. Clean-commit eight-case reproduction retained exact results/analytics. Later evidence-only commits have separate CI runs. Remote ChatGPT and strict real-data research remain unverified/blocked respectively.

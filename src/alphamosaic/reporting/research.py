@@ -8,19 +8,25 @@ from typing import Any
 
 def write_report(path: Path, item: dict[str, Any]) -> None:
     c, r = item["config"], item["result"]
+    analysis = item["analysis"]
+    trades, weekly = analysis.get("trade_analysis", {}), analysis.get("weekly", {})
+    code = {key: item["reproducibility"].get(key) for key in ("git_sha", "git_dirty", "python", "lock_hash", "source_hash")}
     sections = {
         "Executive Summary": f"Research only. {r['acceptance']}. No demonstrated alpha. Experiment {item['experiment_id']}.",
         "Research Question": c["question"],
-        "Data & Provenance": json.dumps({"dataset_id": c["dataset_id"], "hash": item["dataset_hash"], "basis": item["return_basis"], "dataset": item["dataset_manifest"], "code": item["reproducibility"]}, indent=2),
+        "Data & Provenance": json.dumps({"dataset_id": c["dataset_id"], "hash": item["dataset_hash"], "basis": item["return_basis"], "dataset": item["dataset_manifest"], "code": code}, indent=2),
         "Strategy Definition": json.dumps({"strategy": c["strategy"], "symbols": c["symbols"], "start": r["equity"][0]["session"], "end": r["equity"][-1]["session"]}, indent=2),
         "Backtest Assumptions": json.dumps(c["replay"], indent=2),
-        "Performance and Risk": json.dumps(item["analysis"], indent=2),
+        "Performance and Risk": json.dumps({k: analysis.get(k) for k in ("metrics", "conventions", "benchmark_status", "drawdown_episodes")}, indent=2),
+        "Matched Trades and Accounting Contribution": json.dumps({"status": trades.get("status", "NOT_EVALUATED"), "conventions": trades.get("conventions"), "reconciliation": trades.get("reconciliation"), "assets": trades.get("asset_attribution")}, indent=2),
+        "Weekly Research View": json.dumps({"status": weekly.get("status", "NOT_EVALUATED"), "metrics": weekly.get("metrics"), "conventions": weekly.get("conventions"), "partial_intervals": weekly.get("weekly_equity", {}).get("partial_intervals", []), "inception_return_through_last_completed_week": weekly.get("weekly_equity", {}).get("inception_return_through_last_completed_week"), "decision_frequency": c["replay"].get("decision_frequency", "DAILY"), "warnings": weekly.get("warnings", [])}, indent=2),
         "Transaction Costs": json.dumps({k: r[k] for k in ("fees", "slippage_cost", "spread_cost", "turnover")}, indent=2),
         "Robustness": "Run the cost and parameter cases separately; no best-result selection or automatic promotion.",
         "Out-of-Sample Validation": c["validation"] + "; declared dates are not a certification of an untouched holdout. " + json.dumps(item.get("holdout_audit", {})),
         "Comparison to Benchmarks": c["benchmark"] + "; comparison status: " + item["analysis"]["benchmark_status"] + "; compare only when compatible; no fabricated risk-free series.",
         "Counterarguments and Limitations": "\n".join(item["warnings"]),
         "Further Research": "Acquire independently reviewed PIT/corporate-action/delisting data; freeze hypothesis before a new holdout.",
+        "Audit Artifacts": "Complete numeric evidence is in experiment.json; full configuration in config.json. CSV exports retain daily/weekly equity, signals, orders, fills, cash, split revisions, closed/open FIFO matches and asset accounting contributions. No best-case-only selection.",
     }
     (path / "report.md").write_text("# AlphaMosaic Research Report\n\n" + "\n\n".join(f"## {k}\n\n{v}" for k, v in sections.items()), encoding="utf-8")
     chart = ""

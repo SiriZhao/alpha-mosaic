@@ -28,7 +28,7 @@ jobs:
       - run: uv sync --locked --all-extras --dev
       - run: uv run ruff check .
       - run: uv run pyright
-      - run: uv run pytest -q
+      - run: uv run pytest -q -W error::RuntimeWarning
       - name: Offline reproducibility and performance smoke
         run: uv run python scripts/benchmark_replay.py --sessions 100
       - name: Local MCP protocol handshake
@@ -41,6 +41,9 @@ jobs:
           "$RUNNER_TEMP/alphamosaic-wheel/bin/python" -m pip install --upgrade pip
           "$RUNNER_TEMP/alphamosaic-wheel/bin/python" -m pip install dist/*.whl
           "$RUNNER_TEMP/alphamosaic-wheel/bin/alphamosaic" doctor
+          mkdir -p "$RUNNER_TEMP/alphamosaic-wheel-work"
+          cd "$RUNNER_TEMP/alphamosaic-wheel-work"
+          "$RUNNER_TEMP/alphamosaic-wheel/bin/python" "$GITHUB_WORKSPACE/scripts/verify_wheel.py"
       - name: Dependency audit
         run: uvx --from pip-audit pip-audit --requirement <(uv export --locked --all-extras --format requirements-txt --no-hashes --no-emit-project)
         shell: bash

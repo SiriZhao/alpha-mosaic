@@ -2,13 +2,22 @@
 
 ## Renaissance research milestone
 
+Continuation adds actual calendar-week strategies and52-period views, qualified FIFO trade
+statistics/additive asset accounting, and an offline planner→review→bounded execution→critic
+workflow with immutable plans, durable audit and per-worker deadlines. Run
+`uv run python scripts/run_extended_research.py --home runtime/extended-research` for four
+fixed daily/weekly cases and all six declared plan trials. These remain FIXTURE demonstrations.
+Use the AI Research page to freeze and inspect a plan before execution. Adaptive model planning,
+qualified real-market evidence and the remaining risk/report capabilities are still tracked
+in ROADMAP.md; the overall platform objective remains active.
+
 The daily research prototype now includes immutable local datasets, causal event/cash accounting,
 three explicit cost scenarios, fixed baseline strategies, independently tested analytics,
 chronological validation/holdout review, reproducible experiment exports and an optional local
 Streamlit/Plotly terminal. Evidence remains Exploratory. Strict real-data performance is blocked
 by incomplete adjustment/PIT/corporate-action/delisting evidence; synthetic cases are **FIXTURE**,
-not historical results for their familiar ticker labels. Full AI planner, weekly data,
-closed-trade statistics and advanced optimization remain roadmap items.
+not historical results for their familiar ticker labels. Adaptive model planning,
+qualified real-market evidence and advanced optimization remain roadmap items.
 
 ```powershell
 uv sync --locked --all-extras --dev

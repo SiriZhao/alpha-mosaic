@@ -204,7 +204,7 @@ def test_missing_daily_nav_and_nonfinite_values_are_rejected() -> None:
 def test_weekly_momentum_uses_week_window_and_only_completed_available_values() -> None:
     data = data_between("2024-01-02", "2024-02-02")
     strategy = WeeklyBaselineStrategy("weekly_momentum", WeeklyStrategyParameters(lookback_weeks=2))
-    config = ReplayConfig(max_single_weight=.4, min_cash_buffer=.1)
+    config = ReplayConfig(max_single_weight=.4, min_cash_buffer=.1, weekly_parameters=WeeklyStrategyParameters(lookback_weeks=2))
     decision = strategy.allocation(data.bars, [], data.cutoff, config)
     assert decision.weights == {"AAA": .4}
     assert len(decision.evidence_ids) >= 3
@@ -229,7 +229,7 @@ def test_weekly_strategy_rejects_internal_unavailable_weeks_and_invalid_paramete
 def test_weekly_trend_warmup_is_weeks_not_daily_lookback() -> None:
     data = data_between("2024-01-02", "2024-02-02")
     strategy = WeeklyBaselineStrategy("weekly_trend", WeeklyStrategyParameters(trend_short_weeks=2, trend_long_weeks=3))
-    decision = strategy.allocation(data.bars, [], data.cutoff, ReplayConfig(lookback=252))
+    decision = strategy.allocation(data.bars, [], data.cutoff, ReplayConfig(lookback=252, weekly_parameters=WeeklyStrategyParameters(trend_short_weeks=2, trend_long_weeks=3)))
     assert decision.weights == {"AAA": 1}
     assert decision.decision_at.tzinfo == UTC
 

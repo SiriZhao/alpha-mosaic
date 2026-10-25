@@ -1,5 +1,13 @@
 # Risk register
 
+## Continuation risk changes — 2026-10-25
+
+R2/R3: scaled finite moments, denormal inverse-vol weights and split-derived OHLCV now have reproduced numeric regressions; FIFO/asset reconstruction requires complete sessions and action/cash/mark coverage. No payment-date dividend/cash-in-lieu/delisting model is inferred from these fixes.
+
+R5/R8: fixed-plan execution, per-home cross-process leases, native worker deadlines, bounded job queues, immutable plan rows and hashed/counter-validated audit events are implemented. Untrusted data-home module loading and existing junction redirection are refused. Safe interrupted-plan reconciliation and adaptive model orchestration remain unfinished; persisted state never proves liveness. Local hash/path checks do not provide multi-tenant authentication or hostile filesystem race-proofing.
+
+R9: installed packages no longer borrow an outer checkout's Git SHA. Current frozen source/267-test/base-wheel/browser evidence is separate from the old milestone. Publication CI for new code must be observed separately. Fresh OSV audit found no known vulnerabilities and no skipped package records; the raw report is retained in the continuation evidence directory.
+
 - R1 High / Blocked: real input adjustment, PIT availability, complete actions and delistings. Owner: data. Gate: no strict real replay without explicit reviewed provenance. Next: licensed snapshots and independent checks.
 - R2 High / Mitigated in tested scope: future leakage and same-close execution. Owner: accounting. Gate: next eligible session, availability checks, future perturbation tests. Residual: provider timestamps are assertions, not independent certification.
 - R3 High / Mitigated in tested scope: cash/quantity corruption, opening-gap constraints, overlapping sells and split order changes. Owner: accounting plus independent QA. Evidence: independent reconstruction of 48 scenarios/879 fills. Residual: no cash-in-lieu, payment delay or delisting economic model.

@@ -1,5 +1,11 @@
 # Fixed baseline strategies
 
+## Calendar-week rules (continuation)
+
+The registry also includes weekly_equal_weight, weekly_momentum and weekly_trend. They require an explicit ReplayConfig.decision_frequency=WEEKLY. WeeklyStrategyParameters records lookback_weeks (default12), trend_short_weeks4 and trend_long_weeks12. A constructor cannot override the parameters recorded in the replay configuration. Bounds are2..104 weeks with short<long. Registry callers and the terminal use the recorded configuration as the sole authority.
+
+Signals are scheduled at the actual last XNYS session of each natural week, including holiday-shortened weeks, and use only complete available weekly bars. Fills still use the canonical daily simulator at a later eligible open. A five-session rebalance is not called a calendar week. RAW corporate-action history affecting the weekly research interval is rejected until an explicit adjustment model qualifies it. Weekly return sampling is separately disclosed and does not transform a daily decision rule into a weekly strategy.
+
 Registry API: `Strategy.allocation(history, signals, at, config) -> TargetAllocation`. Only available past bars and dated signals enter history. Engine owns constraints, orders, costs and accounting; strategies have no execution authority. `StrategyRegistry.list()` exposes the exact current formulas and state.
 
 Hypotheses and requirements:

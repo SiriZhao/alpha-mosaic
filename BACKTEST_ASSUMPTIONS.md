@@ -1,5 +1,9 @@
 # Daily cash-equity simulation assumptions
 
+Continuation: decision frequency can be DAILY or explicit WEEKLY. Weekly decisions occur only after the actual natural-week final exchange session; all execution, liquidity and cash accounting remains daily. Weekly rule parameters are recorded independently and cannot be replaced by an unrecorded strategy-constructor override. Unknown/unreviewed RAW corporate actions block weekly rules and source views rather than silently dropping a week. Daily methods remain available under their documented limitations.
+
+Execution evidence now supports separate FIFO matching analysis and additive asset accounting. It does not change the original ledger or engine's moving-average cost display. The experiment is rejected if the independent reconstruction cannot reconcile the complete XNYS grid, every signal/order/fill/action/cash record, positions, marks and NAV. No historical artifact is retrospectively rewritten to add these statistics.
+
 Universe: explicit USD stocks/ETFs; long-only, no leverage, no options or brokerage. One XNYS session grid, finite positive OHLC and required volume; unaligned/missing sessions are rejected instead of receiving ideal fills. Inactive/delisting/symbol-change economics without reliable support are rejected. A current surviving basket is not an unbiased historical universe.
 
 Timing: close observations become strategy history only when available. Close-generated signals create proposals; orders become eligible at a later session open (default one session, configurable 1..20). Pending reservations prevent overselling. Fills link to original order and signal identifiers. Changing future bars must not alter earlier signals/fills. Warmup history may precede evaluation; no simulated positions/cash are imported from training.

@@ -1,5 +1,16 @@
 # Reproduce the local research prototype
 
+Continuation examples include actual calendar-week rules, FIFO accounting reconciliation and a frozen6-trial supervised workflow:
+
+```powershell
+uv run python scripts/run_extended_research.py --home runtime/extended-research
+$env:ALPHAMOSAIC_HOME = (Join-Path (Get-Location) 'runtime/extended-research')
+uv run alphamosaic research-plans
+uv run python -m streamlit run src/alphamosaic/ui/app.py --theme.base dark
+```
+
+The script retains four daily/weekly cases and every outcome from the explicit daily/weekly strategy×realistic/stress plan. Every new experiment exports qualified FIFO matches, asset contributions and complete-week NAV alongside daily records. FIXTURE prices remain software demonstrations, not market results. The AI Research page can freeze and execute a plan, inspect its immutable configuration/events/critics and export JSON evidence. CLI equivalents are plan-research CONFIG.json and run-research-plan PLAN_ID; plan source or dataset changes require a newly reviewed plan rather than silent mutation.
+
 Use Python3.12 and the reviewed Renaissance checkout. Freeze files/environment and restart the service before acceptance. No broker, paid API or model key is required.
 
 ```powershell

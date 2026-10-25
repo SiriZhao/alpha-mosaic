@@ -1,5 +1,13 @@
 # Scientific research controls
 
+## Bounded offline research workflow
+
+ResearchWorkflow now freezes a user-reviewed hypothesis and explicit strategy×cost grid before execution. The deterministic planner supports at most6 declared trials, requires a realistic-cost primary case, records dataset/manifest/source hashes and retains every outcome. Data review, worker execution, result comparison, independent deterministic critics and final evidence reporting share ApplicationService across CLI/MCP/UI. This is implemented offline orchestration; it is not an unrestricted autonomous model or a claim of AI-discovered alpha.
+
+Each fixed Python worker has a subprocess deadline and a request containing only validated experiment parameters. A single OS execution lease per research home covers direct and supervised experiments. MCP job queues are bounded; queued jobs can be cancelled, while active workers follow declared deadlines. The total plan budget is recomputed before dispatch; cleanup, integrity checks and audit bookkeeping may add overhead after a worker exits. Completed/failed/interrupted plans do not silently rerun or mutate their hypothesis in response to results. An interrupted plan remains INCOMPLETE_OR_RUNNING until explicit reconciliation; file state never proves a process is live or stopped.
+
+The immutable plan and append-only event chain validate call identities, quotas, result statuses and completion counters. An unverified legacy audit schema is rejected while preserving its original database for review. A trusted optional explanation adapter receives a copy of evidence and returns bounded qualitative MODEL_INFERENCE text; numeric text and unsupported promotion phrases are rejected, and it cannot overwrite computed metrics or acquire a shell, broker or data tool. No LLM API, paid key or third-party upload is required. Remote provider/model authorization and broader adaptive planning remain separate work.
+
 Freeze hypothesis, universe selection, source/adjustment, date split, costs and metric definitions before evaluation. The fixed example suite retains all eight attempted configurations and a failed control; it does not select the best curve. FIXTURE results measure software behavior only.
 
 `chronological_split` partitions train/validation/holdout without random shuffling. Purging removes overlapping-label boundaries and embargo reserves additional sessions; choose horizons explicitly. `walk_forward_folds` produces expanding or rolling historical folds; OOS remains historical and cannot certify an untouched prospective period. `fit_standardizer` fits mean/scale only on training indices. Extreme finite inputs that overflow calculations fail closed.

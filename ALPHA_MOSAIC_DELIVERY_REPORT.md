@@ -1,5 +1,13 @@
 # AlphaMosaic Renaissance — engineering delivery
 
+## Current continuation — 2026-10-25
+
+The full objective remains ACTIVE. Calendar-week strategies/52-period views, independent FIFO/asset accounting and the bounded frozen-plan research workflow are now implemented and verified within their explicit model. The current checkpoint passed267 tests, Ruff/Pyright, real weekly/plan terminal actions, clean base-wheel offline/plan/MCP and browser render gates. Source hash: `af12390cfe9579db641a354fee171afaa6d409c3c6bd56fa770a6f06ceca8f07`.
+
+Read [continuation acceptance](docs/CONTINUATION_ACCEPTANCE_20261025.md), [machine evidence](docs/evidence/continuation-20261025/acceptance.json), [plan evidence](docs/evidence/continuation-20261025/plan-evidence.json) and [weekly FIXTURE report](docs/evidence/continuation-20261025/sample-weekly-fixture-report.md). Prior sections and CI links below are retained historical measurements and do not by themselves certify the current source. New publication/CI must be observed separately. Real-data qualification and the remaining risk/portfolio/statistical/report/model/recovery requirements still prevent a full-platform completion claim.
+
+![Bounded research plan](docs/evidence/continuation-20261025/07-ai-research.png)
+
 Date: 2026-10-24 (Asia/Shanghai). Branch: `codex/renaissance-20261024`. Recovered base: `ccd369e`. This is a **locally verified daily research milestone**, not complete production-grade research acceptance. No real historical strategy return, demonstrated alpha, broker capability or return probability is claimed.
 
 ## 1. Original architecture and recovery

@@ -1,5 +1,15 @@
 # Return and risk conventions
 
+## Qualified execution analysis
+
+Version2 experiment artifacts run evaluation.trades.analyze_trades against both replay events and the selected versioned dataset. Only VERIFIED reconciliation fills matched-trade metrics; inconsistent events, actions, marks, cash, sessions or identities fail the experiment and preserve the rejected result. Standalone return-series analytics still leave unmatched-trade fields null when no execution evidence has been supplied.
+
+trade_count and closed_lot_match_count count FIFO sell-to-entry matching segments; completed_round_trip_count separately counts positive-to-flat position episodes. Partial sells split entry/exit fees and posted dividends proportionally. Win rate uses positive closed-segment net P&L including allocated posted dividends; breakeven is not a win. Profit factor is positive net closed P&L divided by absolute negative net P&L and is null when there are no losses. Open positions never become invented wins/losses. Holding period averages complete exchange-session differences, weighted by closed entry cost basis.
+
+Splits rescale lot quantities and preserve total cost; dividends remain separate income. Fill prices already include slippage/spread, so these are not debited again. Asset realized-price P&L + unrealized-price P&L + dividend income reconciles additively to ending NAV minus initial cash. This FIFO decomposition differs from the engine's displayed moving-average costs, while total economic P&L is unchanged. It is accounting contribution, not causal factor attribution or tax-lot advice.
+
+Complete-week NAV analysis uses52 periods/year and keeps partial initial/final intervals separate. The weekly metric return covers complete weeks; inception_return_through_last_completed_week includes the initial partial interval. Week-end sampling misses intraweek losses, so the daily risk report is retained. The NAV available_at field is a simulated valuation timestamp, never proof of provider availability/PIT certification. Source WeeklyBar.available_at separately preserves component observation availability.
+
 Core implementation: `evaluation/analytics.py`; tested independently from optional QuantStats. Daily simple return r_t = NAV_t/NAV_(t-1)-1, with initial cash as NAV_0. No external capital flows. Exactly252 exchange observations/year; weekly annualization is not implied. Missing/nonfinite returns are rejected; undefined ratios are null.
 
 Total return = product(1+r)-1. CAGR = product(1+r)^(252/n)-1. Sample volatility = std(r,ddof=1)×sqrt252. Sharpe uses mean daily excess divided by sample standard deviation×sqrt252; annual risk-free0 is the explicit default, not a sourced Treasury series. Sortino uses sqrt(mean(min(excess,0)^2)) over **all** periods. Calmar = CAGR/abs(max drawdown) when denominator is nonzero.

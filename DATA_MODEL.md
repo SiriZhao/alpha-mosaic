@@ -1,5 +1,9 @@
 # Data model and trust boundaries
 
+WeeklySeries/WeeklyDataset and WeeklyBar are separate schemas; no weekly bar masquerades as a daily HistoricalBar. Natural-week OHLC/volume aggregation retains component hashes, source/adjustment/PIT labels and maximum component availability. Incomplete boundary weeks are explicitly excluded; internal gaps or mixed in-asset identity/source/adjustment fail. A known record of an already-effective RAW action prevents qualification even when it was disclosed late. A simulated weekly NAV timestamp is explicitly not provider evidence.
+
+Experiment artifact schema2 adds closed_lots.csv, open_lots.csv, asset_attribution.csv and weekly_equity.csv to the integrity-required outputs. Old schema1 artifacts remain readable under their original required-file rules. ResearchExecutionContext links each supervised attempt to its frozen plan and ordinal without changing strategy parameters. Research plans are immutable hashed rows; execution events form an append-only hash chain with sequence, call/result and final-count validation. This detects ordinary corruption, not a hostile writer able to rewrite both content and hashes.
+
 Core contracts are frozen Pydantic models with forbidden unknown fields and non-finite values. `ReplayDataset` contains instrument-keyed chronological HistoricalBars, verified SecurityIdentity records, CorporateActions, DatedSignals, aware UTC cutoff, mode and explicit historical-universe/action coverage assertions. Replay revalidates nested input even after model_copy.
 
 Each bar records symbol/session/OHLCV, currency, provider/source URL, observation/publication/known/as-of timestamps, adjustment policy, evidence class, license scope, PIT status and provenance. `known_at` is availability, not a synonym for market date. Raw price, split-adjusted price and total-return series remain distinct. Reconstructed downloads cannot silently become certified historical knowledge.

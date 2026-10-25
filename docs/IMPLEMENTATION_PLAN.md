@@ -8,15 +8,15 @@ Goal: preserve existing work, isolate research from trading, version validated d
 
 ## P1 — costs, baselines, analytics and experiments
 
-Goal: reproducible fixed experiments with all successes and failures retained. Dependencies: P0. Acceptance: explicit fee/slippage/spread/delay/volume/lot/cash caps; human-checkable annual metrics; same-config result equality; artifact integrity and incomplete/failed status. Status: Implemented & locally verified. Next: closed-lot statistics, payment-date dividends, asset contribution accounting and broader golden datasets. Full covariance optimization remains Planned.
+Goal: reproducible fixed experiments with all successes and failures retained. Dependencies: P0. Acceptance: explicit fee/slippage/spread/delay/volume/lot/cash caps; human-checkable annual metrics; same-config result equality; artifact integrity and incomplete/failed status. FIFO matched-lot statistics and additive asset accounting are implemented and independently reconciled. Next: payment-date dividends, cash-in-lieu and broader independently sourced golden datasets. Full covariance optimization remains Planned.
 
 ## P2 — validation, reports and terminal
 
-Goal: bounded research cases, chronological splits, training-only fit, holdout contamination audit, compatible benchmark comparisons, navigable terminal and source-linked reports. Dependencies: P0/P1. Acceptance: A/B/C plus cost/parameter/holdout cases; browser navigation/screenshots; report exports and compatibility failures. Status: Implemented & locally verified within documented scope. Blocker: no trustworthy real three-asset dataset; weekly research and PDF export are not implemented. Next: broaden UI action tests and valid data snapshots.
+Goal: bounded research cases, chronological splits, training-only fit, holdout contamination audit, compatible benchmark comparisons, navigable terminal and source-linked reports. Dependencies: P0/P1. Calendar-week aggregation, signals, next-daily-open execution and52-period analytics are now implemented with explicit partial intervals. Blocker: no qualified real three-asset dataset. Next: broader rolling-risk/comparison visual workflows, source qualification and independently verified PDF export.
 
 ## P3 — optional AI and advanced research
 
-Goal: controlled hypothesis/planning/execution/critic workflow without paid-LLM dependency. Dependencies: P0–P2 and auditable tool quotas. Current status: Partially Implemented: deterministic critic, ModelAdapter protocol and typed local MCP experiment tools. Full planner, autonomous model orchestration, durable global quotas, advanced multiple-testing corrections and automatic research recommendations: Planned. No attractive backtest automatically promotes a strategy. Next: implement a small audited planner only after real-data qualification.
+Goal: controlled hypothesis/planning/execution/critic workflow without paid-LLM dependency. Dependencies: P0–P2 and auditable tool quotas. Implemented: frozen explicit hypothesis/grid, data/source version review, fixed worker tools, per-home global experiment lease, hard worker deadlines, durable hashed audit/counter validation, complete outcome retention and deterministic critics. Optional commentary cannot introduce numeric claims or investment-promotion phrases. Partial/Planned: adaptive model planning, independently validated selection corrections and safe interrupted-plan recovery. No attractive backtest automatically promotes a strategy.
 
 ## Release gate
 

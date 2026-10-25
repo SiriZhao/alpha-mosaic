@@ -130,3 +130,17 @@ def test_corrupt_dataset_remains_visible_without_blocking_healthy_listing(servic
     assert store.load(good["dataset_id"]).bars
     with pytest.raises(ValueError):
         store.load("0" * 64)
+
+
+def test_installed_package_does_not_borrow_parent_repository_metadata(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    import subprocess
+    installed = tmp_path / "Lib/site-packages/alphamosaic/experiments/runner.py"
+    installed.parent.mkdir(parents=True)
+    installed.write_text("# installed artifact")
+    monkeypatch.setattr(runner, "__file__", str(installed))
+    def unexpected_git(*args, **kwargs):
+        pytest.fail("installed package attempted to discover a parent Git checkout")
+    monkeypatch.setattr(subprocess, "check_output", unexpected_git)
+    manifest = runner.code_manifest()
+    assert manifest["git_sha"] == "NOT_AVAILABLE" and manifest["git_dirty"] is None
+    assert manifest["lock_hash"] is None and manifest["source_kind"] == "INSTALLED_PACKAGE"

@@ -1,5 +1,14 @@
 # Next steps
 
+## Active full-objective continuation
+
+1. Read docs/CONTINUATION_ACCEPTANCE_20261025.md and the latest Git/CI state. Do not treat the prior milestone or current267-test checkpoint as completion of the full goal.
+2. Highest-value data gate remains qualified licensed raw-plus-actions/PIT/membership/delisting evidence. Keep real research blocked instead of substituting FIXTURE returns.
+3. Continue payment-date dividends/cash-in-lieu and broader golden evidence, benchmark choices, rolling-risk/comparison/robustness UI, source-qualified factor/sector data, robust portfolio construction and independently checked advanced statistical methods.
+4. Implement safe interrupted-plan reconciliation using authoritative process evidence; no record/lock file alone proves liveness. Retain the fixed-plan/no-silent-rerun safeguards and per-home global experiment lease.
+5. Adaptive model-driven hypothesis planning remains separate from the working deterministic frozen-grid workflow; no paid model authorization is assumed. Qualitative comments cannot introduce computed financial observations.
+6. Complete current source publication/CI gates before interpreting a previously green run as this commit's acceptance. Root dirty work and all other worktrees remain preserved.
+
 ## Renaissance next checkpoint
 
 Release note: draft PR #4 exists and implementation CI run40135345657 passed. Review the stacked PR chain without auto-merging. Observe later evidence-only commit CI separately; no additional model/data credential is required for offline research.

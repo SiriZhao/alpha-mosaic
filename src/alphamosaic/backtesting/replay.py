@@ -144,6 +144,20 @@ def validate_dataset(data: ReplayDataset) -> list[str]:
     return flags
 
 
+def _split_history_bar(bar: HistoricalBar, ratio: float) -> HistoricalBar:
+    try:
+        return HistoricalBar.model_validate({
+            **bar.model_dump(),
+            "open": bar.open / ratio,
+            "high": bar.high / ratio,
+            "low": bar.low / ratio,
+            "close": bar.close / ratio,
+            "volume": bar.volume * ratio if bar.volume is not None else None,
+        })
+    except (ValueError, ArithmeticError) as exc:
+        raise ValueError("split-adjusted history has unrepresentable price or volume") from exc
+
+
 def _causal_history(data: ReplayDataset, index: int) -> dict[str, list[HistoricalBar]]:
     history = {s: bars[:index] for s, bars in data.bars.items()}
     prior = next(iter(data.bars.values()))[index - 1].session if index else None
@@ -154,15 +168,7 @@ def _causal_history(data: ReplayDataset, index: int) -> dict[str, list[Historica
         ratio = float(action.ratio or 1)
         symbol = str(action.symbol)
         history[symbol] = [
-            bar.model_copy(
-                update={
-                    "open": bar.open / ratio,
-                    "high": bar.high / ratio,
-                    "low": bar.low / ratio,
-                    "close": bar.close / ratio,
-                    "volume": bar.volume * ratio if bar.volume is not None else None,
-                }
-            )
+            _split_history_bar(bar, ratio)
             if bar.session < action.effective_date
             else bar
             for bar in history[symbol]

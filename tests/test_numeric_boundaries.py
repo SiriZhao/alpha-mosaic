@@ -74,3 +74,25 @@ def test_unrepresentable_active_volatility_does_not_erase_defined_information_ra
     assert result["beta"] == pytest.approx(-1)
     assert result["correlation"] == pytest.approx(-1)
     assert all(value is None or math.isfinite(value) for value in result.values())
+
+
+@pytest.mark.parametrize("fault", ["price_underflow", "volume_overflow"])
+def test_split_adjusted_strategy_history_cannot_hide_invalid_derived_values(fault: str) -> None:
+    from test_backtesting import dataset
+
+    from alphamosaic.backtesting.replay import _causal_history, validate_dataset
+    from alphamosaic.core.contracts import CorporateAction
+
+    data = dataset(5)
+    rows = data.bars["AAA"]
+    if fault == "price_underflow":
+        rows = [bar.model_copy(update={"open": 1e-200, "close": 1e-200, "high": 1e-200, "low": 1e-200}) for bar in rows]
+    else:
+        rows = [bar.model_copy(update={"volume": 1e200}) for bar in rows]
+    data.bars["AAA"] = rows
+    evidence = rows[0].model_dump(exclude={"session", "open", "high", "low", "close", "volume"})
+    action = CorporateAction(**evidence, action="SPLIT", effective_date=rows[2].session, ratio=1e200)
+    data = data.model_copy(update={"actions": [action]})
+    validate_dataset(data)
+    with pytest.raises(ValueError, match="split-adjusted history"):
+        _causal_history(data, 4)

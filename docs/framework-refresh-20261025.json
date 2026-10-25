@@ -1,0 +1,48 @@
+{
+  "component": "QuantConnect LEAN",
+  "decision": "Reference",
+  "capture_kind": "Live GitHub connector GET plus official published package/documentation page",
+  "branch": {
+    "name": "master",
+    "commit": "f3d841e60dfd010ee5fc293ea893e56952484108",
+    "committed_at": "2026-10-21T21:07:14Z",
+    "url": "https://github.com/QuantConnect/Lean/commit/f3d841e60dfd010ee5fc293ea893e56952484108",
+    "api": "https://api.github.com/repos/QuantConnect/Lean/branches/master"
+  },
+  "github_release": {
+    "tag": "v2.4.0.1",
+    "published_at": "2017-08-08T20:57:57Z",
+    "url": "https://github.com/QuantConnect/Lean/releases/tag/v2.4.0.1",
+    "api": "https://api.github.com/repos/QuantConnect/Lean/releases/latest",
+    "meaning": "Latest GitHub release object is old; not a measure of current branch maintenance or engine runtime qualification"
+  },
+  "observed_nuget_package": {
+    "version": "2.5.18193",
+    "published_date": "2026-10-18",
+    "framework": "net10.0",
+    "url": "https://www.nuget.org/packages/QuantConnect.Lean/2.5.18193",
+    "meaning": "Observed exact published package metadata; not installed, not asserted identical to captured master or latest Docker image"
+  },
+  "engine_version_documentation": {
+    "url": "https://www.quantconnect.com/docs/v2/local-platform/development-environment/lean-engine-versions",
+    "observation": "Official default engine selection follows latest master; future validation must pin exact source/image rather than assume the old GitHub release is current"
+  },
+  "license": {
+    "spdx": "Apache-2.0",
+    "url": "https://raw.githubusercontent.com/QuantConnect/Lean/f3d841e60dfd010ee5fc293ea893e56952484108/LICENSE",
+    "archival_representation": "UTF-8 tool-returned text, terminal newline normalized; no engine source copied",
+    "sha256": "f715cd98ee505c21b8dfeea567bb35609b9ffc32b1c40887010a923a88a518d6"
+  },
+  "runtime_installation": "NOT_RUN",
+  "python312_integration": "NOT_VERIFIED",
+  "independent_same_input_execution_comparison": "BLOCKED_NO_PINNED_RUNTIME_AND_LICENSED_DATA",
+  "broker_integration": "FORBIDDEN",
+  "paid_resources": "NONE",
+  "notes": [
+    "No upstream engine source copied or executed",
+    "Only license text inspected and fingerprinted",
+    "Live GitHub metadata resolves prior API-denial uncertainty; earlier evidence unchanged",
+    "GitHub HTML cache returned inconsistent September versus October commit lists; live branch API controls captured commit identity"
+  ],
+  "captured_at": "2026-10-25T14:46:39.298424+00:00"
+}

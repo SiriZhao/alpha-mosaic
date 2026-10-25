@@ -1,5 +1,7 @@
 # AlphaMosaic
 
+Latest continuation: Risk Lab displays recorded rolling risk, cash/concentration, costs and independently reconciled contributions; compatible experiments can overlay equity/underwater curves with complete simulation assumptions and exportable chart provenance.271 tests passed locally; see [risk terminal verification](docs/TERMINAL_RISK_ACCEPTANCE_20261025.md). Full Renaissance scope and strict real-data acceptance remain incomplete.
+
 ## Renaissance research milestone
 
 Continuation adds actual calendar-week strategies and52-period views, qualified FIFO trade

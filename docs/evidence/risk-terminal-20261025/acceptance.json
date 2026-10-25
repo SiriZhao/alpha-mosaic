@@ -1,0 +1,102 @@
+{
+  "scope": "RESEARCH_SOFTWARE_AND_FIXTURE_UI_ONLY",
+  "source_hash": "7ca17f91dbee927d7c9c788879ccfe6f1e878338954dc618b1f867393ffc9c15",
+  "tests": {
+    "tests": 271,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "runtime_warnings": "ERROR",
+  "upstream_deprecation_warnings": 4,
+  "ruff": "PASSED",
+  "pyright": "ZERO_ERRORS",
+  "clean_base_wheel": {
+    "status": "PASSED",
+    "package_path": "runtime\\risk-ui-wheel-env\\Lib\\site-packages\\alphamosaic\\__init__.py",
+    "python": "3.12.14",
+    "optional": {
+      "openbb-core": "NOT_INSTALLED",
+      "quantstats": "NOT_INSTALLED",
+      "streamlit": "NOT_INSTALLED",
+      "plotly": "NOT_INSTALLED"
+    },
+    "experiment_id": "8b5063ee5dc34d998b29ad7395c9de6d",
+    "plan_id": "f2c92db99efd40988c405620a0529cbe",
+    "plan_status": "COMPLETED",
+    "fifo_reconciliation": "PASSED",
+    "weekly_analysis": "COMPLETE_WEEKS_AVAILABLE",
+    "acceptance": "FIXTURE",
+    "broker_enabled": false
+  },
+  "clean_wheel_mcp": {
+    "status": "PASSED",
+    "protocol_version": "2025-11-25",
+    "tool_count": 31,
+    "invocation": "get_system_status",
+    "ranking_run_id": null,
+    "broker_enabled": false,
+    "remote_chatgpt": "NOT_VERIFIED"
+  },
+  "browser": {
+    "status": "PASSED",
+    "pages": [
+      "Research Overview",
+      "Data Explorer",
+      "Strategy Lab",
+      "Backtest Results",
+      "Experiment Comparison",
+      "Risk Lab",
+      "AI Research",
+      "Reports"
+    ],
+    "browser_errors": [],
+    "screenshots": 11,
+    "comparison_selection": [
+      "db790f0705b64c39a56bb4133b045df2",
+      "1b0519fcc9b3474e8ecf2c490c349954"
+    ],
+    "scope": "Navigation, render, populated local fixture reports, selected qualified comparison when requested, and mobile degradation; scrolled viewports where needed; not every interactive action"
+  },
+  "viewed_fixture_cases": {
+    "status": "PASSED",
+    "scope": "FIXTURE_RISK_UI",
+    "dataset_id": "7c075d0ebf8a28f8a9d24bbd164ed325e757c25299d4f7bcc7fa47438427129c",
+    "cases": [
+      {
+        "cost_scenario": "realistic",
+        "experiment_id": "db790f0705b64c39a56bb4133b045df2",
+        "source_hash": "d26d0aadaa0e6e81f3d28f9bea2f1648dfb6d186491b160d985ae1f55c7f6483",
+        "accounting": "PASSED",
+        "exposures": 260
+      },
+      {
+        "cost_scenario": "stress",
+        "experiment_id": "1b0519fcc9b3474e8ecf2c490c349954",
+        "source_hash": "d26d0aadaa0e6e81f3d28f9bea2f1648dfb6d186491b160d985ae1f55c7f6483",
+        "accounting": "PASSED",
+        "exposures": 260
+      }
+    ],
+    "market_performance_inference": "PROHIBITED"
+  },
+  "non_ui_fixture_compute_hashes_match_current": true,
+  "wheel_python_matches_tested_source": true,
+  "sdist_runtime_excluded": true,
+  "build_artifacts": {
+    "alphamosaic-0.1.0-py3-none-any.whl": {
+      "bytes": 169027,
+      "sha256": "7498fcef74d125fa57d2cef93cd0514d5aa5ec1d7a7bfc4e199bd8ef1a517106"
+    },
+    "alphamosaic-0.1.0.tar.gz": {
+      "bytes": 1173346,
+      "sha256": "ac3a223b8dabdd8826e15d8760a0ad892ca4ebc58c7bd1109c92f96142bb5b5e"
+    }
+  },
+  "independent_review": "CASH_EXPOSURE_REPRODUCED_AND_REPAIRED_LEGACY_GAPS_PRESERVED",
+  "dividend_payment_model": "DESIGN_ONLY_NOT_IMPLEMENTED",
+  "overall_goal": "ACTIVE_NOT_COMPLETE",
+  "hosted_ci": "VERIFY_NEW_COMMIT_SEPARATELY",
+  "remote_chatgpt": "NOT_VERIFIED",
+  "real_data_acceptance": "BLOCKED"
+}

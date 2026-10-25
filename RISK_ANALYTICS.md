@@ -1,5 +1,7 @@
 # Return and risk conventions
 
+Risk Lab presents persisted daily rolling statistics, cash/NAV, NAV-weighted HHI, drawdown episodes and reconciled asset/cost records. Each new exposure grid includes every equity session: known flat positions reconcile to HHI0/cash weight1, while incomplete or inconsistent marks leave concentration null. Legacy records are aligned only for display, with missing values retained. Risk-free/annualization/window assumptions and chart provenance remain explicit; full simulation configurations distinguish preset changes from a fee-only counterfactual. See docs/TERMINAL_RISK_ACCEPTANCE_20261025.md.
+
 ## Qualified execution analysis
 
 Version2 experiment artifacts run evaluation.trades.analyze_trades against both replay events and the selected versioned dataset. Only VERIFIED reconciliation fills matched-trade metrics; inconsistent events, actions, marks, cash, sessions or identities fail the experiment and preserve the rejected result. Standalone return-series analytics still leave unmatched-trade fields null when no execution evidence has been supplied.

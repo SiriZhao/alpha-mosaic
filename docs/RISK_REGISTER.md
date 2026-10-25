@@ -1,5 +1,7 @@
 # Risk register
 
+Risk-terminal follow-up: independently reproduced omitted cash-only exposure dates are repaired for new analytics; unqualified marks remain null, and legacy UI dates are aligned without backfill. Qualified overlays show complete execution configurations; chart exports carry provenance. The new dividend entitlement/payment design identifies receivable and spendability requirements but does not implement or certify them. See TERMINAL_RISK_ACCEPTANCE_20261025.md for271-test scope and DIVIDEND_PAYMENT_ACCOUNTING_DESIGN.md for the remaining P0 migration.
+
 ## Continuation risk changes — 2026-10-25
 
 R2/R3: scaled finite moments, denormal inverse-vol weights and split-derived OHLCV now have reproduced numeric regressions; FIFO/asset reconstruction requires complete sessions and action/cash/mark coverage. No payment-date dividend/cash-in-lieu/delisting model is inferred from these fixes.

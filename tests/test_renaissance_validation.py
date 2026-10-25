@@ -163,6 +163,32 @@ def test_equity_history_requires_order_and_positive_nav() -> None:
         analyze(data.model_copy(update={"equity": list(reversed(data.equity))}))
 
 
+def test_exposure_grid_preserves_flat_cash_and_missing_legacy_marks() -> None:
+    data = replay([100] * 5)
+    updates = [
+        {"cash": 100, "positions": {}, "market_values": {}},
+        {"cash": 40, "positions": {"AAA": 1}, "market_values": {"AAA": 60}},
+        {"cash": 100, "positions": {}, "market_values": {}},
+        {"cash": 50, "positions": {"AAA": 1}, "market_values": {}},
+        {"cash": 50, "positions": {"AAA": 1, "BBB": 1}, "market_values": {"AAA": 50}},
+    ]
+    data = data.model_copy(update={"equity": [point.model_copy(update=update) for point, update in zip(data.equity, updates, strict=True)]})
+    rows = analyze(data)["exposures"]
+    assert [row["session"] for row in rows] == [str(point.session) for point in data.equity]
+    assert [row["cash_weight"] for row in rows] == [1, .4, 1, .5, .5]
+    assert [row["concentration_hhi"] for row in rows] == [0, pytest.approx(.36), 0, None, None]
+
+
+def test_cash_only_exposure_is_known_and_inconsistent_marks_do_not_imply_low_concentration() -> None:
+    assert analyze(replay([100, 100]))["exposures"] == [
+        {"session": "2024-01-02", "cash_weight": 1.0, "concentration_hhi": 0.0},
+        {"session": "2024-01-03", "cash_weight": 1.0, "concentration_hhi": 0.0},
+    ]
+    data = replay([100])
+    data.equity[0] = data.equity[0].model_copy(update={"cash": 40, "positions": {"AAA": 1}, "market_values": {"AAA": 50}})
+    assert analyze(data)["exposures"][0]["concentration_hhi"] is None
+
+
 def test_purging_removes_every_label_that_reaches_evaluation_boundary() -> None:
     split = chronological_split(100, label_horizon_sessions=4, embargo_sessions=2)
     assert split.train == tuple(range(54))

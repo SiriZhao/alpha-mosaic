@@ -1,5 +1,7 @@
 # Verification commands and scope
 
+Latest risk-terminal follow-up:271 tests passed with RuntimeWarning as error, including actual qualified/incompatible/corrupt comparison actions, immutable legacy gaps, and hand-verifiable flat-cash/mark reconciliation. Independent review used a legal15-session alternating-holdings replay to reproduce the old missing-date defect. Current source and browser/wheel evidence are in docs/TERMINAL_RISK_ACCEPTANCE_20261025.md; older267-test records remain historical.
+
 Continuation coverage adds extreme finite-moment/OLS/denormal-volatility cases, validated split-derived history, FIFO golden matching/fees/dividends/reverse-split/complete-session accounting, real weekly decisions with Good Friday and next-open causality, source-view late action rejection and constructor/config reproducibility. Workflow tests execute actual worker processes, hard deadlines, global leases, immutable plans, corrupted audit sequences/final counters, old-schema preservation, untrusted-home module shadowing and junction containment. Permission to construct the junction fixture may be needed under a restricted Windows sandbox; it is not skipped to create a passing result.
 
 ```powershell

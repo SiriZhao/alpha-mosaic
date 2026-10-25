@@ -1,5 +1,9 @@
 # AlphaMosaic Renaissance — engineering delivery
 
+## Latest risk terminal follow-up — 2026-10-25
+
+Risk Lab and qualified comparison now expose persisted rolling risks, full configurations, concentration/cash, accounting/costs, drawdown episodes and embedded chart provenance. Independent review found and reproduced omitted cash-only dates and missing legacy exposures; both are repaired without rewriting old results. Final local suite:271 passed, Ruff/Pyright and fresh base-wheel plan/FIFO/weekly/MCP passed. Read [risk terminal acceptance](docs/TERMINAL_RISK_ACCEPTANCE_20261025.md). Its current hosted CI is a separate gate from the older green runs below. The [payment accounting design](docs/DIVIDEND_PAYMENT_ACCOUNTING_DESIGN.md) is reviewed but remains unimplemented. Full Renaissance acceptance remains incomplete.
+
 ## Current continuation — 2026-10-25
 
 Implementation `a583a1e` is committed/pushed with remote SHA verified. [Draft PR #4](https://github.com/SiriZhao/alpha-mosaic/pull/4) remains stacked on unmerged #3; no merge was performed. [Hosted CI40157996079](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40157996079) passed all quality steps including267 Linux tests, clean-wheel bounded-plan execution, dependency audit and secret scan. Four clean-commit cases and six frozen trials produced exactly equal replay and analysis records to precommit acceptance. See [CI evidence](docs/evidence/continuation-20261025/hosted-ci.json) and [committed reproduction](docs/evidence/continuation-20261025/committed-reproduction.json); later evidence-only commits require their own CI observation.

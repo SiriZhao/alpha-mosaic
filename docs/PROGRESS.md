@@ -1,5 +1,9 @@
 # Recoverable progress
 
+## Risk terminal follow-up — 2026-10-25
+
+Integrated independent dividend design commit bd41c20 (design only). Implemented source-backed risk/comparison charts and exportable provenance. Independent review reproduced eight omitted cash sessions in a15-session legal replay, and273 missing legacy exposure rows in an existing424-session artifact. New analytics preserves dates and qualifies marks; the UI leaves legacy gaps explicit. Final full regression271 passed; local clean-wheel plan/FIFO/weekly/MCP, Ruff and Pyright passed. Details and known failed attempts are in TERMINAL_RISK_ACCEPTANCE_20261025.md. The objective remains ACTIVE; payment economics, real-data, advanced research/model/recovery work is not declared complete.
+
 ## Continuing full scope — 2026-10-25
 
 Publication checkpoint: implementation a583a1e pushed with local/remote SHA equality; draft PR #4 description updated with the actual continuation scope. Hosted CI40157996079 passed all gates (267 Linux tests, clean-wheel frozen plan, dependency/secret scans). Four clean-commit cases and six frozen trials reproduced identical replay/accounting/analytics; Git dirty was false in every run. New `hosted-ci.json` and `committed-reproduction.json` retain these results. Further risk, data, statistical, portfolio, reporting and recovery work remains; the overall goal is not complete.

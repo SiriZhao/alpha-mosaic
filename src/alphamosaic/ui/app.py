@@ -9,6 +9,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from alphamosaic.core.service import ApplicationService
+from alphamosaic.ui.views import comparison_views, evidence_caption, qualify_figure, risk_views
 
 st.set_page_config(page_title="AlphaMosaic Research", page_icon="◈", layout="wide")
 st.markdown("""<style>
@@ -33,7 +34,7 @@ st.info("Historical / synthetic research. No live quotes. FIXTURE results establ
 
 def plot_result(item: dict[str, Any], risk: bool = False) -> None:
     result, config = item["result"], item["config"]
-    st.caption(f"{result['acceptance']} · {item['return_basis']} · {result['equity'][0]['session']} — {result['equity'][-1]['session']} · UTC · dataset {config['dataset_id']} · experiment {item['experiment_id']}")
+    st.caption(evidence_caption(item))
     fig = go.Figure()
     traces = [(config["strategy"], result["equity"])]
     if item["analysis"]["benchmark_status"] == "COMPARABLE_SIMULATED_RETURNS":
@@ -51,6 +52,7 @@ def plot_result(item: dict[str, Any], risk: bool = False) -> None:
             values = underwater
         fig.add_trace(go.Scatter(x=[p["session"] for p in points], y=values, name=label))
     fig.update_layout(template="plotly_dark", height=440, margin=dict(l=20, r=20, t=35, b=20), yaxis_title="Drawdown" if risk else "NAV / initial cash", title="Costs: " + str({k: config["replay"].get(k) for k in ("fee_bps", "slippage_bps", "spread_bps")}))
+    qualify_figure(fig, [item])
     st.plotly_chart(fig, width="stretch")
 
 
@@ -156,9 +158,11 @@ elif page == "Experiment Comparison":
     rows = service.research_experiments()
     ids = st.multiselect("Compare up to 10 experiments", [r["experiment_id"] for r in rows], max_selections=10)
     if ids:
-        comparison = service.research_comparison(ids)
-        st.success("Comparable dataset, dates, return basis and benchmark") if comparison["status"] == "COMPARABLE" else st.warning("Incompatible experiment assumptions; no pooled ranking")
-        st.json(comparison)
+        try:
+            comparison = service.research_comparison(ids)
+            comparison_views([service.research_result(key) for key in ids], comparison)
+        except (ValueError, OSError, KeyError) as exc:
+            st.error("Comparison evidence could not be loaded: " + str(exc))
 elif page == "AI Research":
     st.caption("Frozen offline research workflow · deterministic planner and independent critic · optional text adapter · broker disabled")
     datasets = [d for d in service.research_datasets() if d.get("state") == "AVAILABLE"]
@@ -212,7 +216,8 @@ else:
     if item:
         if page in {"Backtest Results", "Risk Lab"}:
             plot_result(item, page == "Risk Lab")
-            st.json(item["analysis"], expanded=False)
+            if page == "Backtest Results":
+                st.json(item["analysis"], expanded=False)
             if page == "Backtest Results":
                 tabs = st.tabs(["Fills", "Orders", "Positions", "Cash ledger", "Warnings", "Closed FIFO matches", "Asset accounting", "Weekly view"])
                 for tab, key in zip(tabs[:5], ["fills", "orders", "equity", "cash_ledger", "diagnostics"], strict=True):
@@ -227,7 +232,7 @@ else:
                 tabs[7].caption("52 completed-week periods/year; boundary intervals and daily risk remain separate.")
                 tabs[7].json(weekly, expanded=False)
             else:
-                st.json({k: item["result"].get(k) for k in ("fees", "slippage_cost", "spread_cost", "turnover")})
+                risk_views(item)
                 st.warning("Cost stress is a separate experiment. Factor causality, capacity certification and executable opening liquidity remain unverified.")
         elif page == "Reports":
             path = service.experiment_runner().store.path(item["experiment_id"])

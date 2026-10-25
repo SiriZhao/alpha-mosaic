@@ -179,7 +179,7 @@ def analyze(
         "win_rate": None,
         "profit_factor": None,
         "average_holding_period_sessions": None,
-        "market_exposure": float(np.mean([1 - point.cash / point.nav for point in result.equity])),
+        "market_exposure": None,
         "transaction_cost_drag_initial_capital": (result.fees + result.slippage_cost + float(getattr(result, "spread_cost", 0))) / result.config.initial_cash,
     })
     warnings = list(result.diagnostics) + [
@@ -234,10 +234,27 @@ def analyze(
         episodes.append({"start": str(result.equity[start].session), "recovery": None, "underwater_sessions": len(dd) - start, "maximum_drawdown": trough})
     exposures = []
     for point in result.equity:
-        market_values = getattr(point, "market_values", None)
-        if market_values:
-            weights = [float(value) / point.nav for value in market_values.values()]
-            exposures.append({"session": str(point.session), "concentration_hhi": sum(w * w for w in weights), "cash_weight": point.cash / point.nav})
+        cash_weight = _finite(point.cash / point.nav)
+        if cash_weight is not None and not 0 <= cash_weight <= 1:
+            cash_weight = None
+        marks = point.market_values
+        weights = [float(value) / point.nav for value in marks.values()]
+        active = {symbol for symbol, quantity in point.positions.items() if quantity != 0}
+        marked = {symbol for symbol, value in marks.items() if value != 0}
+        qualified = (
+            cash_weight is not None and active == marked
+            and all(quantity >= 0 for quantity in point.positions.values())
+            and all(math.isfinite(weight) and 0 <= weight <= 1 + 1e-10 for weight in weights)
+            and math.isclose(math.fsum(weights) + cash_weight, 1, rel_tol=1e-10, abs_tol=1e-10)
+        )
+        exposures.append({"session": str(point.session),
+                          "concentration_hhi": math.fsum(w * w for w in weights) if qualified else None,
+                          "cash_weight": cash_weight})
+    if all(row["cash_weight"] is not None for row in exposures):
+        metrics["market_exposure"] = math.fsum(1 - row["cash_weight"] for row in exposures) / len(exposures)
+    missing_concentration = sum(row["concentration_hhi"] is None for row in exposures)
+    if missing_concentration:
+        warnings.append(f"Asset concentration unavailable in {missing_concentration} sessions: missing or inconsistent position marks; gaps retained.")
     return {
         "metrics": metrics,
         "rolling": rolling,
@@ -246,5 +263,5 @@ def analyze(
         "benchmark_status": benchmark_status,
         "attribution": {"fees_usd": result.fees, "slippage_usd": result.slippage_cost, "spread_usd": float(getattr(result, "spread_cost", 0)), "asset_pnl": None, "cash_interest": None},
         "warnings": warnings,
-        "conventions": {"periods_per_year": periods_per_year, "frequency": "DAILY_EXCHANGE_SESSION", "risk_free_annual": 0, "cagr": "geometric trading-period annualization", "return_basis": return_basis, "alpha": "OLS arithmetic daily intercept times annual periods; risk free zero", "sample_start": str(result.equity[0].session), "sample_end": str(result.equity[-1].session), "acceptance": result.acceptance},
+        "conventions": {"periods_per_year": periods_per_year, "rolling_window_sessions": rolling_window, "frequency": "DAILY_EXCHANGE_SESSION", "risk_free_annual": 0, "cagr": "geometric trading-period annualization", "return_basis": return_basis, "alpha": "OLS arithmetic daily intercept times annual periods; risk free zero", "sample_start": str(result.equity[0].session), "sample_end": str(result.equity[-1].session), "acceptance": result.acceptance},
     }

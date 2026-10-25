@@ -1,6 +1,10 @@
 # Current state (2026-10-25)
 
-## Current continuation checkpoint — 2026-10-25
+## Latest risk terminal continuation
+
+Source `7ca17f91dbee927d7c9c788879ccfe6f1e878338954dc618b1f867393ffc9c15`:271 tests passed, Ruff/Pyright passed, clean base-wheel offline plan/FIFO/weekly/MCP passed. Risk Lab and qualified comparison now expose recorded risk, full configurations and exportable provenance. Independently reproduced missing cash-only exposure dates and legacy gaps are repaired without rewriting history. See `docs/TERMINAL_RISK_ACCEPTANCE_20261025.md`. Current hosted CI/publication must be observed for its actual commit. Dividend-payment design is reviewed but unimplemented; full platform objective remains active.
+
+## Earlier continuation checkpoint — 2026-10-25
 
 Publication verified: implementation `a583a1ef3721b05581e84b115f7cc127c176d3b3` is pushed with matching remote SHA. Draft PR #4 remains stacked on unmerged #3. Its hosted CI [40157996079](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40157996079) passed all gates, including267 Linux tests, clean-wheel research-plan execution, dependency audit and secret scan. Clean committed reruns of four cases and six frozen trials matched the earlier replay/analysis exactly; see `docs/evidence/continuation-20261025/committed-reproduction.json`. This is a continuation checkpoint; the full objective remains active.
 

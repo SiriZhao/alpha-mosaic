@@ -14,6 +14,8 @@ Source SHA256: `a26523a908f264868dee7eb4da6a3df92f4ab0b16a2bf65514c52d74b1b1c988
 
 ## Verification
 
+Publication addendum: implementation f9dcfe3 is pushed and remote SHA verified. [CI40202837163](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40202837163) passed361 Linux tests and all gates, including enhanced fresh-wheel dividend/worker execution, dependency audit and secret scan. Eight clean-commit direct/worker reruns exactly match the prior financial replay, benchmark and analytics; critic identity is validated separately. Final `hosted-ci.json` and `committed-reproduction.json` preserve these results. Earlier pending statements refer to the prepublication record. Explicit reconciliation is isolated development, not part of this accepted milestone.
+
 Full regression:361 passed, zero failed/error/skipped, RuntimeWarning treated as error; four upstream calendar deprecations remain visible. Both Windows junction tests actually ran with the required sandbox permission. Ruff/Pyright and uv lock check passed;140 locked dependencies are unchanged. Independent reviewer ran14 dispatch cases successfully, intentionally deselecting only its junction case; parent full regression includes that case. The reviewer verified unchanged source hashes before/after and found no remaining guard-scope blocker.
 
 Coverage includes missing/mutated context, wrong ordinal/attempt/response, extra/noncanonical request content, an outcome recorded before termination, duplicate requests, unidentified and unsealed other-attempt artifacts, active global lease, actual root junction rejection and the existing real subprocess/frozen-plan integration. Negative paths check absence of a new artifact and preserve original partial records.

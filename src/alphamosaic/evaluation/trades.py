@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import math
 from collections import deque
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any
 
@@ -45,6 +45,7 @@ class _Lot:
     spread: float
     dividends: float = 0.0
     split_factor: float = 1.0
+    dividend_rights: dict[str, float] = field(default_factory=dict)
 
 
 def _analyze(result: ReplayResult, dataset: ReplayDataset | None) -> dict[str, Any]:
@@ -57,6 +58,14 @@ def _analyze(result: ReplayResult, dataset: ReplayDataset | None) -> dict[str, A
     if sessions != expected_sessions:
         raise ValueError("complete XNYS equity sessions required for holding periods")
     session_index = {session: i for i, session in enumerate(sessions)}
+    payment_mode = result.config.dividend_accounting == "PAY_DATE_RECEIVABLE"
+    entitlements = {item.entitlement_id: item for item in result.dividend_entitlements}
+    entitlements_by_action = {item.action_reference: item for item in result.dividend_entitlements}
+    payments = {item.payment_id: item for item in result.dividend_payments}
+    if len(entitlements) != len(result.dividend_entitlements) or len(entitlements_by_action) != len(entitlements) or len(payments) != len(result.dividend_payments):
+        raise ValueError("duplicate dividend entitlement or payment identity")
+    if not payment_mode and (entitlements or payments):
+        raise ValueError("legacy accounting cannot contain payment-model records")
     symbols = set().union(*(set(event.positions) for event in result.events))
     symbols |= {fill.symbol for fill in result.fills}
     if dataset is not None:
@@ -120,10 +129,23 @@ def _analyze(result: ReplayResult, dataset: ReplayDataset | None) -> dict[str, A
     processed_actions: list[str] = []
     processed_signals: list[str] = []
     processed_orders: list[str] = []
+    processed_entitlements: list[str] = []
+    processed_payments: list[str] = []
+    receivables: dict[str, float] = {}
+    paid_entitlements: set[str] = set()
     valued_sessions = []
     round_trips = 0
     contribution = {symbol: {"realized_price_pnl_usd": 0.0, "dividend_income_usd": 0.0,
                              "fees_usd": 0.0, "slippage_usd": 0.0, "spread_usd": 0.0} for symbol in symbols}
+    if payment_mode:
+        for row in contribution.values():
+            row["paid_dividends_usd"] = 0.0
+
+    def check_receivables(actual: dict[str, float], label: str) -> None:
+        if set(actual) != set(receivables):
+            raise ValueError(f"{label} receivable identities do not reconcile")
+        for key, amount in receivables.items():
+            _equal(actual[key], amount, f"{label} receivable amount")
 
     def cash_entry(reference: str, kind: str, symbol: str, at: datetime, amount: float) -> None:
         nonlocal ledger_index, cash
@@ -143,7 +165,27 @@ def _analyze(result: ReplayResult, dataset: ReplayDataset | None) -> dict[str, A
     for event in result.events:
         if set(event.positions) - symbols or any(value < 0 for value in event.positions.values()):
             raise ValueError("negative or unknown event position")
-        if event.kind == "SIGNAL":
+        if event.kind == "DIVIDEND_PAYMENT":
+            payment = payments.get(event.reference)
+            if not payment_mode or payment is None or event.reference in processed_payments:
+                raise ValueError("unknown, duplicate or legacy-model dividend payment")
+            entitlement = entitlements.get(payment.entitlement_id)
+            if entitlement is None or payment.entitlement_id not in processed_entitlements or payment.entitlement_id in paid_entitlements:
+                raise ValueError("payment lacks a unique accrued entitlement")
+            if (payment.action_reference, payment.symbol, payment.at, event.at) != (
+                entitlement.action_reference, entitlement.symbol, entitlement.available_at, entitlement.available_at
+            ):
+                raise ValueError("dividend payment trace or availability mismatch")
+            amount = receivables.get(payment.entitlement_id)
+            if amount is None:
+                raise ValueError("payment lacks an outstanding positive receivable")
+            _equal(payment.amount, amount, "dividend payment frozen amount")
+            cash_entry(payment.payment_id, "DIVIDEND_PAYMENT", payment.symbol, payment.at, amount)
+            del receivables[payment.entitlement_id]
+            contribution[payment.symbol]["paid_dividends_usd"] += amount
+            paid_entitlements.add(payment.entitlement_id)
+            processed_payments.append(payment.payment_id)
+        elif event.kind == "SIGNAL":
             signal = signals.get(event.reference)
             if signal is None or event.reference in processed_signals or event.at != signal.generated_at:
                 raise ValueError("signal audit identity, time or duplication mismatch")
@@ -187,9 +229,40 @@ def _analyze(result: ReplayResult, dataset: ReplayDataset | None) -> dict[str, A
                 if action.cash_amount is None:
                     raise ValueError("cash dividend amount required")
                 amount = positions[symbol] * action.cash_amount
-                cash_entry(event.reference, "DIVIDEND", symbol, event.at, amount)
+                entitlement = None
+                if payment_mode:
+                    entitlement = entitlements_by_action.get(event.reference)
+                    if entitlement is None or entitlement.entitlement_id in processed_entitlements:
+                        raise ValueError("ordinary dividend lacks a unique entitlement record")
+                    if (action.dividend_type, action.effective_date_role, action.cash_amount_basis) != ("ORDINARY_CASH", "EX_DATE", "EX_DATE_SHARES") or action.payment_date is None or action.source_action_id is None:
+                        raise ValueError("unqualified ordinary dividend payment terms")
+                    if action.known_at > event.at or action.payment_date < action.effective_date:
+                        raise ValueError("late or invalid ordinary dividend terms")
+                    if any(other.action == "SPLIT" and other.symbol == symbol and other.effective_date == action.effective_date for other in dataset.actions):
+                        raise ValueError("ambiguous same-date split and dividend")
+                    if (entitlement.symbol, entitlement.ex_date, entitlement.payment_date, entitlement.accrued_at, entitlement.source_action_id) != (
+                        symbol, action.effective_date, action.payment_date, event.at, action.source_action_id
+                    ):
+                        raise ValueError("entitlement source identity or accrual timestamp mismatch")
+                    _equal(entitlement.entitled_quantity, positions[symbol], "dividend entitled shares")
+                    _equal(entitlement.cash_per_share, action.cash_amount, "dividend per-share amount")
+                    _equal(entitlement.amount, amount, "dividend frozen gross amount")
+                    # Derive availability from the independent evaluated session grid,
+                    # rather than the replay's scheduling helper or a current share count.
+                    candidates = [day for day in sessions if day > action.payment_date]
+                    expected_at = xcals.get_calendar("XNYS").session_open(candidates[0]).to_pydatetime() if candidates else None
+                    expected_status = "SCHEDULED" if expected_at is not None else "AFTER_EVALUATION_END"
+                    if entitlement.available_at != expected_at or entitlement.schedule_status != expected_status:
+                        raise ValueError("dividend payment availability convention mismatch")
+                    if amount > 0:
+                        receivables[entitlement.entitlement_id] = amount
+                    processed_entitlements.append(entitlement.entitlement_id)
+                else:
+                    cash_entry(event.reference, "DIVIDEND", symbol, event.at, amount)
                 for lot in lots[symbol]:
                     lot.dividends += lot.quantity * action.cash_amount
+                    if entitlement is not None:
+                        lot.dividend_rights[entitlement.entitlement_id] = lot.quantity * action.cash_amount
                 contribution[symbol]["dividend_income_usd"] += amount
             else:
                 raise ValueError("unsupported corporate-action economics")
@@ -235,10 +308,13 @@ def _analyze(result: ReplayResult, dataset: ReplayDataset | None) -> dict[str, A
                         "slippage_usd": lot.slippage * fraction + fill.slippage_cost * sale_fraction,
                         "spread_usd": lot.spread * fraction + fill.spread_cost * sale_fraction,
                         "holding_sessions": holding, "holding_calendar_days": (fill.session - lot.fill.session).days})
+                    if payment_mode:
+                        closed[-1]["dividend_entitlement_allocations"] = {key: value * fraction for key, value in lot.dividend_rights.items()}
                     contribution[symbol]["realized_price_pnl_usd"] += price_pnl
                     lot.quantity -= matched
                     for field in ("execution_basis", "fee", "slippage", "spread", "dividends"):
                         setattr(lot, field, getattr(lot, field) * (1 - fraction))
+                    lot.dividend_rights = {key: value * (1 - fraction) for key, value in lot.dividend_rights.items()}
                     remaining -= matched
                     if lot.quantity == 0:
                         lots[symbol].popleft()
@@ -251,6 +327,7 @@ def _analyze(result: ReplayResult, dataset: ReplayDataset | None) -> dict[str, A
             contribution[symbol]["spread_usd"] += fill.spread_cost
             processed_fills.append(fill.fill_id)
         _equal(event.cash, cash, "audit snapshot cash")
+        check_receivables(event.receivables, "audit snapshot")
         for symbol in symbols:
             _equal(event.positions.get(symbol, 0), positions[symbol], "audit snapshot position")
         if event.kind == "PORTFOLIO":
@@ -264,6 +341,7 @@ def _analyze(result: ReplayResult, dataset: ReplayDataset | None) -> dict[str, A
             if point.nav <= 0 or any(value < 0 for value in point.market_values.values()):
                 raise ValueError("positive NAV and nonnegative market values required")
             _equal(point.cash, cash, "equity point cash")
+            check_receivables(point.receivables, "equity point")
             for symbol in symbols:
                 _equal(point.positions.get(symbol, 0), positions[symbol], "equity point position")
                 _equal(math.fsum(lot.quantity for lot in lots[symbol]), positions[symbol], "FIFO position")
@@ -281,11 +359,16 @@ def _analyze(result: ReplayResult, dataset: ReplayDataset | None) -> dict[str, A
                     _equal(point.market_values.get(symbol, 0), value, "dataset mark")
             if set(point.market_values) - symbols:
                 raise ValueError("unknown market-value identity")
-            _equal(point.nav, cash + math.fsum(point.market_values.values()), "equity accounting")
+            _equal(point.nav, cash + math.fsum(point.market_values.values()) + math.fsum(receivables.values()), "equity accounting")
     if processed_fills != [fill.fill_id for fill in result.fills] or processed_actions != result.applied_actions:
         raise ValueError("fill or corporate-action audit coverage mismatch")
     if processed_signals != [signal.signal_id for signal in result.signals] or processed_orders != [order.order_id for order in result.orders]:
         raise ValueError("incomplete signal or order audit coverage")
+    if processed_entitlements != [item.entitlement_id for item in result.dividend_entitlements] or processed_payments != [item.payment_id for item in result.dividend_payments]:
+        raise ValueError("incomplete dividend accrual or payment audit coverage")
+    expected_paid = {item.entitlement_id for item in result.dividend_entitlements if item.amount > 0 and item.available_at is not None}
+    if expected_paid != paid_entitlements:
+        raise ValueError("due dividend payments are missing or unexpected")
     if dataset is not None:
         expected_actions = [
             f"{i}:{action.symbol}:{action.action}:{action.effective_date}"
@@ -314,9 +397,13 @@ def _analyze(result: ReplayResult, dataset: ReplayDataset | None) -> dict[str, A
                 "dividend_income_usd": lot.dividends, "entry_fee_usd": lot.fee,
                 "slippage_usd": lot.slippage, "spread_usd": lot.spread,
                 "holding_sessions": session_index[final.session] - session_index[lot.fill.session]})
+            if payment_mode:
+                open_rows[-1]["dividend_entitlement_allocations"] = dict(lot.dividend_rights)
         row: dict[str, Any] = {"symbol": symbol, **contribution[symbol], "unrealized_price_pnl_usd": market_value - basis,
                "open_cost_basis_usd": basis, "ending_quantity": quantity, "ending_market_value_usd": market_value}
         row["total_pnl_usd"] = row["realized_price_pnl_usd"] + row["unrealized_price_pnl_usd"] + row["dividend_income_usd"]
+        if payment_mode:
+            row["outstanding_dividend_receivables_usd"] = math.fsum(amount for key, amount in receivables.items() if entitlements[key].symbol == symbol)
         row["contribution_to_initial_capital"] = row["total_pnl_usd"] / result.config.initial_cash
         asset_rows.append(row)
     attributed = math.fsum(row["total_pnl_usd"] for row in asset_rows)
@@ -326,6 +413,13 @@ def _analyze(result: ReplayResult, dataset: ReplayDataset | None) -> dict[str, A
     allocated_dividends = math.fsum(row["dividend_income_usd"] for row in [*closed, *open_rows])
     _equal(allocated_fees, result.fees, "FIFO commission allocation")
     _equal(allocated_dividends, math.fsum(row["dividend_income_usd"] for row in asset_rows), "FIFO dividend allocation")
+    if payment_mode:
+        for row in [*closed, *open_rows]:
+            allocations = row["dividend_entitlement_allocations"]
+            row["dividend_cash_received_usd"] = math.fsum(amount for key, amount in allocations.items() if key in paid_entitlements)
+            row["dividend_receivable_usd"] = math.fsum(amount for key, amount in allocations.items() if key not in paid_entitlements)
+            _equal(row["dividend_income_usd"], row["dividend_cash_received_usd"] + row["dividend_receivable_usd"], "lot earned versus paid dividend")
+        _equal(allocated_dividends, math.fsum(item.amount for item in result.dividend_payments) + math.fsum(receivables.values()), "paid plus outstanding dividend identity")
     for field, total in (("slippage_usd", result.slippage_cost), ("spread_usd", result.spread_cost)):
         _equal(math.fsum(row[field] for row in [*closed, *open_rows]), total, f"FIFO {field} allocation")
     profits = math.fsum(max(0, row["total_pnl_after_fees_usd"]) for row in closed)
@@ -358,6 +452,15 @@ def _analyze(result: ReplayResult, dataset: ReplayDataset | None) -> dict[str, A
             "attribution": "Additive accounting P&L by held asset divided by initial capital; not a factor regression",
             "market_values": "Checked against supplied dataset prices" if dataset is not None else "Internal ledger marks only; no dataset supplied",
             "evidence_class": result.acceptance}}
+    if payment_mode:
+        output["reconciliation"].update({"paid_dividends_usd": math.fsum(item.amount for item in result.dividend_payments),
+            "outstanding_dividend_receivables_usd": math.fsum(receivables.values()),
+            "dividend_payments_checked": len(processed_payments), "dividend_entitlements_checked": len(processed_entitlements)})
+        output["warnings"][1] = "Ordinary dividend income accrues at ex-open; cash is available only at the first XNYS open strictly after the sourced pay date; unpaid claims assume full collection without taxes/default/impairment"
+        output["conventions"].update({"dividend_accounting": result.config.dividend_accounting,
+            "payment_availability": result.config.payment_availability,
+            "win_rate": "Closed matching-segment economic P&L includes earned dividends, including unpaid receivables; this is not cash-realized profit",
+            "dividend_income_usd": "Earned accrual; cash received and unpaid receivable are disclosed separately"})
     return output
 
 

@@ -16,7 +16,12 @@ from uuid import uuid4
 
 from pydantic import Field, model_validator
 
-from alphamosaic.backtesting.models import ReplayConfig, ReplayDataset
+from alphamosaic.backtesting.models import (
+    ReplayConfig,
+    ReplayDataset,
+    dividend_accounting_signature,
+    payment_replay_config,
+)
 from alphamosaic.backtesting.replay import PaperReplayEngine
 from alphamosaic.backtesting.strategies import StrategyRegistry
 from alphamosaic.common.locking import exclusive_lease
@@ -48,7 +53,7 @@ class ExperimentConfig(Contract):
     symbols: list[str] = Field(default_factory=lambda: ["SPY"], min_length=1, max_length=10)
     benchmark: str = Field(default="SPY", pattern=r"^[A-Z][A-Z0-9.-]{0,14}$")
     question: str = Field(default="Does this fixed rule survive costs?", min_length=10, max_length=1000)
-    replay: ReplayConfig = Field(default_factory=ReplayConfig)
+    replay: ReplayConfig = Field(default_factory=payment_replay_config)
     start: date | None = None
     end: date | None = None
     validation: Literal["EXPLORATORY", "PREDECLARED_HOLDOUT"] = "EXPLORATORY"
@@ -136,6 +141,8 @@ class ExperimentStore:
             required |= {"report.md", "report.html", "equity.csv", "fills.csv", "orders.csv", "cash_ledger.csv", "events.csv", "signals.csv", "unfilled_orders.csv", "order_adjustments.csv"}
             if payload.get("artifact_schema_version", 1) >= 2:
                 required |= {"closed_lots.csv", "open_lots.csv", "asset_attribution.csv", "weekly_equity.csv"}
+            if payload.get("artifact_schema_version", 1) >= 3:
+                required |= {"dividend_entitlements.csv", "dividend_payments.csv", "receivables.csv"}
         if not isinstance(manifest, dict) or not required <= manifest.keys():
             raise ValueError("incomplete experiment artifact manifest")
         for name, expected in manifest.items():
@@ -189,7 +196,7 @@ class ExperimentRunner:
         path.mkdir()
         started = time.perf_counter()
         payload: dict[str, Any] = {"experiment_id": experiment_id, "created_at": utc_now().isoformat(),
-            "artifact_schema_version": 2,
+            "artifact_schema_version": 3,
             "config": config.model_dump(mode="json"),
             "status": "RUNNING", "broker_enabled": False, "evidence_grade": "Exploratory", "validated_alpha": False}
         # An interrupted process leaves a visible RUNNING record; it never appears successful.
@@ -241,6 +248,12 @@ class ExperimentRunner:
             payload["review"] = critique(payload)
             for name in ("equity", "fills", "orders", "cash_ledger", "events", "signals", "unfilled_orders", "order_adjustments"):
                 _csv(path / f"{name}.csv", payload["result"].get(name, []))
+            for name in ("dividend_entitlements", "dividend_payments"):
+                _csv(path / f"{name}.csv", payload["result"][name])
+            entitlements = {item["entitlement_id"]: item for item in payload["result"]["dividend_entitlements"]}
+            _csv(path / "receivables.csv", [{"session": point["session"], "entitlement_id": key,
+                "symbol": entitlements[key]["symbol"], "amount": amount}
+                for point in payload["result"]["equity"] for key, amount in point["receivables"].items()])
             for name, rows in (("closed_lots", trades["closed_lots"]), ("open_lots", trades["open_lots"]), ("asset_attribution", trades["asset_attribution"]), ("weekly_equity", analysis["weekly"]["weekly_equity"]["points"])):
                 _csv(path / f"{name}.csv", rows)
             from alphamosaic.reporting.research import write_report
@@ -259,10 +272,11 @@ def compare_experiments(items: list[dict[str, Any]]) -> dict[str, Any]:
         raise ValueError("at least one experiment required")
     def signature(item: dict[str, Any]) -> tuple[Any, ...]:
         c = item["config"]
+        replay = ReplayConfig.model_validate(c["replay"])
         dates = [p["session"] for p in item.get("result", {}).get("equity", [])]
-        return item.get("dataset_hash"), item.get("return_basis"), item.get("acceptance"), item.get("reproducibility", {}).get("source_hash"), c["validation"], c["benchmark"], tuple(dates)
+        return item.get("dataset_hash"), item.get("return_basis"), item.get("acceptance"), item.get("reproducibility", {}).get("source_hash"), c["validation"], c["benchmark"], tuple(dates), dividend_accounting_signature(replay)
     comparable = all(i["status"] == "COMPLETED" and i.get("return_basis") is not None and i.get("dataset_hash") and i.get("reproducibility", {}).get("source_hash") for i in items) and len({signature(i) for i in items}) == 1
     return {"status": "COMPARABLE" if comparable else "INCOMPATIBLE",
-            "warnings": [] if comparable else ["Dataset, code, evidence, dates, basis, validation or benchmark missing/differ; no pooled ranking"],
+            "warnings": [] if comparable else ["Dataset, code, evidence, dates, basis, validation, benchmark or dividend accounting policy missing/differ; no pooled ranking"],
             "experiments": [{"experiment_id": i["experiment_id"], "strategy": i["config"]["strategy"],
                              "cost_model": i["config"]["replay"], "metrics": i.get("analysis", {}).get("metrics", {})} for i in items]}

@@ -66,6 +66,9 @@ class WeeklyStrategyParameters(Contract):
 
 
 class ReplayConfig(Contract):
+    accounting_schema_version: Literal[1, 2] = 1
+    dividend_accounting: Literal["LEGACY_EX_DATE_CASH", "PAY_DATE_RECEIVABLE"] = "LEGACY_EX_DATE_CASH"
+    payment_availability: Literal["NEXT_XNYS_OPEN_AFTER_PAY_DATE"] = "NEXT_XNYS_OPEN_AFTER_PAY_DATE"
     initial_cash: float = Field(default=100_000, gt=0)
     fee_bps: float = Field(default=10, ge=0, le=1000)
     slippage_bps: float = Field(default=5, ge=0, le=1000)
@@ -85,15 +88,36 @@ class ReplayConfig(Contract):
     weekly_parameters: WeeklyStrategyParameters = Field(default_factory=WeeklyStrategyParameters)
     seed: int = 42
 
+    @model_validator(mode="after")
+    def accounting_model(self) -> Self:
+        expected = "LEGACY_EX_DATE_CASH" if self.accounting_schema_version == 1 else "PAY_DATE_RECEIVABLE"
+        if self.dividend_accounting != expected:
+            raise ValueError("accounting schema and dividend model are contradictory")
+        return self
+
+
+def payment_replay_config(**kwargs: object) -> ReplayConfig:
+    """New research uses explicit payment accounting; missing old fields stay legacy."""
+    if {"accounting_schema_version", "dividend_accounting", "payment_availability"} & kwargs.keys():
+        raise ValueError("payment configuration model cannot be overridden")
+    return ReplayConfig.model_validate({"accounting_schema_version": 2,
+        "dividend_accounting": "PAY_DATE_RECEIVABLE", **kwargs})
+
+
+def dividend_accounting_signature(config: ReplayConfig) -> tuple[int, str, str]:
+    """Resolve the declared balance-sheet and dividend availability conventions."""
+    validated = ReplayConfig.model_validate(config.model_dump())
+    return validated.accounting_schema_version, validated.dividend_accounting, validated.payment_availability
+
 
 def preset_config(name: str) -> ReplayConfig:
     """Explicit scenario defaults; zero costs are only a control experiment."""
     if name == "zero":
-        return ReplayConfig(fee_bps=0, slippage_bps=0, spread_bps=0)
+        return payment_replay_config(fee_bps=0, slippage_bps=0, spread_bps=0)
     if name == "realistic":
-        return ReplayConfig(fee_bps=10, slippage_bps=5, spread_bps=2, min_cash_buffer=0.02)
+        return payment_replay_config(fee_bps=10, slippage_bps=5, spread_bps=2, min_cash_buffer=0.02)
     if name == "stress":
-        return ReplayConfig(
+        return payment_replay_config(
             fee_bps=25,
             slippage_bps=25,
             spread_bps=10,
@@ -152,7 +176,7 @@ class OrderEvent(Contract):
 class CashEntry(Contract):
     event_id: str
     at: datetime
-    kind: Literal["FILL", "DIVIDEND"]
+    kind: Literal["FILL", "DIVIDEND", "DIVIDEND_PAYMENT"]
     symbol: str
     amount: float
     balance: float
@@ -169,10 +193,11 @@ class OrderAdjustment(Contract):
 class LedgerEvent(Contract):
     event_id: str
     at: datetime
-    kind: Literal["MARKET", "SIGNAL", "ORDER", "FILL", "CORPORATE_ACTION", "PORTFOLIO"]
+    kind: Literal["MARKET", "SIGNAL", "ORDER", "FILL", "CORPORATE_ACTION", "PORTFOLIO", "DIVIDEND_PAYMENT"]
     reference: str
     cash: float
     positions: dict[str, float]
+    receivables: dict[str, float] = Field(default_factory=dict)
 
 
 class EquityPoint(Contract):
@@ -182,6 +207,57 @@ class EquityPoint(Contract):
     positions: dict[str, float]
     average_costs: dict[str, float] = Field(default_factory=dict)
     market_values: dict[str, float] = Field(default_factory=dict)
+    receivables: dict[str, float] = Field(default_factory=dict)
+
+
+class DividendEntitlement(Contract):
+    entitlement_id: str
+    action_reference: str
+    source_action_id: str
+    symbol: str
+    ex_date: date
+    payment_date: date
+    accrued_at: datetime
+    entitled_quantity: float = Field(ge=0)
+    cash_per_share: float = Field(ge=0)
+    amount: float = Field(ge=0)
+    available_at: datetime | None = None
+    schedule_status: Literal["SCHEDULED", "AFTER_EVALUATION_END"]
+
+    @field_validator("accrued_at", "available_at")
+    @classmethod
+    def aware(cls, value: datetime | None) -> datetime | None:
+        if value is not None:
+            if value.tzinfo is None or value.utcoffset() is None:
+                raise ValueError("aware dividend timestamp required")
+            return value.astimezone(UTC)
+        return value
+
+    @model_validator(mode="after")
+    def chronology(self) -> Self:
+        if self.payment_date < self.ex_date or self.accrued_at.date() != self.ex_date:
+            raise ValueError("invalid ordinary dividend dates")
+        if (self.schedule_status == "SCHEDULED") != (self.available_at is not None):
+            raise ValueError("dividend schedule status and availability disagree")
+        if self.available_at is not None and self.available_at <= self.accrued_at:
+            raise ValueError("dividend payment availability must follow accrual")
+        return self
+
+
+class DividendPayment(Contract):
+    payment_id: str
+    entitlement_id: str
+    action_reference: str
+    symbol: str
+    at: datetime
+    amount: float = Field(gt=0)
+
+    @field_validator("at")
+    @classmethod
+    def aware(cls, value: datetime) -> datetime:
+        if value.tzinfo is None or value.utcoffset() is None:
+            raise ValueError("aware dividend payment timestamp required")
+        return value.astimezone(UTC)
 
 
 class ReplayResult(Contract):
@@ -202,6 +278,8 @@ class ReplayResult(Contract):
     order_adjustments: list[OrderAdjustment] = Field(default_factory=list)
     events: list[LedgerEvent] = Field(default_factory=list)
     cash_ledger: list[CashEntry] = Field(default_factory=list)
+    dividend_entitlements: list[DividendEntitlement] = Field(default_factory=list)
+    dividend_payments: list[DividendPayment] = Field(default_factory=list)
     metrics: dict[str, float | None] = Field(default_factory=dict)
     benchmarks: dict[str, dict[str, float | None]] = Field(default_factory=dict)
     diagnostics: list[str]

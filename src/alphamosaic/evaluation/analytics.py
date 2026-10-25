@@ -9,7 +9,7 @@ from typing import Any
 
 import numpy as np
 
-from alphamosaic.backtesting.models import ReplayResult
+from alphamosaic.backtesting.models import ReplayResult, dividend_accounting_signature
 
 
 def _finite(value: float | np.floating[Any]) -> float | None:
@@ -195,6 +195,8 @@ def analyze(
             benchmark_status = "BLOCKED_UNKNOWN_RETURN_BASIS"
         elif return_basis != benchmark_return_basis:
             benchmark_status = "BLOCKED_RETURN_BASIS_MISMATCH"
+        elif dividend_accounting_signature(result.config) != dividend_accounting_signature(benchmark_result.config):
+            benchmark_status = "BLOCKED_ACCOUNTING_MODEL_MISMATCH"
         elif [point.session for point in result.equity] != [point.session for point in benchmark_result.equity]:
             benchmark_status = "BLOCKED_UNALIGNED_SESSIONS"
         elif result.acceptance != benchmark_result.acceptance:
@@ -234,6 +236,7 @@ def analyze(
         episodes.append({"start": str(result.equity[start].session), "recovery": None, "underwater_sessions": len(dd) - start, "maximum_drawdown": trough})
     exposures = []
     for point in result.equity:
+        payment_mode = result.config.accounting_schema_version >= 2
         cash_weight = _finite(point.cash / point.nav)
         if cash_weight is not None and not 0 <= cash_weight <= 1:
             cash_weight = None
@@ -241,16 +244,26 @@ def analyze(
         weights = [float(value) / point.nav for value in marks.values()]
         active = {symbol for symbol, quantity in point.positions.items() if quantity != 0}
         marked = {symbol for symbol, value in marks.items() if value != 0}
+        receivable_weight = _finite(math.fsum(point.receivables.values()) / point.nav)
+        if any(amount < 0 for amount in point.receivables.values()) or receivable_weight is None or not 0 <= receivable_weight <= 1:
+            receivable_weight = None
         qualified = (
             cash_weight is not None and active == marked
+            and (not payment_mode or receivable_weight is not None)
             and all(quantity >= 0 for quantity in point.positions.values())
             and all(math.isfinite(weight) and 0 <= weight <= 1 + 1e-10 for weight in weights)
-            and math.isclose(math.fsum(weights) + cash_weight, 1, rel_tol=1e-10, abs_tol=1e-10)
+            and math.isclose(math.fsum(weights) + cash_weight + (receivable_weight or 0 if payment_mode else 0), 1, rel_tol=1e-10, abs_tol=1e-10)
         )
         exposures.append({"session": str(point.session),
                           "concentration_hhi": math.fsum(w * w for w in weights) if qualified else None,
                           "cash_weight": cash_weight})
-    if all(row["cash_weight"] is not None for row in exposures):
+        if payment_mode:
+            exposures[-1].update({"market_weight": math.fsum(weights) if qualified else None,
+                                 "receivable_weight": receivable_weight})
+    if result.config.accounting_schema_version >= 2:
+        if all(row["market_weight"] is not None for row in exposures):
+            metrics["market_exposure"] = math.fsum(row["market_weight"] for row in exposures) / len(exposures)
+    elif all(row["cash_weight"] is not None for row in exposures):
         metrics["market_exposure"] = math.fsum(1 - row["cash_weight"] for row in exposures) / len(exposures)
     missing_concentration = sum(row["concentration_hhi"] is None for row in exposures)
     if missing_concentration:

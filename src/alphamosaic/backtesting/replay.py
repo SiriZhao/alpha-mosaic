@@ -7,6 +7,8 @@ import exchange_calendars as xcals
 
 from alphamosaic.backtesting.models import (
     CashEntry,
+    DividendEntitlement,
+    DividendPayment,
     EquityPoint,
     Fill,
     LedgerEvent,
@@ -176,6 +178,31 @@ def _causal_history(data: ReplayDataset, index: int) -> dict[str, list[Historica
     return history
 
 
+def _validate_payment_terms(data: ReplayDataset, config: ReplayConfig) -> None:
+    """Qualification for the explicit ordinary-dividend model, never a metadata repair."""
+    if config.dividend_accounting != "PAY_DATE_RECEIVABLE":
+        return
+    calendar = xcals.get_calendar("XNYS")
+    source_ids: set[str] = set()
+    splits = {(action.symbol, action.effective_date) for action in data.actions if action.action == "SPLIT"}
+    for action in data.actions:
+        if action.action != "DIVIDEND":
+            continue
+        if (action.dividend_type, action.effective_date_role, action.cash_amount_basis) != (
+            "ORDINARY_CASH", "EX_DATE", "EX_DATE_SHARES"
+        ) or action.source_action_id is None or action.payment_date is None:
+            raise ValueError("payment accounting requires sourced ordinary cash dividend, ex-date role, share basis, payment date and action ID")
+        if action.source_action_id in source_ids:
+            raise ValueError("duplicate dividend source action ID")
+        source_ids.add(action.source_action_id)
+        if action.payment_date < action.effective_date:
+            raise ValueError("ordinary dividend payment date precedes ex-date; special/due-bill economics unsupported")
+        if (action.symbol, action.effective_date) in splits:
+            raise ValueError("same-date split and dividend share basis requires independent review")
+        if action.known_at > calendar.session_open(action.effective_date).to_pydatetime():
+            raise ValueError("ordinary dividend terms unavailable at ex-date open")
+
+
 class PaperReplayEngine:
     name = "AlphaMosaic deterministic daily paper replay"
 
@@ -197,12 +224,18 @@ class PaperReplayEngine:
         if config.decision_frequency == "WEEKLY" and strategy_frequency != "WEEKLY" and name != "buy_and_hold":
             raise ValueError("WEEKLY decisions require a registered weekly strategy")
         flags = validate_dataset(data)
+        _validate_payment_terms(data, config)
         flags.append("DAILY_OPEN_FILL_APPROXIMATION_NO_AUCTION_OR_ORDER_BOOK_DATA")
         flags.append("SAME_DAY_VOLUME_IS_EX_POST_CAPACITY_CAP_NOT_OPEN_KNOWN_LIQUIDITY")
         if data.mode == "RECONSTRUCTED_DIAGNOSTIC":
             flags.append("REVISED_BARS_NOT_KNOWN_AT_HISTORICAL_DECISION_UNTRUSTED")
         if any(a.action == "DIVIDEND" for a in data.actions):
-            flags.append("DIVIDEND_CASH_CREDITED_AT_EFFECTIVE_OPEN_PAYMENT_LAG_NOT_MODELED")
+            if config.dividend_accounting == "LEGACY_EX_DATE_CASH":
+                flags.append("DIVIDEND_CASH_CREDITED_AT_EFFECTIVE_OPEN_PAYMENT_LAG_NOT_MODELED")
+                flags.append("LEGACY_DIVIDEND_MODEL_NOT_PAYMENT_ACCOUNTING_QUALIFIED")
+            else:
+                flags.append("DIVIDEND_ACCRUAL_AT_EX_OPEN_CASH_NEXT_XNYS_OPEN_AFTER_SOURCED_PAY_DATE")
+                flags.append("DIVIDEND_RECEIVABLE_FACE_VALUE_NO_TAX_DEFAULT_OR_IMPAIRMENT_MODEL")
         calendar = xcals.get_calendar("XNYS")
         sessions = [bar.session for bar in next(iter(data.bars.values()))]
         selected = [
@@ -227,6 +260,9 @@ class PaperReplayEngine:
         order_adjustments: list[OrderAdjustment] = []
         events: list[LedgerEvent] = []
         cash_ledger: list[CashEntry] = []
+        receivables: dict[str, float] = {}
+        dividend_entitlements: list[DividendEntitlement] = []
+        dividend_payments: list[DividendPayment] = []
         pending: dict[int, list[tuple[OrderEvent, float]]] = {}
         turnover = 0.0
         bought = False
@@ -240,6 +276,7 @@ class PaperReplayEngine:
                     reference=reference,
                     cash=cash,
                     positions=dict(positions),
+                    receivables=dict(receivables),
                 )
             )
 
@@ -251,6 +288,20 @@ class PaperReplayEngine:
             closed = calendar.session_close(session).to_pydatetime()
             if index >= first:
                 event(opened, "MARKET", str(session))
+                for entitlement in dividend_entitlements:
+                    if entitlement.available_at == opened and entitlement.amount > 0:
+                        amount = receivables.pop(entitlement.entitlement_id)
+                        cash += amount
+                        payment = DividendPayment(
+                            payment_id=f"dividend-payment-{len(dividend_payments):06d}",
+                            entitlement_id=entitlement.entitlement_id,
+                            action_reference=entitlement.action_reference,
+                            symbol=entitlement.symbol, at=opened, amount=amount,
+                        )
+                        dividend_payments.append(payment)
+                        cash_ledger.append(CashEntry(event_id=payment.payment_id, at=opened,
+                            kind="DIVIDEND_PAYMENT", symbol=payment.symbol, amount=amount, balance=cash))
+                        event(opened, "DIVIDEND_PAYMENT", payment.payment_id)
                 actions = sorted(
                     [(j, a) for j, a in enumerate(data.actions) if a.effective_date == session],
                     key=lambda item: (item[1].action != "SPLIT", str(item[1].symbol)),
@@ -288,20 +339,35 @@ class PaperReplayEngine:
                             flags.append("SPLIT_FRACTIONAL_SHARES_RETAINED_NO_CASH_IN_LIEU_MODEL")
                     else:
                         amount = positions[symbol] * float(action.cash_amount or 0)
-                        cash += amount
-                        cash_ledger.append(
-                            CashEntry(
-                                event_id=reference,
-                                at=opened,
-                                kind="DIVIDEND",
-                                symbol=symbol,
-                                amount=amount,
-                                balance=cash,
+                        if config.dividend_accounting == "PAY_DATE_RECEIVABLE":
+                            # Terms were qualified before any events. No date is inferred from
+                            # record date, current holdings on pay day, or a future price.
+                            assert action.payment_date is not None and action.source_action_id is not None
+                            available_at = None
+                            if action.payment_date < sessions[last]:
+                                pay_session = calendar.date_to_session(action.payment_date + timedelta(days=1), direction="next")
+                                available_at = calendar.session_open(pay_session).to_pydatetime()
+                            entitlement = DividendEntitlement(
+                                entitlement_id=f"dividend-entitlement-{action_index:06d}",
+                                action_reference=reference, source_action_id=action.source_action_id,
+                                symbol=symbol, ex_date=session, payment_date=action.payment_date,
+                                accrued_at=opened, entitled_quantity=positions[symbol],
+                                cash_per_share=float(action.cash_amount or 0), amount=amount,
+                                available_at=available_at,
+                                schedule_status="SCHEDULED" if available_at is not None else "AFTER_EVALUATION_END",
                             )
-                        )
+                            dividend_entitlements.append(entitlement)
+                            if amount > 0:
+                                receivables[entitlement.entitlement_id] = amount
+                        else:
+                            cash += amount
+                            cash_ledger.append(
+                                CashEntry(event_id=reference, at=opened, kind="DIVIDEND",
+                                    symbol=symbol, amount=amount, balance=cash)
+                            )
                     applied.append(reference)
                     event(opened, "CORPORATE_ACTION", reference)
-                nav_open = cash + sum(positions[s] * bar.open for s, bar in current.items())
+                nav_open = cash + sum(receivables.values()) + sum(positions[s] * bar.open for s, bar in current.items())
                 if not math.isfinite(nav_open) or nav_open <= 0:
                     raise ValueError("invalid portfolio equity")
                 day_turnover = 0.0
@@ -348,7 +414,7 @@ class PaperReplayEngine:
                         # Enforce buy limits using open marks and post-cost equity, so gaps
                         # cannot turn a constrained close target into an oversized purchase.
                         marked = sum(positions[s] * b.open for s, b in current.items())
-                        equity_before = cash + marked
+                        equity_before = cash + marked + sum(receivables.values())
                         cost_per_share = price - bar.open + price * config.fee_bps / 10_000
                         single_capacity = max(
                             0.0,
@@ -431,7 +497,7 @@ class PaperReplayEngine:
                 if cash < -1e-7 or any(q < -1e-7 for q in positions.values()):
                     raise ValueError("cash or position invariant violated")
                 values = {s: q * current[s].close for s, q in positions.items() if q}
-                nav_close = cash + sum(values.values())
+                nav_close = cash + sum(values.values()) + sum(receivables.values())
                 if any(
                     value / nav_close > config.max_single_weight + 1e-10
                     for value in values.values()
@@ -445,11 +511,12 @@ class PaperReplayEngine:
                 equity.append(
                     EquityPoint(
                         session=session,
-                        nav=cash + sum(values.values()),
+                        nav=nav_close,
                         cash=cash,
                         positions={s: q for s, q in positions.items() if q},
                         average_costs={s: average_costs[s] for s in values},
                         market_values=values,
+                        receivables=dict(receivables),
                     )
                 )
                 event(closed, "PORTFOLIO", str(session))
@@ -492,7 +559,7 @@ class PaperReplayEngine:
                 )
             )
             event(at, "SIGNAL", signal_id)
-            nav_decision = cash + sum(positions[s] * current[s].close for s in current)
+            nav_decision = cash + sum(receivables.values()) + sum(positions[s] * current[s].close for s in current)
             for symbol in sorted(current):
                 target_shares = (
                     math.floor(
@@ -542,5 +609,7 @@ class PaperReplayEngine:
             events=events,
             order_adjustments=order_adjustments,
             cash_ledger=cash_ledger,
+            dividend_entitlements=dividend_entitlements,
+            dividend_payments=dividend_payments,
             diagnostics=list(dict.fromkeys(flags)),
         )

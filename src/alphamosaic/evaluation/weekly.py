@@ -8,7 +8,7 @@ from typing import Any, Literal
 
 import exchange_calendars as xcals
 
-from alphamosaic.backtesting.models import EquityPoint, ReplayResult
+from alphamosaic.backtesting.models import EquityPoint, ReplayResult, dividend_accounting_signature
 from alphamosaic.core.contracts import Contract
 from alphamosaic.data.weekly import aware_utc, sessions_of_week, week_start
 from alphamosaic.evaluation.analytics import benchmark_metrics, returns_metrics
@@ -142,6 +142,8 @@ def analyze_weekly(
             status = "BLOCKED_UNKNOWN_RETURN_BASIS"
         elif return_basis != benchmark_return_basis:
             status = "BLOCKED_RETURN_BASIS_MISMATCH"
+        elif dividend_accounting_signature(result.config) != dividend_accounting_signature(benchmark_result.config):
+            status = "BLOCKED_ACCOUNTING_MODEL_MISMATCH"
         elif result.acceptance != benchmark_result.acceptance:
             status = "BLOCKED_EVIDENCE_CLASS_MISMATCH"
         elif series.source_start != benchmark.source_start or series.last_observed_session != benchmark.last_observed_session:

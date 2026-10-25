@@ -219,7 +219,7 @@ else:
             if page == "Backtest Results":
                 st.json(item["analysis"], expanded=False)
             if page == "Backtest Results":
-                tabs = st.tabs(["Fills", "Orders", "Positions", "Cash ledger", "Warnings", "Closed FIFO matches", "Asset accounting", "Weekly view"])
+                tabs = st.tabs(["Fills", "Orders", "Positions", "Cash ledger", "Warnings", "Closed FIFO matches", "Asset accounting", "Weekly view", "Dividend accounting"])
                 for tab, key in zip(tabs[:5], ["fills", "orders", "equity", "cash_ledger", "diagnostics"], strict=True):
                     tab.dataframe(item["result"].get(key, []), width="stretch")
                 trades = item["analysis"].get("trade_analysis", {})
@@ -231,6 +231,8 @@ else:
                 weekly = item["analysis"].get("weekly", {})
                 tabs[7].caption("52 completed-week periods/year; boundary intervals and daily risk remain separate.")
                 tabs[7].json(weekly, expanded=False)
+                from alphamosaic.reporting.research import dividend_accounting_evidence
+                tabs[8].json(dividend_accounting_evidence(item), expanded=False)
             else:
                 risk_views(item)
                 st.warning("Cost stress is a separate experiment. Factor causality, capacity certification and executable opening liquidity remain unverified.")

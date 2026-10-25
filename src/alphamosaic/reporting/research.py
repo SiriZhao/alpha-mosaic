@@ -6,6 +6,24 @@ from pathlib import Path
 from typing import Any
 
 
+def dividend_accounting_evidence(item: dict[str, Any]) -> dict[str, Any]:
+    """Describe recorded accounting semantics without filling absent legacy evidence."""
+    config, result = item["config"]["replay"], item["result"]
+    model = config.get("dividend_accounting", "LEGACY_EX_DATE_CASH")
+    evidence = {"accounting_schema_version": config.get("accounting_schema_version", 1),
+                "dividend_accounting": model,
+                "missing_legacy_fields": "dividend_accounting" not in config}
+    if model == "PAY_DATE_RECEIVABLE":
+        evidence.update(payment_availability=config.get("payment_availability", "NOT_RECORDED"),
+                        entitlements=result.get("dividend_entitlements"),
+                        payments=result.get("dividend_payments"),
+                        final_receivables=result["equity"][-1].get("receivables"),
+                        convention="Earned income accrues with a non-spendable ex-date receivable. Payment transfers that claim to cash without recognizing income twice. Declared payment timing is a simulation policy, not verified broker posting time.")
+    else:
+        evidence.update(convention="Legacy effective/ex-date cash credit. Payment-date availability and unpaid entitlements are not modeled; absent claim records are not evidence of zero pending dividends.")
+    return evidence
+
+
 def write_report(path: Path, item: dict[str, Any]) -> None:
     c, r = item["config"], item["result"]
     analysis = item["analysis"]
@@ -17,6 +35,7 @@ def write_report(path: Path, item: dict[str, Any]) -> None:
         "Data & Provenance": json.dumps({"dataset_id": c["dataset_id"], "hash": item["dataset_hash"], "basis": item["return_basis"], "dataset": item["dataset_manifest"], "code": code}, indent=2),
         "Strategy Definition": json.dumps({"strategy": c["strategy"], "symbols": c["symbols"], "start": r["equity"][0]["session"], "end": r["equity"][-1]["session"]}, indent=2),
         "Backtest Assumptions": json.dumps(c["replay"], indent=2),
+        "Dividend Accounting": json.dumps(dividend_accounting_evidence(item), indent=2),
         "Performance and Risk": json.dumps({k: analysis.get(k) for k in ("metrics", "conventions", "benchmark_status", "drawdown_episodes")}, indent=2),
         "Matched Trades and Accounting Contribution": json.dumps({"status": trades.get("status", "NOT_EVALUATED"), "conventions": trades.get("conventions"), "reconciliation": trades.get("reconciliation"), "assets": trades.get("asset_attribution")}, indent=2),
         "Weekly Research View": json.dumps({"status": weekly.get("status", "NOT_EVALUATED"), "metrics": weekly.get("metrics"), "conventions": weekly.get("conventions"), "partial_intervals": weekly.get("weekly_equity", {}).get("partial_intervals", []), "inception_return_through_last_completed_week": weekly.get("weekly_equity", {}).get("inception_return_through_last_completed_week"), "decision_frequency": c["replay"].get("decision_frequency", "DAILY"), "warnings": weekly.get("warnings", [])}, indent=2),
@@ -26,7 +45,7 @@ def write_report(path: Path, item: dict[str, Any]) -> None:
         "Comparison to Benchmarks": c["benchmark"] + "; comparison status: " + item["analysis"]["benchmark_status"] + "; compare only when compatible; no fabricated risk-free series.",
         "Counterarguments and Limitations": "\n".join(item["warnings"]),
         "Further Research": "Acquire independently reviewed PIT/corporate-action/delisting data; freeze hypothesis before a new holdout.",
-        "Audit Artifacts": "Complete numeric evidence is in experiment.json; full configuration in config.json. CSV exports retain daily/weekly equity, signals, orders, fills, cash, split revisions, closed/open FIFO matches and asset accounting contributions. No best-case-only selection.",
+        "Audit Artifacts": "Complete numeric evidence is in experiment.json; full configuration in config.json. CSV exports retain daily/weekly equity, signals, orders, fills, cash, split revisions, closed/open FIFO matches and asset accounting contributions; payment-model artifacts additionally retain entitlement/payment records. No best-case-only selection.",
     }
     (path / "report.md").write_text("# AlphaMosaic Research Report\n\n" + "\n\n".join(f"## {k}\n\n{v}" for k, v in sections.items()), encoding="utf-8")
     chart = ""

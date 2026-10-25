@@ -20,7 +20,8 @@ def evidence_caption(item: dict[str, Any]) -> str:
         f"dataset as-of {manifest.get('cutoff', 'NOT_RECORDED')} · "
         f"dataset {config['dataset_id']} · experiment {item['experiment_id']} · "
         f"benchmark {config['benchmark']} · fees/slippage/spread bps "
-        f"{costs.get('fee_bps')}/{costs.get('slippage_bps')}/{costs.get('spread_bps')}"
+        f"{costs.get('fee_bps')}/{costs.get('slippage_bps')}/{costs.get('spread_bps')} · "
+        f"dividends {costs.get('dividend_accounting', 'LEGACY_EX_DATE_CASH')}"
     )
 
 
@@ -35,6 +36,7 @@ def qualify_figure(fig: go.Figure, items: list[dict[str, Any]]) -> None:
         f"Provider {shorten(provider, width=85)} · dataset {config['dataset_id'][:12]}",
         f"Experiment {item['experiment_id']} · fees/slippage/spread bps {costs.get('fee_bps')}/{costs.get('slippage_bps')}/{costs.get('spread_bps')}"
         if len(items) == 1 else "Each legend records its experiment and fee/slippage/spread bps; full configurations and provenance accompany the chart.",
+        f"Dividend model: {costs.get('dividend_accounting', 'LEGACY_EX_DATE_CASH')}",
     ]
     fig.add_annotation(x=0, y=-0.22, xref="paper", yref="paper", xanchor="left", yanchor="top",
                        text="<br>".join(escape(line) for line in lines), showarrow=False, align="left", font=dict(size=10))
@@ -91,9 +93,10 @@ def risk_views(item: dict[str, Any]) -> None:
                     exposure[field] = None
             if missing_sessions:
                 st.warning(f"Legacy exposure coverage omits {missing_sessions} equity sessions; explicit gaps preserve the original evidence.")
-            _chart(exposure, ["cash_weight"], "Cash weight", "Cash / NAV", item)
+            balance_fields = [field for field in ("cash_weight", "market_weight", "receivable_weight") if field in exposure]
+            _chart(exposure, balance_fields, "Cash, market and dividend claim weights" if len(balance_fields) > 1 else "Cash weight", "Fraction of NAV", item)
             _chart(exposure, ["concentration_hhi"], "Invested-asset concentration", "Sum of squared asset weights in total NAV", item)
-            st.caption("HHI uses asset weights in total NAV; cash is shown separately. No sector or factor exposures are inferred.")
+            st.caption("HHI uses stock/ETF weights in total NAV. Cash and, when recorded, unpaid dividend receivables are shown separately. Receivables are not spendable cash or market exposure. No sector or factor exposures are inferred.")
             if len(exposure["concentration_hhi"].dropna()) < len(exposure):
                 st.warning("Some concentration observations lack reconciled position marks; missing sessions remain explicit gaps.")
             st.dataframe(exposure, width="stretch", hide_index=True)

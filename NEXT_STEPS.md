@@ -7,7 +7,7 @@
 3. Implement the independently reviewed docs/DIVIDEND_PAYMENT_ACCOUNTING_DESIGN.md before claiming payment-date cash handling; add cash-in-lieu and broader golden evidence. Rolling-risk and qualified comparison viewing are implemented; robustness/scenario job controls, benchmark choices, source-qualified factor/sector data, robust portfolio construction and independently checked advanced statistical methods remain.
 4. Implement safe interrupted-plan reconciliation using authoritative process evidence; no record/lock file alone proves liveness. Retain the fixed-plan/no-silent-rerun safeguards and per-home global experiment lease.
 5. Adaptive model-driven hypothesis planning remains separate from the working deterministic frozen-grid workflow; no paid model authorization is assumed. Qualitative comments cannot introduce computed financial observations.
-6. Source publication/CI gates passed for implementation a583a1e (run40157996079); check each later commit separately. Continue the uncompleted full scope above. Root dirty work and all other worktrees remain preserved.
+6. Latest implementation02133ef passed source publication, exact clean-commit reproduction and hosted CI40159458375 with271 tests. Check any later commit separately. Continue the uncompleted full scope above; root dirty work and all other worktrees remain preserved.
 
 ## Renaissance next checkpoint
 

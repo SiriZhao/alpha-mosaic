@@ -2,6 +2,8 @@
 
 ## Latest risk terminal continuation
 
+Publication: implementation02133ef pushed and remote SHA matched; [hosted CI40159458375](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40159458375) passed all quality steps, including271 Linux tests, clean wheel, dependency audit and secret scan. Clean committed realistic/stress reruns matched all replay/accounting/analysis records with Git dirty false. Draft PR #4 remains stacked on unmerged #3. The later evidence-only commit has its own CI run; no old run is silently reused.
+
 Source `7ca17f91dbee927d7c9c788879ccfe6f1e878338954dc618b1f867393ffc9c15`:271 tests passed, Ruff/Pyright passed, clean base-wheel offline plan/FIFO/weekly/MCP passed. Risk Lab and qualified comparison now expose recorded risk, full configurations and exportable provenance. Independently reproduced missing cash-only exposure dates and legacy gaps are repaired without rewriting history. See `docs/TERMINAL_RISK_ACCEPTANCE_20261025.md`. Current hosted CI/publication must be observed for its actual commit. Dividend-payment design is reviewed but unimplemented; full platform objective remains active.
 
 ## Earlier continuation checkpoint — 2026-10-25

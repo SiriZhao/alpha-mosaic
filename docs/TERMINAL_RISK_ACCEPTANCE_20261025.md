@@ -15,6 +15,8 @@ The independently reviewed [dividend payment design](DIVIDEND_PAYMENT_ACCOUNTING
 
 ## Measured verification
 
+Implementation02133eff52e21c6a71c86c688dbe590039bf22a7 was pushed with local/remote SHA equality. [Hosted CI40159458375](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40159458375) passed all gates (271 Linux tests, clean-wheel plan, dependency/secret scans). Two clean-commit realistic/stress cases matched every replay/analysis record exactly, with Git dirty false. `evidence/risk-terminal-20261025/hosted-ci.json`, `committed-reproduction.json` and `release-build.json` retain measured results; later documentation commits are distinct CI observations.
+
 Final source hash: `7ca17f91dbee927d7c9c788879ccfe6f1e878338954dc618b1f867393ffc9c15`.
 
 The final full suite passed **271 tests**, zero failures/errors/skips, with RuntimeWarning treated as error; four upstream exchange-calendar deprecation warnings remain visible. Ruff and Pyright passed. Actual AppTest actions cover qualified curves, recorded underwater values, full assumptions, incompatible dates, corrupt selection and legacy date/missing-evidence behavior. A real Windows junction boundary test ran with required environment permission.

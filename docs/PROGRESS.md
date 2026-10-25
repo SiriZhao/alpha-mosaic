@@ -2,6 +2,8 @@
 
 ## Risk terminal follow-up — 2026-10-25
 
+Published implementation02133ef with remote equality; hosted CI40159458375 passed every quality gate and271 Linux tests. Clean committed realistic/stress experiments exactly matched prior accounting/analytics; all recorded Git dirty false. The newest source remains7ca17f91dbee927d7c9c788879ccfe6f1e878338954dc618b1f867393ffc9c15. Evidence-only commits do not change that source identity. Next P0 implementation is the independently reviewed dividend receivable/payment contract; qualified real data and all other documented full-scope requirements remain unfinished.
+
 Integrated independent dividend design commit bd41c20 (design only). Implemented source-backed risk/comparison charts and exportable provenance. Independent review reproduced eight omitted cash sessions in a15-session legal replay, and273 missing legacy exposure rows in an existing424-session artifact. New analytics preserves dates and qualifies marks; the UI leaves legacy gaps explicit. Final full regression271 passed; local clean-wheel plan/FIFO/weekly/MCP, Ruff and Pyright passed. Details and known failed attempts are in TERMINAL_RISK_ACCEPTANCE_20261025.md. The objective remains ACTIVE; payment economics, real-data, advanced research/model/recovery work is not declared complete.
 
 ## Continuing full scope — 2026-10-25

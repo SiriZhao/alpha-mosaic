@@ -2,6 +2,10 @@
 
 ## Latest risk terminal follow-up — 2026-10-25
 
+Implementation02133ef is pushed with matching remote SHA. [CI40159458375](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40159458375) passed every quality gate and271 Linux tests; [draft PR #4](https://github.com/SiriZhao/alpha-mosaic/pull/4) remains unmerged and stacked on #3. Clean-commit realistic/stress replay and analysis exactly matched precommit records. [Publication evidence](docs/evidence/risk-terminal-20261025/hosted-ci.json) names the tested implementation; subsequent evidence-only commits have separate CI runs.
+
+![Persisted rolling risk with provenance](docs/evidence/risk-terminal-20261025/11-rolling-risk-evidence.png)
+
 Risk Lab and qualified comparison now expose persisted rolling risks, full configurations, concentration/cash, accounting/costs, drawdown episodes and embedded chart provenance. Independent review found and reproduced omitted cash-only dates and missing legacy exposures; both are repaired without rewriting old results. Final local suite:271 passed, Ruff/Pyright and fresh base-wheel plan/FIFO/weekly/MCP passed. Read [risk terminal acceptance](docs/TERMINAL_RISK_ACCEPTANCE_20261025.md). Its current hosted CI is a separate gate from the older green runs below. The [payment accounting design](docs/DIVIDEND_PAYMENT_ACCOUNTING_DESIGN.md) is reviewed but remains unimplemented. Full Renaissance acceptance remains incomplete.
 
 ## Current continuation — 2026-10-25

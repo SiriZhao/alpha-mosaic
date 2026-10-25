@@ -12,7 +12,7 @@ Goal: reproducible fixed experiments with all successes and failures retained. D
 
 ## P2 — validation, reports and terminal
 
-Goal: bounded research cases, chronological splits, training-only fit, holdout contamination audit, compatible benchmark comparisons, navigable terminal and source-linked reports. Dependencies: P0/P1. Calendar-week aggregation, signals, next-daily-open execution and52-period analytics are now implemented with explicit partial intervals. Blocker: no qualified real three-asset dataset. Next: broader rolling-risk/comparison visual workflows, source qualification and independently verified PDF export.
+Goal: bounded research cases, chronological splits, training-only fit, holdout contamination audit, compatible benchmark comparisons, navigable terminal and source-linked reports. Dependencies: P0/P1. Calendar-week aggregation, signals, next-daily-open execution and52-period analytics are implemented with explicit partial intervals. Risk/comparison viewing now exposes recorded rolling risks, complete-date concentration/cash, accounting/costs, full configurations and exportable provenance. Blocker: no qualified real three-asset dataset. Next: interactive robustness/scenario jobs, broader benchmarks, source qualification and independently verified PDF export.
 
 ## P3 — optional AI and advanced research
 

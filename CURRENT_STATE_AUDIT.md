@@ -1,5 +1,7 @@
 # Renaissance checkpoint audit — 2026-10-24
 
+Current continuation addendum (2026-10-25): the recovered-baseline findings below are historical. Weekly strategies/annualization, reconciled FIFO statistics and the bounded frozen-plan workflow are now implemented and verified in a583a1e. Current local and hosted suites both passed267 tests; hosted CI40157996079 and exact clean-commit reproduction are recorded in `docs/evidence/continuation-20261025/`. Full platform acceptance still requires the real-data, risk/portfolio/statistical/report/recovery/model work listed in `docs/CONTINUATION_ACCEPTANCE_20261025.md`. Do not treat the old missing-weekly or pending-CI entries below as current findings.
+
 Scope: source inspection and execution in `runtime/renaissance-20261024`, starting at `ccd369e`. The root checkout remains on `codex/project-audit-20261010` with unrelated dirty work. Existing worktrees and local research data were preserved. Earlier acceptance notes are history, not acceptance of this tree.
 
 ## Implemented and verified at the recovered baseline

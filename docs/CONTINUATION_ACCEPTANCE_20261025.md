@@ -37,6 +37,8 @@ Evidence: `docs/evidence/continuation-20261025/acceptance.json`, `pytest.xml`, `
 
 ## Remaining full-scope work
 
+Publication/reproducibility gates subsequently passed for implementation a583a1e: remote SHA matched, draft PR #4 was updated, and hosted CI40157996079 passed all gates with267 Linux tests. Four cases and six frozen trials rerun from the clean committed checkout matched every replay/analysis record; metadata records Git dirty false. Separate JSON evidence retains this result without changing the earlier acceptance record. Full-goal status remains ACTIVE.
+
 Strict real research remains BLOCKED by licensed raw/actions/adjustment/PIT/historical-universe/delisting qualification. Payment-date dividends and cash-in-lieu, broader benchmark choices, full rolling-risk/comparison/robustness UI, factor data, sector/full-covariance construction, independently qualified selection corrections, verified PDF export, safe interrupted-plan reconciliation and adaptive model-driven planning remain incomplete or planned. No global completion claim, percentage, automatic strategy promotion, real brokerage path or validated alpha is introduced.
 
 Next work must continue against this full scope. Preserve research-only constraints and both positive and negative evidence.

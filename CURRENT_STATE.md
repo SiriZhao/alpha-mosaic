@@ -1,6 +1,8 @@
-# Current state (2026-10-11)
+# Current state (2026-10-25)
 
 ## Current continuation checkpoint — 2026-10-25
+
+Publication verified: implementation `a583a1ef3721b05581e84b115f7cc127c176d3b3` is pushed with matching remote SHA. Draft PR #4 remains stacked on unmerged #3. Its hosted CI [40157996079](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40157996079) passed all gates, including267 Linux tests, clean-wheel research-plan execution, dependency audit and secret scan. Clean committed reruns of four cases and six frozen trials matched the earlier replay/analysis exactly; see `docs/evidence/continuation-20261025/committed-reproduction.json`. This is a continuation checkpoint; the full objective remains active.
 
 The overall platform goal remains active. New source hash `af12390cfe9579db641a354fee171afaa6d409c3c6bd56fa770a6f06ceca8f07` passed267 tests with RuntimeWarning treated as an error, Ruff and Pyright. Actual terminal weekly/plan actions, clean base-wheel offline workflow,31-tool MCP and eight-page browser render passed. See docs/CONTINUATION_ACCEPTANCE_20261025.md and docs/evidence/continuation-20261025/acceptance.json for exact scope.
 

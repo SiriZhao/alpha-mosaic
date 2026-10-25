@@ -2,6 +2,8 @@
 
 ## Continuing full scope — 2026-10-25
 
+Publication checkpoint: implementation a583a1e pushed with local/remote SHA equality; draft PR #4 description updated with the actual continuation scope. Hosted CI40157996079 passed all gates (267 Linux tests, clean-wheel frozen plan, dependency/secret scans). Four clean-commit cases and six frozen trials reproduced identical replay/accounting/analytics; Git dirty was false in every run. New `hosted-ci.json` and `committed-reproduction.json` retain these results. Further risk, data, statistical, portfolio, reporting and recovery work remains; the overall goal is not complete.
+
 Previous goal turn classification: PROGRESS (verified code, experiments, artifact generation and reviewed Git publication). Full objective remains ACTIVE. This round integrated independent commits4dd6101,9f7e27a,4b0f3b9,5911864,d6e6609 and adds canonical weekly scheduling/configs, FIFO-qualified experiment exports, a durable bounded offline plan workflow, actual terminal actions and path/import/audit integrity fixes.
 
 Measured checkpoint:267 passed with RuntimeWarning treated as error; Ruff/Pyright passed; source hashaf12390cfe9579db641a354fee171afaa6d409c3c6bd56fa770a6f06ceca8f07. Four FIXTURE daily/weekly cases plus six predeclared plan trials, fresh base-wheel offline/plan/FIFO/weekly/MCP acceptance and actual browser renders passed. The full first regression exposed two legacy mixed-frequency scheduling failures, which were repaired rather than bypassed. Junction fixture creation required an allowed environment permission; the test was executed, not skipped.

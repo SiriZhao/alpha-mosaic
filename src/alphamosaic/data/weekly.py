@@ -167,7 +167,10 @@ def aggregate_weekly_bars(
         raise ValueError("unsupported weekly price evidence")
     for supplied in actions:
         action = CorporateAction.model_validate(supplied.model_dump())
-        if action.symbol == first.symbol and dates[0] <= action.effective_date <= dates[-1] and action.known_at <= cutoff and first.adjustment_policy == "RAW":
+        # A later disclosure cannot make an already affected RAW interval safe.
+        # This is a source-qualification rejection, not use of future action values
+        # to calculate an adjusted historical signal or profitable execution path.
+        if action.symbol == first.symbol and dates[0] <= action.effective_date <= dates[-1] and first.adjustment_policy == "RAW":
             raise ValueError("RAW_CORPORATE_ACTION_REQUIRES_ADJUSTED_RESEARCH_SERIES")
     grouped: dict[date, list[HistoricalBar]] = {}
     for bar in selected:

@@ -15,6 +15,8 @@ from alphamosaic.evaluation.analytics import benchmark_metrics, returns_metrics
 
 
 class WeeklyEquityPoint(Contract):
+    """Simulated NAV mark; available_at is not a provider/PIT availability assertion."""
+
     week_start: date
     first_session: date
     last_session: date
@@ -131,6 +133,7 @@ def analyze_weekly(
         "Annualization uses 52 complete exchange-calendar weeks, not 252 sessions or five-day blocks.",
         "Partial initial/final intervals remain separate and are excluded from annualized weekly metrics.",
         "Week-end sampled drawdown and volatility do not capture all intraweek daily losses; retain the daily risk report.",
+        "Weekly NAV available_at is the simulated XNYS valuation time, not independently verified market-data availability or PIT certification.",
     ]
     if benchmark_result is not None:
         benchmark = weekly_equity(benchmark_result, series.cutoff)
@@ -170,4 +173,6 @@ def analyze_weekly(
             "metrics_scope": "COMPLETE_CALENDAR_WEEKS_ONLY", "risk_free_annual": 0,
             "observations": len(values), "partial_intervals": len(series.partial_intervals),
             "acceptance": result.acceptance, "return_basis": return_basis,
+            "nav_timestamp_semantics": "SIMULATED_VALUATION_TIME_NOT_PROVIDER_AVAILABILITY",
+            "pit_certification": "NOT_ESTABLISHED_BY_WEEKLY_NAV_AGGREGATION",
             "decision_frequency": "NOT_INFERRED_FROM_RETURN_SAMPLING"}}

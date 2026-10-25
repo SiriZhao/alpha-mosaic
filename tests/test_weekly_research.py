@@ -118,6 +118,20 @@ def test_raw_action_discontinuities_are_rejected_instead_of_skipping_a_week() ->
         aggregate_weekly(data.model_copy(update={"actions": [action]}))
 
 
+def test_late_disclosed_effective_action_cannot_qualify_a_raw_weekly_view() -> None:
+    data = data_between("2024-01-02", "2024-01-12")
+    cutoff = data.cutoff
+    known = cutoff + timedelta(days=4)
+    rows = [b if i < 2 else b.model_copy(update={field: getattr(b, field) / 2 for field in ("open", "high", "low", "close")}) for i, b in enumerate(data.bars["AAA"])]
+    evidence = rows[0].model_dump(exclude={"session", "open", "high", "low", "close", "volume"})
+    evidence.update(known_at=known, as_of=known)
+    action = CorporateAction(**evidence, action="SPLIT", effective_date=rows[2].session, ratio=2)
+    revised = data.model_copy(update={"bars": {"AAA": rows}, "actions": [action],
+        "cutoff": known, "mode": "RECONSTRUCTED_DIAGNOSTIC"})
+    with pytest.raises(ValueError, match="RAW_CORPORATE_ACTION"):
+        aggregate_weekly(revised, cutoff)
+
+
 def test_unknown_volume_stays_null_and_naive_cutoff_rejected() -> None:
     data = data_between()
     rows = list(data.bars["AAA"])
@@ -302,4 +316,7 @@ def test_weekly_outputs_retain_source_risk_flags_and_material_identity_hashes() 
     changed = data.model_copy(update={"identities": {"AAA": data.identities["AAA"].model_copy(update={"identity_source": "reviewed-fixture-v2"})}})
     assert aggregate_weekly(changed).source_hash != original.source_hash
     result = equity_result(data).model_copy(update={"diagnostics": ["REVISED_BARS_NOT_KNOWN_AT_HISTORICAL_DECISION_UNTRUSTED"]})
-    assert "REVISED_BARS_NOT_KNOWN_AT_HISTORICAL_DECISION_UNTRUSTED" in analyze_weekly(result)["warnings"]
+    analysis = analyze_weekly(result)
+    assert "REVISED_BARS_NOT_KNOWN_AT_HISTORICAL_DECISION_UNTRUSTED" in analysis["warnings"]
+    assert analysis["conventions"]["nav_timestamp_semantics"] == "SIMULATED_VALUATION_TIME_NOT_PROVIDER_AVAILABILITY"
+    assert analysis["conventions"]["pit_certification"] == "NOT_ESTABLISHED_BY_WEEKLY_NAV_AGGREGATION"

@@ -1,133 +1,132 @@
-# AlphaMosaic Renaissance — engineering delivery
+# AlphaMosaic Renaissance — current delivery report
 
-## Latest frozen-dispatch safety checkpoint — 2026-10-25
+Updated 2026-10-25, Asia/Shanghai. Full objective: **ACTIVE, incomplete**. This report describes the current accepted implementation; timestamped checkpoint evidence remains immutable. No production-grade research acceptance, real historical strategy performance or demonstrated alpha is claimed.
 
-Implementation f9dcfe3 is published with verified remote equality. [Hosted CI40202837163](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40202837163) passed361 Linux tests and all remaining quality/build/wheel/MCP/dependency/secret gates. [Eight clean committed reruns](docs/evidence/research-dispatch-20261025/committed-reproduction.json) preserve exact prior financial outputs and critics apart from separately checked identities. [Publication evidence](docs/evidence/research-dispatch-20261025/hosted-ci.json) names the implementation; subsequent evidence-only commits have separate CI observation. Draft PR #4 remains unmerged and stacked on #3.
+## 1. Verified release identity
 
-Six actual unauthorized/duplicate worker failures were reproduced and repaired, then independently reviewed. The shared executor now validates a unique pending frozen call and canonical config/request/source/manifest while holding its global OS lease. Missing context, late/duplicate attempts, corrupt/unidentified/unsealed artifacts and original experiment-directory junctions refuse new experiment creation. Full suite:361 passed, zero failed/error/skipped; independent dispatch run14 passed. Source `a26523a908f264868dee7eb4da6a3df92f4ab0b16a2bf65514c52d74b1b1c988`. See [dispatch acceptance](docs/RESEARCH_DISPATCH_ACCEPTANCE_20261025.md) for source-specific wheel/CI evidence and retained negative cases. UI/report files are unchanged from the prior browser-qualified milestone.
+Development branch: codex/renaissance-20261024. Latest tested implementation: f9dcfe33e7d9698e1f080a5d5e553567efe2f652. Source SHA256: a26523a908f264868dee7eb4da6a3df92f4ab0b16a2bf65514c52d74b1b1c988.
 
-Explicit interrupted-plan reconciliation remains Planned: dispatch refusal is only its prerequisite. A completed artifact cannot establish the unobserved original process exit, and workers can write late immutable responses after releasing the experiment lease. Full platform acceptance, real-data qualification and the other documented research requirements remain incomplete; no market-return or alpha claim is made.
+Local and hosted full regression both passed **361 tests**, with RuntimeWarning treated as error. Local suite had zero failed/error/skipped tests and included both actual Windows junction fixtures. Four upstream calendar deprecation warnings remain visible. [Hosted CI40202837163](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40202837163) passed every quality gate. Evidence-only follow-up commits retain the same source identity and have separate CI observation.
 
-## Latest ordinary-dividend payment checkpoint — 2026-10-25
+[Draft PR #4](https://github.com/SiriZhao/alpha-mosaic/pull/4) remains stacked on unmerged PR #3. Normal pushes were verified by matching local and remote SHAs; no merge, force push, visibility change or main rewrite occurred. The existing repository is public. Original dirty root files and all independent worktrees were preserved.
 
-Published implementation `c63deb9` has matching local/remote SHA and [successful current hosted CI](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40201042155):346 Linux tests, fresh base-wheel payment/worker cases, MCP, build, dependency audit and secret scan. [Eight clean-commit reproductions](docs/evidence/dividend-payment-20261025/committed-reproduction.json) exactly matched replay/accounting/analysis; only separately validated identity/time metadata differs. [CI evidence](docs/evidence/dividend-payment-20261025/hosted-ci.json) names this implementation. [Draft PR #4](https://github.com/SiriZhao/alpha-mosaic/pull/4) was updated without merging. Later evidence-only commits have their own CI observation.
+## 2. Original audit and retained architecture
 
-Read [machine acceptance](docs/evidence/dividend-payment-20261025/acceptance.json), [unpaid FIXTURE sample](docs/evidence/dividend-payment-20261025/sample-fixture-unpaid-report.md) and the retained failing/passing JUnit records. A fresh base wheel with optional providers/UI absent completed the payment cases, isolated plan and31-tool MCP. Browser verification records the viewer source hash and actual selected IDs. Action/feature evidence-class and identity gaps were independently reproduced and closed alongside the accounting work; real provider/PIT certification remains missing.
+The original root checkout was an older dirty audit branch. Partial Renaissance work was recovered in an isolated worktree from ccd369e, preserving concurrent changes. The recovered source had72 passing baseline tests. Source inspection and execution established the baseline; filenames alone were not acceptance.
 
-![Cash and unpaid dividend rights](docs/evidence/dividend-payment-20261025/12-dividend-accounting.png)
+One authoritative ApplicationService still orchestrates CLI, MCP and optional Streamlit. Existing provenance contracts, isolated provider adapters, scanner/factors, risk gates, forward-evidence stores and replay were retained. Research inputs, fixed strategy targets, simulated execution, portfolio accounting, analytics, experiment storage and presentation remain separate.
 
-Ordinary cash rights now accrue at sourced ex-open as non-spendable receivables and become cash at the declared conservative open after the sourced payment date. Sale/re-entry, partial FIFO exits and intervening splits preserve the original right. Schema3 exports, model-aware benchmark/comparison gates and readable cash/claim/report views are implemented. Legacy artifacts remain immutable and legacy dividends cannot qualify strict real replay. Full local regression:346 passed; source0c934375a1f29c85cdd4740bafec9015916bc0a43aaf3c5178e77fb34cbdffb2. Read [payment acceptance](docs/DIVIDEND_PAYMENT_ACCEPTANCE_20261025.md) for measured evidence, retained failures and actual final wheel/CI scope. Independent snapshots/worktrees survived sub-agent usage limits; parent completed their integration without purchasing resources.
+New or extended modules include data/datasets.py, backtesting models/replay/strategies, portfolio/construction.py, evaluation analytics/scientific/trades/weekly, experiments/runner.py, bounded agents/workflow.py and agents/worker.py, reporting/research.py and the local terminal. Core computation has no UI or paid-model requirement. See [architecture](ARCHITECTURE.md) and [audit with reproduced severity findings](CURRENT_STATE_AUDIT.md).
 
-Full platform acceptance remains incomplete. Real licensed PIT/actions/universe/delisting data, cash-in-lieu/special economics, action-aware RAW weekly adjustment, advanced portfolio/statistical/report/recovery/model requirements remain. The older CI links and payment-design-only statements below are historical checkpoints, not the current implementation status. No real-market return, validated alpha or brokerage route is claimed.
+## 3. Data engineering and licensing
 
-## Latest risk terminal follow-up — 2026-10-25
+Versioned local datasets retain canonical content hashes, manifests, provenance, source/adjustment/calendar/timezone metadata, quality findings and explicit Reject/Quarantine/Warn/Accept-With-Provenance policy. Corrupt, quarantined, mixed FIXTURE/observed, future, invalid or unaligned evidence fails closed. RAW, split-adjusted and total-return inputs have distinct contracts; cash dividends cannot augment already adjusted returns.
 
-Implementation02133ef is pushed with matching remote SHA. [CI40159458375](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40159458375) passed every quality gate and271 Linux tests; [draft PR #4](https://github.com/SiriZhao/alpha-mosaic/pull/4) remains unmerged and stacked on #3. Clean-commit realistic/stress replay and analysis exactly matched precommit records. [Publication evidence](docs/evidence/risk-terminal-20261025/hosted-ci.json) names the tested implementation; subsequent evidence-only commits have separate CI runs.
+Corporate actions and dated feature values require an observed or explicitly FIXTURE evidence class. Strict signals need availability qualification, nonempty source and evidence identity. A model comment or self-asserted PIT flag cannot supply observed financial values.
 
-![Persisted rolling risk with provenance](docs/evidence/risk-terminal-20261025/11-rolling-risk-evidence.png)
+The actual opt-in three-symbol capture requested2024-01-01..2026-10-23: SPY/QQQM each returned706 HISTORICAL rows with UNKNOWN adjustment, while TLT was EMPTY. The capture remained PROVIDER_UNAVAILABLE_OR_PARTIAL and published no research dataset. **Strict real-data acceptance remains Blocked** by qualified licensed raw/actions, historical availability, membership and delisting evidence. No outage was replaced with synthetic market performance.
 
-Risk Lab and qualified comparison now expose persisted rolling risks, full configurations, concentration/cash, accounting/costs, drawdown episodes and embedded chart provenance. Independent review found and reproduced omitted cash-only dates and missing legacy exposures; both are repaired without rewriting old results. Final local suite:271 passed, Ruff/Pyright and fresh base-wheel plan/FIFO/weekly/MCP passed. Read [risk terminal acceptance](docs/TERMINAL_RISK_ACCEPTANCE_20261025.md). Its current hosted CI is a separate gate from the older green runs below. The [payment accounting design](docs/DIVIDEND_PAYMENT_ACCOUNTING_DESIGN.md) is reviewed but remains unimplemented. Full Renaissance acceptance remains incomplete.
+[Open-source evaluation](docs/OPEN_SOURCE_EVALUATION.md) records primary license/version snapshots captured2026-10-24 and refresh limitations: Qlib/LEAN/Zipline are references; VectorBT runtime is rejected under Apache plus Commons Clause; Backtesting.py runtime is rejected under its AGPL compatibility boundary. No evaluated engine source was copied. NumPy/Pandas/Pydantic/exchange-calendars/Pytest/Hypothesis are reused; Plotly/Streamlit/QuantStats remain optional. Software licenses do not grant market-data redistribution rights.
 
-## Current continuation — 2026-10-25
+## 4. Event replay, portfolio accounting and costs
 
-Implementation `a583a1e` is committed/pushed with remote SHA verified. [Draft PR #4](https://github.com/SiriZhao/alpha-mosaic/pull/4) remains stacked on unmerged #3; no merge was performed. [Hosted CI40157996079](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40157996079) passed all quality steps including267 Linux tests, clean-wheel bounded-plan execution, dependency audit and secret scan. Four clean-commit cases and six frozen trials produced exactly equal replay and analysis records to precommit acceptance. See [CI evidence](docs/evidence/continuation-20261025/hosted-ci.json) and [committed reproduction](docs/evidence/continuation-20261025/committed-reproduction.json); later evidence-only commits require their own CI observation.
+The long-only cash simulation links market, signal, proposed order, fill, corporate-action and portfolio events. Close-derived signals become eligible at later exchange opens. Configurable delays, lot sizes, commissions, spread, slippage and participation limits coexist with cash constraints, reserved sells, missing-bar rejection and immutable split order adjustments. Zero-cost is a comparison control; realistic and conservative stress presets are explicit.
 
-The full objective remains ACTIVE. Calendar-week strategies/52-period views, independent FIFO/asset accounting and the bounded frozen-plan research workflow are now implemented and verified within their explicit model. The current checkpoint passed267 tests, Ruff/Pyright, real weekly/plan terminal actions, clean base-wheel offline/plan/MCP and browser render gates. Source hash: `af12390cfe9579db641a354fee171afaa6d409c3c6bd56fa770a6f06ceca8f07`.
+Ordinary USD dividends now freeze pre-fill ex-date rights as fixed earned receivables. Claims contribute to NAV but cannot fund purchases. Cash becomes available at the first XNYS open strictly after the sourced calendar payment date, an explicit conservative simulation convention. Selling, re-entering or splitting holdings does not change a prior dollar right. Income is not recognized again at payment.
 
-Read [continuation acceptance](docs/CONTINUATION_ACCEPTANCE_20261025.md), [machine evidence](docs/evidence/continuation-20261025/acceptance.json), [plan evidence](docs/evidence/continuation-20261025/plan-evidence.json) and [weekly FIXTURE report](docs/evidence/continuation-20261025/sample-weekly-fixture-report.md). Prior sections and CI links below are retained historical measurements and do not by themselves certify the current source. New publication/CI must be observed separately. Real-data qualification and the remaining risk/portfolio/statistical/report/model/recovery requirements still prevent a full-platform completion claim.
+Independent FIFO reconstruction checks cash, shares, claims, earned/paid dividends, lot allocations and additive NAV/P&L. Closed economic P&L can include earned unpaid income and is distinguished from cash-realized or tax P&L. Schema3 exports include entitlement/payment/receivable ledgers. Old missing-field configurations and finalized artifacts retain legacy semantics without rewriting; strict real replay refuses legacy immediate dividend cash. Comparisons reject incompatible accounting models even when NAV curves coincide.
 
-![Bounded research plan](docs/evidence/continuation-20261025/07-ai-research.png)
+Special/due-bill distributions, cash-in-lieu, amendments, taxes, impairment/default, broker settlement and delisting economics are not implemented or certified. Daily volume is an ex-post capacity assumption, not known opening-auction liquidity. Market drift after fills may exceed target weights and is diagnosed. See [assumptions](BACKTEST_ASSUMPTIONS.md), [data model](DATA_MODEL.md) and [payment acceptance](docs/DIVIDEND_PAYMENT_ACCEPTANCE_20261025.md).
 
-Date: 2026-10-24 (Asia/Shanghai). Branch: `codex/renaissance-20261024`. Recovered base: `ccd369e`. This is a **locally verified daily research milestone**, not complete production-grade research acceptance. No real historical strategy return, demonstrated alpha, broker capability or return probability is claimed.
+## 5. Strategies, construction and analytics
 
-## 1. Original architecture and recovery
+Nineteen registered fixed daily/weekly research rules cover passive/equal weight, trend, time-series/cross-sectional momentum, mean reversion, volatility targeting, risk-adjusted momentum, low volatility and a fixed ensemble. Optional quality/value/AI/consensus inputs require qualified dated evidence; absent values are not backfilled. Weekly signals use complete calendar weeks and later daily-open execution. RAW action-aware weekly signals remain explicitly blocked pending a causal adjustment model.
 
-The root checkout was an older dirty audit branch. Four Renaissance worktrees already contained partial work. Those changes and all other worktrees/runtime evidence were preserved; work continued in `runtime/renaissance-20261024`. The validated baseline provided ApplicationService, read-only research adapters, causal paper replay, optional analytics, evaluation/forward stores and72 passing tests. See CURRENT_STATE_AUDIT.md for evidence categories/severity and actual defects rather than filename-based feature claims.
+Basic long-only/no-leverage/cash/asset-weight/turnover controls and transparent simple allocation rules are implemented. Full covariance risk budgeting, sector constraints with reliable classifications and a general constrained optimizer remain Planned.
 
-## 2. Final architecture, retained and new modules
+Daily252-observation and separately qualified weekly52-period analytics expose returns, CAGR, volatility, Sharpe/Sortino/Calmar, drawdowns/duration, descriptive beta/OLS intercept, active statistics, turnover, matched-lot trade statistics, exposure, concentration and explicit costs. Undefined ratios remain null. Cash, marked holdings and receivable weights remain separate. FIFO segments are not independent trades or tax lots.
 
-One ApplicationService orchestrates CLI/MCP/optional Streamlit. Existing contracts, OpenBB isolation, scanner, factors, source/risk gates, forward stores and replay are retained. Additions: `data/datasets.py`, richer replay models/events/accounting and fixed strategies, `portfolio/construction.py`, independent `evaluation/analytics.py` and `scientific.py`, `experiments/runner.py`, deterministic `agents/research.py`, research HTML/Markdown reports and `ui/app.py`.
+Risk views include underwater/rolling volatility/Sharpe/beta/correlation, drawdown episodes, complete-date exposure and additive asset/cost evidence. Benchmark dates, return basis, evidence class and accounting model must qualify before comparison. Cash/risk-free and equal-weight benchmark interfaces, genuine sourced factor attribution and advanced portfolio models remain incomplete. Descriptive regression is not causal attribution. See [strategy guide](STRATEGY_GUIDE.md) and [metric definitions](RISK_ANALYTICS.md).
 
-Research inputs, strategy targets, simulated execution, accounting, analytics and presentation stay separate. No arbitrary code/file/broker tool or cross-project credential dependency was added. ModelAdapter is optional; the core needs no paid LLM. The AI planner/orchestrator remains Partially Implemented, not a completed autonomous research team.
+## 6. Scientific validation and research agents
 
-## 3. Data and open-source decisions
+Chronological train/validation/holdout splits, purge/embargo boundaries, train-only standardization, walk-forward fold construction, fixed-block mean uncertainty and overlapping-holdout contamination audits are implemented. A declared historical holdout is not independent prospective validation. Bootstrap diagnostics do not correct repeated selection; DSR/PBO/White's Reality Check remain Planned.
 
-DatasetStore provides canonical SHA256 versions/manifests, immutable publication, explicit reject/quarantine/warn/provenance policies, corrupt-item visibility, bounded opt-in acquisition and deterministic synthetic data. Missing/unaligned/future/invalid inputs fail closed. Raw/split-adjusted/total-return inputs remain distinct. Network payloads are normalized provider responses and stay local, not a licensed market-data distribution.
+The deterministic planner freezes a hypothesis and at most6 strategy/cost trials, requires a realistic primary case, records dataset/manifest/source versions and retains all outcomes. Fixed subprocess workers have deadlines; MCP jobs are bounded and queued jobs can be cancelled. Independent critics distinguish Evidence, Inference, Hypothesis, Uncertainty and Actionable Research Question. Optional qualitative model commentary cannot introduce numerical results or investment promotion. No paid LLM is required.
 
-One real three-symbol capture requested2024-01-01..2026-10-23: SPY and QQQM each returned706 HISTORICAL bars (2024-01-02..2026-10-23), adjustment UNKNOWN; TLT EMPTY. Overall `PROVIDER_UNAVAILABLE_OR_PARTIAL`, dataset_id null. No replacement data or real return calculation was used. Strict real-data acceptance remains Blocked by PIT, action, historical-universe and delisting evidence.
+Six reproduced dispatch defects were repaired. Planned experiment creation now verifies one pending frozen audit call and canonical config/request/source/manifest under the same global OS lease as execution. Missing context, changed/late/duplicate attempts, original-directory redirection and unidentified/corrupt/unsealed artifacts fail closed. An independent reviewer passed14 dispatch tests; parent full testing included its separately deselected junction case.
 
-Framework decisions and primary version/license snapshots are in docs/OPEN_SOURCE_EVALUATION.md. Qlib/LEAN/Zipline are references; VectorBT runtime is rejected under its current Commons Clause restriction; Backtesting.py runtime is rejected under AGPL compatibility concerns. No source copied or paid component installed. NumPy/Pandas/Pydantic/calendar/testing components are reused; Streamlit/Plotly remain optional.
+Explicit interrupted-plan reconciliation is **not yet integrated**; isolated implementation/review is in runtime/renaissance-recovery-20261025. A recovered complete artifact cannot prove an unobserved original process exit; late immutable responses may arrive after the experiment lock releases. No silent retry or automatic evidence-grade promotion occurs. Adaptive model-driven planning and selection-adjusted statistics remain incomplete. See [methodology](RESEARCH_METHODOLOGY.md) and [dispatch acceptance](docs/RESEARCH_DISPATCH_ACCEPTANCE_20261025.md).
 
-## 4. Replay, accounting and costs
+## 7. Reproducible experiments and reports
 
-Linked market/signal/order/fill/corporate-action/portfolio events, next-session opening eligibility, configurable delays/lots/fees/slippage/spread/participation, bounded cash-only buys and oversell reservations. Cash ledger, average costs, mark-to-market NAV and append-only split order adjustments are exported. Explicit zero/realistic/stress configurations are available. Financial correctness fixes include nested revalidation, gap-aware buy constraints, delayed overlapping sells and immutable split order revisions.
+Unique experiments record full configuration, source/Git/dependency/lock fingerprints, dataset versions, cost/execution/validation assumptions, results, warnings and checksum manifests. Orders/fills/signals/events/cash/positions, FIFO/asset records, weekly equity and dividend ledgers are exportable. Failed and interrupted work remains visible; no result directory is reused.
 
-Independent QA reconstructs48 seeded FIXTURE scenarios and879 fills, including splits/dividends, cash/positions/NAV and causal timestamps. This is independent accounting reconstruction, not independent real execution validation. Daily-volume participation is an ex-post assumption; opening liquidity is unknown. Dividend payment delays, split cash-in-lieu, taxes and delisting economics are not modeled. Market-price drift may exceed target weights and is diagnosed.
+Runnable FIXTURE cases include A passive SPY-labelled synthetic baseline, B fixed trend, C three-asset allocation, zero/stress cost controls, fixed parameter sensitivity and declared holdout. Extended cases exercise weekly rules and a frozen6-trial plan. Dividend cases retain realistic/stress/full/unpaid/legacy diagnostics, four worker trials and the expected failed RAW-weekly action control. Every synthetic price/result is software evidence only.
 
-## 5. Strategies, metrics and scientific controls
+Current clean-commit reruns matched all financial replay, benchmark and analysis fields across four direct cases and four worker trials. Critic equality excludes only separately validated record IDs; time/source/Git identity metadata is intentionally distinct. [Reproduction proof](docs/evidence/research-dispatch-20261025/committed-reproduction.json) names the exact records. Reports export JSON/CSV/HTML/Markdown with source-linked caveats; PDF and Parquet export are not claimed.
 
-16 registered fixed research strategies include passive/equal weight, trend, time-series/cross-sectional momentum, mean reversion, volatility targeting, risk-adjusted momentum, low volatility and fixed-sleeve ensemble. Optional quality/value/AI/consensus need qualified PIT inputs; absence is not backfilled.
+## 8. Actual dashboard evidence
 
-Independent252-session metrics cover return/CAGR/volatility/Sharpe/Sortino/Calmar/drawdowns/duration, descriptive beta/OLS alpha/tracking error/information ratio, exposure/concentration/turnover and explicit costs. Unknown/mismatched benchmark bases, sessions or evidence block comparisons and traces. Closed-lot statistics and genuine factor/asset/cash attribution remain null or Planned.
+Eight local pages provide overview, datasets, strategy lab, results, compatible experiment comparison, risk, frozen AI research/critics and downloadable reports. Background jobs expose progress/failure. No old/static price pretends to be live. This is a localhost single-user product.
 
-Chronological train/validation/holdout splits, purge/embargo, train-only standardization, walk-forward fold construction, fixed-block mean uncertainty, local overlapping-holdout contamination audit and sourced-or-missing research-priority inputs are implemented. DSR/PBO/White's Reality Check are Planned. No automatic grade promotion occurs; current experiments remain Exploratory.
+The payment milestone rendered all eight pages/mobile with13 captures, asserted actual selected compatible/unpaid experiment IDs, and checked the viewer source hash. Current dispatch work changes no UI/report code; those captures retain their original source identity rather than being relabeled as new browser tests. AppTest remains in the current full regression. Broad scenario/robustness controls, active cancellation and comprehensive interaction coverage remain incomplete.
 
-## 6. Reproducible cases and reports
+![FIXTURE unpaid-dividend accounting; payment milestone source](docs/evidence/dividend-payment-20261025/12-dividend-accounting.png)
 
-Final local suite: `runtime/renaissance-final/suite-0272cec7fb894e7b8c1880b15fc24764.json`; eight successful FIXTURE cases plus one intentionally failed missing-dataset control. A: SPY-labelled synthetic buy-and-hold; B: fixed trend; C: synthetic SPY/QQQM/TLT allocation. Zero/stress controls,42/84 lookback checks and declared holdout are retained without selecting a winner. No market interpretation is permitted.
+![FIXTURE compatible experiment comparison with provenance](docs/evidence/dividend-payment-20261025/10-qualified-comparison-curve.png)
 
-Each unique experiment includes config.json, dataset manifest/hash, source/dependency/Git/lock fingerprints, accounting/result JSON and CSV, checksum manifest and source-linked HTML/Markdown report. Interrupted runs remain visibly incomplete; failures retain error details. HTML contains local interactive Plotly charts. Full configurations and commands are in REPRODUCIBILITY.md; no screenshot substitutes for runnable evidence. PDF/Parquet export is not claimed.
+## 9. Quality, security and measured performance
 
-## 7. Dashboard and visual QA
+Current local/hosted361-test suites, Ruff, Pyright, lock validation, wheel/sdist, fresh base-wheel workflows, CLI,31-tool stdio MCP, dependency audit and secret scan passed. All59 installed and packaged Python files match the tested source. Fresh base-wheel acceptance excludes OpenBB/QuantStats/Streamlit/Plotly yet completes payment cases and isolated workers. Remote ChatGPT remains NOT_VERIFIED; provider installation health is separate from data validity.
 
-Eight local terminal pages: overview, data explorer, strategy lab/background jobs, results, comparison, risk, deterministic critic and report downloads. No static price pretends to be live. Browser QA verifies page navigation and renders populated FIXTURE results; AppTest also covers minimum80-row data and empty-result paths. Initial actual screenshot inspection found theme/placeholder issues, which were corrected. Final images and browser scope are in docs/evidence/renaissance-20261024/. This is a local single-user terminal, not a hardened hosted product.
+Financial tests cover no phantom constant-price profit, positive-cost loss, cash/share/NAV conservation, split/dividend consistency, insufficient cash/long-only limits, next-open causality, future perturbations, repeated results, missing/misaligned bars, annualization, finite extremes and benchmark basis. Independent accounting, generated constraint cases, failure/corruption/lifecycle tests and frozen worker tests retain original negative evidence.
 
-## 8. Measured validation and performance
+Earlier profiling measured a100-session/three-asset replay and exact repeat equality. Historical instrumented metadata-cache work reduced a measured suite from81.306s/101,379,789 peak traced bytes to39.881s/99,497,616 while preserving eight outputs; these are named local measurements, not a current universal speedup. Hosted CI runs a lightweight baseline/repeat smoke with no speedup claim. No Numba/Rust/GPU/distributed dependency was added.
 
-- Final financial regression: **168 passed**, `-W error::RuntimeWarning`,38.69s. Four visible upstream exchange-calendar deprecation warnings; no coroutine or numerical RuntimeWarning.
-- Ruff passed; Pyright0 errors; tracked/nonignored secret-pattern scan passed. Staged-blob scan and final packaging/publication gates are recorded in the release addendum below.
-- Real local stdio MCP handshake: protocol2025-11-25,26 research tools, broker_enabled false; remote ChatGPT remains NOT_VERIFIED.
-- Small profiled replay:100 sessions×3 assets,0.03972s first replay, exact repeat equality. This is one local measurement with profiler overhead, not a universal performance promise.
-- End-to-end instrumented suite:81.306s /101,379,789 peak traced bytes before reducing repeated dependency metadata reads;39.881s /99,497,616 after. All eight result/analytics outputs are compared for equality in software evidence. Different IDs/timestamps and source fingerprints are expected. No algorithmic return/performance optimization was performed. Final non-cProfile suite27.526s is a different instrumentation condition and is not a comparable speedup ratio.
-- Dependency audit found43 advisory records affecting2 installed packages (aliases may duplicate records). Upgraded certifi2026.7.22→2026.10.23 and Pillow12.3.0→13.0.0, added explicit minimum requirements; final OSV audit: **no known vulnerabilities found**. Original failure retained locally, with no ignore list.
+There is no agent-accessible broker, arbitrary shell/file reader or credential tool. Optional integrations are isolated and no Meridian credential/runtime dependency is permitted. Original dependency vulnerabilities were repaired without an ignore list; current hosted audit reports no known vulnerabilities. Local hashes/leases are single-user integrity controls, not hostile multi-tenant authentication. See [security](SECURITY.md), [tests](TESTING.md) and [risk register](docs/RISK_REGISTER.md).
 
-## 9. Independent review and repaired findings
+## 10. Run locally
 
-Independent agents reviewed data quality, accounting, metric formulas, leakage, timeout lifecycle and experiment integrity. Empty checksums, interrupted-state classification, short UI datasets, quarantined selection, spread omission, data/hash identity, source-change detection, unknown benchmark comparison and split adjustment exports were repaired and regression-tested. Danelfin coroutine allocation was traced to cancelled MCP transport tasks; lifecycle now uses same-task scope cleanup and preserves caller cancellation. Corrupt datasets remain listed while replay rejects them.
+Use Python3.12 in the reviewed development checkout. These commands require no model/broker key and create only local research artifacts:
 
-## 10. Acceptance status and highest-value next work
+    uv sync --locked --all-extras --dev
+    uv run alphamosaic doctor
+    uv run python scripts/run_research_cases.py --home runtime/new-research
+    uv run python scripts/run_extended_research.py --home runtime/new-weekly-research
+    uv run python scripts/run_dividend_cases.py --home runtime/new-dividend-research
+    $env:ALPHAMOSAIC_HOME = (Join-Path (Get-Location) 'runtime/new-dividend-research')
+    uv run python -m streamlit run src/alphamosaic/ui/app.py --theme.base dark
 
-Implemented & Verified locally: immutable offline data, financial replay/accounting/costs, causal failure tests, fixed cases, independent core metrics, local scientific controls, versioned experiments, reports, core without paid LLM, terminal navigation/render, independent QA and research-only tool boundaries.
+Quality commands:
 
-Implemented but separately Unverified: externally hosted CI until an actual successful run, remote ChatGPT calls, actual authorized external model/provider integrations and real-market execution assumptions.
+    uv run ruff check .
+    uv run pyright
+    uv run pytest -q -W error::RuntimeWarning
+    uv build
+    uv run python scripts/mcp_smoke.py --home runtime/new-mcp-check
 
-Partially Implemented: complete AI research workflow, full strategy/risk dashboard workflows and comprehensive robustness/attribution. Planned: weekly studies, matched closed trades, full covariance/sector optimization and advanced selection-adjusted statistics. Blocked: strictly qualified real historical three-asset research. No overall completion percentage masks these gates.
+Choose a unique home for a new case suite. Freeze source/environment and restart services before acceptance. Fixed-plan source/data changes require a newly reviewed plan; incomplete attempts never authorize silent replay. More commands and export conventions are in [reproducibility](REPRODUCIBILITY.md).
 
-Next highest value: qualify a licensed raw-plus-actions historical snapshot with delisting/membership evidence, independently validate its accounting/return basis, then rerun unchanged predeclared cases. Full planner/complex optimization follows these gates, not before them.
+## 11. Status and remaining acceptance
 
-## 11. Commits, PR and release addendum
+- **Implemented & Verified:** research-only shared service, local versioned data/quality gates, causal paper replay, ordinary-dividend claim/payment accounting, explicit costs, fixed daily/qualified weekly rules, independent metrics/FIFO accounting, chronological controls, experiment/report storage, local terminal, frozen offline workflow/critics, dispatch safety, tests/build/clean wheel/current implementation CI.
+- **Implemented but Unverified externally:** remote ChatGPT, authorized optional model/provider integration and real opening-liquidity assumptions. Local MCP or an installed provider is insufficient proof.
+- **Partially Implemented:** broader portfolio/risk/robustness/benchmark/attribution workflows, adaptive AI research and all-interaction terminal coverage.
+- **Planned / isolated development:** explicit interrupted-plan reconciliation, cash-in-lieu/special/delisting economics, causal RAW weekly adjustment, covariance/sector optimization, selection-adjusted statistics, richer scenario controls and PDF/Parquet export.
+- **Blocked:** strictly qualified licensed real historical three-asset/PIT/actions/universe/delisting research. No FIXTURE result, heuristic rank or descriptive alpha bypasses this gate.
 
-Integrated commits: b57986e(data),5eb771e/afc3d45(validation),31ebdde(accounting),b3abff4(independent QA),4ca05a6(async lifecycle). Final integration commit, clean-wheel results, staged scan, remote branch SHA/PR and hosted CI are appended after execution. GitHub connector authenticated SiriZhao with ADMIN/push rights; existing repository is public and visibility unchanged. GitHub CLI token remains invalid; Git transport authentication is an independent gate. No force push or main rewrite is permitted.
+Production-grade research-prototype acceptance is incomplete. The next feasible safety task is independently reviewed append-only reconciliation; the highest-value external prerequisite remains licensed qualified raw-plus-actions historical evidence. Subsequent work must preserve financial correctness, all failed experiments and immutable forward evidence rather than optimize attractive curves.
 
-### Local release gates executed
+## 12. Commits and immutable checkpoint index
 
-Measured evidence: [acceptance.json](docs/evidence/renaissance-20261024/acceptance.json), [JUnit](docs/evidence/renaissance-20261024/pytest.xml), [dependency audit](docs/evidence/renaissance-20261024/dependency-audit.json), [sample FIXTURE report](docs/evidence/renaissance-20261024/sample-fixture-report.md). Source hash `06ee532642910d385759c6ca9ceb751d6946119914777e7690dcb680faba5a8e`.
+Important integrated milestones: a6dd38e initial research prototype; a583a1e weekly/FIFO/frozen workflow;02133ef risk/comparison;96d18e3 presentation preparation;22c7617 ordinary-dividend core;c63deb9 source-qualified payment acceptance;f9dcfe3 frozen dispatch safety. Publication/evidence-only commits are recorded in Git history and the linked bundles; none upgrades market evidence.
 
-Build produced `runtime/delivery-build-final/alphamosaic-0.1.0-py3-none-any.whl` (134,466 bytes) and sdist(283,398 bytes). Archive inspection confirmed no runtime/.venv/credentials/.git paths. Initial unrestricted sdist traversal was stopped after a cache-in-source warning; explicit sdist include paths fixed it. No unknown file was deleted or replaced.
+- [Initial audit, cases, profiling and release evidence](docs/evidence/renaissance-20261024/acceptance.json).
+- [Weekly/FIFO/frozen workflow acceptance](docs/CONTINUATION_ACCEPTANCE_20261025.md).
+- [Risk terminal acceptance](docs/TERMINAL_RISK_ACCEPTANCE_20261025.md).
+- [Payment source/wheel/browser acceptance](docs/evidence/dividend-payment-20261025/acceptance.json) and [its CI](docs/evidence/dividend-payment-20261025/hosted-ci.json).
+- [Current dispatch local/independent/wheel acceptance](docs/evidence/research-dispatch-20261025/acceptance.json), [CI](docs/evidence/research-dispatch-20261025/hosted-ci.json) and [clean reproduction](docs/evidence/research-dispatch-20261025/committed-reproduction.json).
+- [Implementation dependencies](docs/IMPLEMENTATION_PLAN.md), [recoverable progress](docs/PROGRESS.md), [next steps](NEXT_STEPS.md) and [draft PR #4](https://github.com/SiriZhao/alpha-mosaic/pull/4).
 
-Fresh base-wheel environment installed51 packages from locked base requirements. `verify_wheel.py` confirmed site-packages import, all four optional integrations absent, successful FIXTURE experiment and broker disabled. Doctor and real MCP initialization/tool list/status invocation passed from outside src. Final OSV audit had no findings or skipped records. Profiling optimization preserved exact result and analytics for all eight cases.
-
-Actual screenshot evidence, FIXTURE only:
-
-![Overview](docs/evidence/renaissance-20261024/01-research-overview.png)
-![Result chart with costs and provenance](docs/evidence/renaissance-20261024/04-backtest-results.png)
-![Mobile report](docs/evidence/renaissance-20261024/09-mobile-reports.png)
-
-### Publication verified — 2026-10-25 (Asia/Shanghai)
-
-- Implementation commit `a6dd38e24ab421493ef056d582490abee62d80f8` was pushed normally; `git ls-remote` matched the local SHA. No main or existing worktree was changed.
-- [Draft PR #4](https://github.com/SiriZhao/alpha-mosaic/pull/4), stacked on the still-open data-quality PR #3 (`codex/data-quality-20261013`), was created and observed mergeable. The connector's PR write returned403; a separately verified existing Git transport identity/permission successfully created it without exposing or persisting credentials. No paid provisioning or visibility change.
-- [Hosted CI](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40135345657) **PASSED**: lock/sync, Ruff, Pyright, tests, offline repeat/performance smoke, real local MCP handshake, build, clean-wheel smoke, dependency audit and secret scan. Machine-readable capture: docs/evidence/renaissance-20261024/ci-implementation.json. Remote ChatGPT remains NOT_VERIFIED.
-- Repeated all eight cases from the clean committed implementation: `git_dirty=false`, same source hash, exact result and analytics equality. Timing had an anomalous long interval of unknown cause; raw metadata is retained and excluded from performance claims. See committed-reproduction.json.
-- Latest rebuilt distributions at `runtime/release-a6dd38e/` include review evidence; all49 packaged Python files match the clean-wheel-tested code exactly. Runtime exclusion and artifact hashes are in release-build.json. This supersedes the earlier local package output paths for source-archive completeness.
-- Documentation-only publication evidence is committed separately after implementation CI; current branch/PR status should be checked against its actual latest commit. Financial/data limitations above remain unchanged and full production-grade research acceptance is still not claimed.
+Older report versions remain in Git history; their measurements belong to their named commits, not automatically to the current tree.

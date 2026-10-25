@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="2.557" timestamp="2026-10-25T20:38:51.058466+08:00" hostname="YOGA"><testcase classname="tests.test_dividend_contract_boundaries" name="test_both_daily_and_weekly_benchmark_gates_reject_different_dividend_models_even_with_equal_nav[daily]" time="0.133"><failure message="AssertionError: assert 'COMPARABLE_SIMULATED_RETURNS' == 'BLOCKED_ACCO...ODEL_MISMATCH'&#10;  &#10;  - BLOCKED_ACCOUNTING_MODEL_MISMATCH&#10;  + COMPARABLE_SIMULATED_RETURNS">frequency = 'daily'
+
+    @pytest.mark.parametrize("frequency", ["daily", "weekly"])
+    def test_both_daily_and_weekly_benchmark_gates_reject_different_dividend_models_even_with_equal_nav(frequency: str) -&gt; None:
+        data = fixture_data(through="2024-01-19")
+        modern = replay(data)
+        legacy = PaperReplayEngine().run(data, FixedTargets({data.bars["AAA"][0].session: {"AAA": 1}}), "independent-frozen-targets",
+            ReplayConfig(initial_cash=1000, fee_bps=0, slippage_bps=0, rebalance_sessions=1, max_volume_fraction=1))
+        assert [point.nav for point in modern.equity] == [point.nav for point in legacy.equity]
+        function = analyze if frequency == "daily" else analyze_weekly
+        blocked = function(modern, benchmark_result=legacy, return_basis="RAW_WITH_CASH_ACTIONS", benchmark_return_basis="RAW_WITH_CASH_ACTIONS")
+&gt;       assert blocked["benchmark_status"] == "BLOCKED_ACCOUNTING_MODEL_MISMATCH"
+E       AssertionError: assert 'COMPARABLE_SIMULATED_RETURNS' == 'BLOCKED_ACCO...ODEL_MISMATCH'
+E         
+E         - BLOCKED_ACCOUNTING_MODEL_MISMATCH
+E         + COMPARABLE_SIMULATED_RETURNS
+
+tests\test_dividend_contract_boundaries.py:29: AssertionError</failure></testcase><testcase classname="tests.test_dividend_contract_boundaries" name="test_both_daily_and_weekly_benchmark_gates_reject_different_dividend_models_even_with_equal_nav[weekly]" time="0.007"><failure message="AssertionError: assert 'COMPARABLE_S...EEKLY_RETURNS' == 'BLOCKED_ACCO...ODEL_MISMATCH'&#10;  &#10;  - BLOCKED_ACCOUNTING_MODEL_MISMATCH&#10;  + COMPARABLE_SIMULATED_WEEKLY_RETURNS">frequency = 'weekly'
+
+    @pytest.mark.parametrize("frequency", ["daily", "weekly"])
+    def test_both_daily_and_weekly_benchmark_gates_reject_different_dividend_models_even_with_equal_nav(frequency: str) -&gt; None:
+        data = fixture_data(through="2024-01-19")
+        modern = replay(data)
+        legacy = PaperReplayEngine().run(data, FixedTargets({data.bars["AAA"][0].session: {"AAA": 1}}), "independent-frozen-targets",
+            ReplayConfig(initial_cash=1000, fee_bps=0, slippage_bps=0, rebalance_sessions=1, max_volume_fraction=1))
+        assert [point.nav for point in modern.equity] == [point.nav for point in legacy.equity]
+        function = analyze if frequency == "daily" else analyze_weekly
+        blocked = function(modern, benchmark_result=legacy, return_basis="RAW_WITH_CASH_ACTIONS", benchmark_return_basis="RAW_WITH_CASH_ACTIONS")
+&gt;       assert blocked["benchmark_status"] == "BLOCKED_ACCOUNTING_MODEL_MISMATCH"
+E       AssertionError: assert 'COMPARABLE_S...EEKLY_RETURNS' == 'BLOCKED_ACCO...ODEL_MISMATCH'
+E         
+E         - BLOCKED_ACCOUNTING_MODEL_MISMATCH
+E         + COMPARABLE_SIMULATED_WEEKLY_RETURNS
+
+tests\test_dividend_contract_boundaries.py:29: AssertionError</failure></testcase></testsuite></testsuites>

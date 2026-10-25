@@ -232,7 +232,32 @@ else:
                 tabs[7].caption("52 completed-week periods/year; boundary intervals and daily risk remain separate.")
                 tabs[7].json(weekly, expanded=False)
                 from alphamosaic.reporting.research import dividend_accounting_evidence
-                tabs[8].json(dividend_accounting_evidence(item), expanded=False)
+                dividend_evidence = dividend_accounting_evidence(item)
+                with tabs[8]:
+                    st.subheader("Dividend rights and cash availability")
+                    st.caption(dividend_evidence["convention"])
+                    if dividend_evidence["dividend_accounting"] == "PAY_DATE_RECEIVABLE":
+                        reconciliation = trades.get("reconciliation", {})
+                        outstanding = reconciliation.get("outstanding_dividend_receivables_usd")
+                        cash_col, claim_col = st.columns(2)
+                        cash_col.metric("Cash at final valuation", f"${item['result']['equity'][-1]['cash']:,.2f}")
+                        claim_col.metric("Unpaid dividend claims", "Not reconciled" if outstanding is None else f"${outstanding:,.2f}")
+                        st.caption("Earned dividend rights are separate from spendable cash. Sold shares retain their frozen entitlement.")
+                        entitlements = dividend_evidence.get("entitlements")
+                        payments = dividend_evidence.get("payments")
+                        if entitlements is None:
+                            st.warning("Entitlement records were not recorded.")
+                        elif entitlements:
+                            st.dataframe(entitlements, width="stretch", hide_index=True)
+                        else:
+                            st.info("No dividend entitlement events in this evaluated period.")
+                        if payments is None:
+                            st.warning("Payment records were not recorded.")
+                        elif payments:
+                            st.dataframe(payments, width="stretch", hide_index=True)
+                        else:
+                            st.info("No dividend cash payments in this evaluated period; inspect outstanding claims separately.")
+                    st.json(dividend_evidence, expanded=False)
             else:
                 risk_views(item)
                 st.warning("Cost stress is a separate experiment. Factor causality, capacity certification and executable opening liquidity remain unverified.")

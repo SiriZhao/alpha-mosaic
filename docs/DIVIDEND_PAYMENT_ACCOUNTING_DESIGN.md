@@ -1,5 +1,7 @@
 # Ordinary cash dividends: entitlement, receivable and payment design
 
+Later implementation addendum: ordinary payment accounting is now implemented and independently tested within the explicit initial boundary; see DIVIDEND_PAYMENT_ACCEPTANCE_20261025.md for source identity,346-test verification and remaining limitations. The original design/status below is retained as its pre-implementation specification, not a current completion claim.
+
 Status: **design reviewed, not implemented**. Consulted on 2026-10-25 (Asia/Shanghai).
 Code inspected: main integration `d0f12488c6788bbcfbf083a79adffacc8a4639db`.
 This document does not change the engine, migrate data, or certify payment-date accounting.

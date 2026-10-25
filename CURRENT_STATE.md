@@ -1,6 +1,14 @@
 # Current state (2026-10-25)
 
-## Latest risk terminal continuation
+## Latest ordinary-dividend payment checkpoint
+
+Machine evidence is retained in `docs/evidence/dividend-payment-20261025/acceptance.json`: final source346-test regression, matching built/installed Python bytes, a fresh base-wheel four-case/four-trial payment workflow and31-tool MCP,13 source-hash-qualified browser captures, plus original failing counterexamples. Model/missing/mixed action and feature values, empty source identities and uncertified strict signals are refused; a PIT flag alone is not observation authority. Hosted CI for the forthcoming publication remains a separate gate.
+
+Source `0c934375a1f29c85cdd4740bafec9015916bc0a43aaf3c5178e77fb34cbdffb2` passed346 tests with RuntimeWarning treated as error, Ruff and Pyright. Ordinary USD cash dividends now accrue non-spendable ex-date claims and settle at the declared conservative post-pay-date open. Independent FIFO/cash/claim/NAV reconstruction, source-term rejection, daily/weekly/model comparison gates, immutable legacy reading, schema3 exports and readable terminal/report evidence are implemented within the explicit model. Four FIXTURE cases, four isolated plan trials, the expected blocked RAW-weekly control and13 actual browser views are retained. See docs/DIVIDEND_PAYMENT_ACCEPTANCE_20261025.md for exact evidence and limitations. Current clean-wheel/hosted publication gates must be read from their actual final records; old green CI does not certify new code.
+
+The full objective remains ACTIVE. Strict real-data qualification, cash-in-lieu, action-aware RAW weekly adjustment, advanced portfolio/statistical/report/recovery/model work remain incomplete. No broker, paid model or validated market alpha is introduced. Earlier sections below are historical checkpoints.
+
+## Earlier risk terminal continuation
 
 Publication: implementation02133ef pushed and remote SHA matched; [hosted CI40159458375](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40159458375) passed all quality steps, including271 Linux tests, clean wheel, dependency audit and secret scan. Clean committed realistic/stress reruns matched all replay/accounting/analysis records with Git dirty false. Draft PR #4 remains stacked on unmerged #3. The later evidence-only commit has its own CI run; no old run is silently reused.
 

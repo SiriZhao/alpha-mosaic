@@ -1,0 +1,2 @@
+payment_id,entitlement_id,action_reference,symbol,at,amount
+dividend-payment-000000,dividend-entitlement-000000,0:SPY:DIVIDEND:2016-02-02,SPY,2016-02-18T14:30:00Z,968.0

@@ -1,6 +1,6 @@
 # AlphaMosaic
 
-Latest continuation: Risk Lab displays recorded rolling risk, cash/concentration, costs and independently reconciled contributions; compatible experiments can overlay equity/underwater curves with complete simulation assumptions and exportable chart provenance.271 tests passed locally; see [risk terminal verification](docs/TERMINAL_RISK_ACCEPTANCE_20261025.md). Full Renaissance scope and strict real-data acceptance remain incomplete.
+Latest continuation: ordinary cash dividends earn non-spendable ex-date claims and settle under an explicit post-pay-date simulation policy, with independent FIFO/cash/claim/NAV reconciliation, immutable legacy reading and model comparison gates. Reports and terminal show cash, unpaid claims and market exposure separately.346 tests passed locally; see [payment-accounting verification](docs/DIVIDEND_PAYMENT_ACCEPTANCE_20261025.md). Risk/comparison viewing and frozen offline plans remain available. Full Renaissance scope and strict real-data acceptance remain incomplete.
 
 ## Renaissance research milestone
 

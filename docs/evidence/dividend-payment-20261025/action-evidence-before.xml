@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="3" time="5.099" timestamp="2026-10-25T21:35:31.578787+08:00" hostname="YOGA"><testcase classname="tests.test_dividend_contract_boundaries" name="test_inference_or_missing_action_evidence_cannot_create_dividend_income[MODEL_INFERENCE]" time="0.335"><failure message="Failed: DID NOT RAISE ValueError">quality = &lt;DataQuality.MODEL_INFERENCE: 'MODEL_INFERENCE'&gt;
+
+    @pytest.mark.parametrize("quality", [DataQuality.MODEL_INFERENCE, DataQuality.MISSING])
+    def test_inference_or_missing_action_evidence_cannot_create_dividend_income(quality: DataQuality) -&gt; None:
+&gt;       with pytest.raises(ValueError, match="corporate action evidence"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_dividend_contract_boundaries.py:78: Failed</failure></testcase><testcase classname="tests.test_dividend_contract_boundaries" name="test_inference_or_missing_action_evidence_cannot_create_dividend_income[MISSING]" time="0.004"><failure message="Failed: DID NOT RAISE ValueError">quality = &lt;DataQuality.MISSING: 'MISSING'&gt;
+
+    @pytest.mark.parametrize("quality", [DataQuality.MODEL_INFERENCE, DataQuality.MISSING])
+    def test_inference_or_missing_action_evidence_cannot_create_dividend_income(quality: DataQuality) -&gt; None:
+&gt;       with pytest.raises(ValueError, match="corporate action evidence"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_dividend_contract_boundaries.py:78: Failed</failure></testcase><testcase classname="tests.test_dividend_contract_boundaries" name="test_observed_action_evidence_cannot_be_mixed_into_synthetic_prices" time="0.004"><failure message="Failed: DID NOT RAISE ValueError">def test_observed_action_evidence_cannot_be_mixed_into_synthetic_prices() -&gt; None:
+&gt;       with pytest.raises(ValueError, match="fixture and observed corporate"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_dividend_contract_boundaries.py:83: Failed</failure></testcase></testsuite></testsuites>

@@ -97,6 +97,10 @@ class BaselineStrategy:
                     and s.metric == required
                     and s.known_at <= at <= s.valid_until
                     and s.pit_verified
+                    and s.data_quality in {"FIXTURE", "REAL", "HISTORICAL", "DELAYED"}
+                    and ((s.data_quality == "FIXTURE") == all(bar.data_quality == "FIXTURE" for bar in bars))
+                    and bool(s.source.strip())
+                    and bool(s.evidence_id.strip())
                 ]
                 if not eligible:
                     continue

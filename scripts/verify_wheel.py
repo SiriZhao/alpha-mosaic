@@ -30,11 +30,17 @@ def verify() -> dict:
         raise AssertionError("research boundary failed")
     if result["reproducibility"]["git_sha"] != "NOT_AVAILABLE" or result["reproducibility"]["source_kind"] != "INSTALLED_PACKAGE":
         raise AssertionError("installed wheel borrowed an unrelated parent-checkout Git identity")
+    if result["config"]["replay"].get("dividend_accounting") != "PAY_DATE_RECEIVABLE":
+        raise AssertionError("new base-wheel experiment did not record payment accounting")
     plan = service.plan_research({"dataset_id": manifest["dataset_id"], "question": "Does the frozen passive baseline reconcile in the base-wheel offline workflow?", "strategies": ["buy_and_hold"], "cost_scenarios": ["realistic"]})
     state = service.run_research_plan(plan["plan_id"])
     if state["status"] != "COMPLETED" or service.research_plan_report(plan["plan_id"])["trials_attempted"] != 1:
         raise AssertionError("base-wheel bounded plan workflow failed")
-    return {"status": "PASSED", "package_path": str(package), "python": sys.version.split()[0], "optional": optional, "experiment_id": result["experiment_id"], "plan_id": plan["plan_id"], "plan_status": state["status"], "fifo_reconciliation": result["analysis"]["trade_analysis"]["reconciliation"]["status"], "weekly_analysis": result["analysis"]["weekly"]["status"], "acceptance": result["acceptance"], "broker_enabled": False}
+    from run_dividend_cases import run
+    dividends = run(Path("wheel-dividend-research"))
+    if dividends["status"] != "PASSED":
+        raise AssertionError("base-wheel payment accounting cases failed")
+    return {"status": "PASSED", "package_path": str(package), "python": sys.version.split()[0], "optional": optional, "experiment_id": result["experiment_id"], "plan_id": plan["plan_id"], "plan_status": state["status"], "fifo_reconciliation": result["analysis"]["trade_analysis"]["reconciliation"]["status"], "weekly_analysis": result["analysis"]["weekly"]["status"], "dividend_cases": len(dividends["cases"]), "dividend_plan": dividends["frozen_plan"], "unsupported_weekly_action_status": dividends["weekly_action_boundary"]["status"], "acceptance": result["acceptance"], "broker_enabled": False}
 
 
 if __name__ == "__main__":

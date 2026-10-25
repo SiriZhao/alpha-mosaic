@@ -77,12 +77,13 @@ def validate_dataset(data: ReplayDataset) -> list[str]:
             ):
                 raise ValueError("historical bar is not certified PIT")
             qualities.add(bar.data_quality)
-    if qualities - {
+    observation_qualities = {
         DataQuality.FIXTURE,
         DataQuality.HISTORICAL,
         DataQuality.REAL,
         DataQuality.DELAYED,
-    }:
+    }
+    if qualities - observation_qualities:
         raise ValueError("model/missing observations cannot be replay prices")
     if DataQuality.FIXTURE in qualities and len(qualities) != 1:
         raise ValueError("fixture and real data cannot be mixed")
@@ -108,7 +109,18 @@ def validate_dataset(data: ReplayDataset) -> list[str]:
         DataQuality.FIXTURE
     }:
         raise ValueError("fixture signals cannot augment real history")
+    for signal in data.signals:
+        if signal.data_quality not in {quality.value for quality in observation_qualities}:
+            raise ValueError("signal evidence must be observed or explicitly FIXTURE, never inference/missing/unknown")
+        if not signal.source.strip() or not signal.evidence_id.strip():
+            raise ValueError("signal source and evidence identity are required")
+        if qualities == {DataQuality.FIXTURE} and signal.data_quality != "FIXTURE":
+            raise ValueError("fixture and observed signal evidence cannot be mixed")
+        if data.mode == "STRICT_PIT" and not signal.pit_verified:
+            raise ValueError("signal availability is not certified PIT")
     for action in data.actions:
+        if action.data_quality not in observation_qualities:
+            raise ValueError("corporate action evidence must be observed or explicitly FIXTURE, never inference/missing")
         if action.symbol not in data.bars or action.known_at > data.cutoff:
             raise ValueError("corporate action identity or cutoff mismatch")
         if action.action not in {"SPLIT", "DIVIDEND"}:
@@ -117,6 +129,8 @@ def validate_dataset(data: ReplayDataset) -> list[str]:
             raise ValueError("action currency or session mismatch")
         if action.data_quality == DataQuality.FIXTURE and qualities != {DataQuality.FIXTURE}:
             raise ValueError("fixture actions cannot augment real history")
+        if qualities == {DataQuality.FIXTURE} and action.data_quality != DataQuality.FIXTURE:
+            raise ValueError("fixture and observed corporate action evidence cannot be mixed")
         if action.action == "SPLIT" and action.ratio is None:
             raise ValueError("split ratio missing")
         if action.action == "DIVIDEND" and action.cash_amount is None:
@@ -231,6 +245,8 @@ class PaperReplayEngine:
             flags.append("REVISED_BARS_NOT_KNOWN_AT_HISTORICAL_DECISION_UNTRUSTED")
         if any(a.action == "DIVIDEND" for a in data.actions):
             if config.dividend_accounting == "LEGACY_EX_DATE_CASH":
+                if data.mode == "STRICT_PIT" and any(bar.data_quality != DataQuality.FIXTURE for rows in data.bars.values() for bar in rows):
+                    raise ValueError("legacy dividend cash model cannot enter strict real replay; use sourced payment accounting or explicit reconstructed diagnostics")
                 flags.append("DIVIDEND_CASH_CREDITED_AT_EFFECTIVE_OPEN_PAYMENT_LAG_NOT_MODELED")
                 flags.append("LEGACY_DIVIDEND_MODEL_NOT_PAYMENT_ACCOUNTING_QUALIFIED")
             else:

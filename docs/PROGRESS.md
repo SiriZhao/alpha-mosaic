@@ -1,5 +1,13 @@
 # Recoverable progress
 
+## Ordinary-dividend payment continuation — 2026-10-25
+
+Final evidence bundle now includes actual346-test source qualification, fresh base-wheel payment/worker/MCP acceptance, matching package bytes and13 viewer-source-hash-qualified browser captures. Six action-evidence and ten signal-evidence/source counterexamples are retained alongside repaired tests; observed-FIXTURE positive controls still execute. Numeric fixtures, failures and review policies remain explicit. No provider outage became fixture market evidence, and no old artifact was overwritten.
+
+Prior goal turn classification: PROGRESS. Full goal remains ACTIVE. Independent design bd41c20 led to separate implementation/QA worktrees; after both agents hit usage limits, parent preserved their changes, committed recovered core1633847 and integrated22c7617. Presentation preparation96d18e3 had273 passing baseline tests. Independent first snapshot passed37/38 and exposed a false benchmark compatibility claim; parent reproduced daily and weekly failures, repaired a shared accounting signature, and reproduced/refused legacy dividends entering strict real replay.
+
+Latest frozen source0c934375a1f29c85cdd4740bafec9015916bc0a43aaf3c5178e77fb34cbdffb2 passed346 full tests, Ruff/Pyright and focused service/UI/financial checks. Cases cover ex/pay/sale/rebuy/multiple lots/partial exits/forward-reverse-fractional splits/multiple payments/duplicate IDs/late terms/zero-overflow/temporal perturbation and immutable schema2 reading. Four reproducible FIXTURE cases and four frozen worker trials completed; unsupported RAW action weekly research remains an expected retained FAILED control. Default quality rejection of the generated split was preserved, then an explicit fixture-only split review was recorded. See DIVIDEND_PAYMENT_ACCEPTANCE_20261025.md for all limits, failed attempts and final wheel/browser/publication gates. No full-project completion or real-market performance claim is made.
+
 ## Risk terminal follow-up — 2026-10-25
 
 Published implementation02133ef with remote equality; hosted CI40159458375 passed every quality gate and271 Linux tests. Clean committed realistic/stress experiments exactly matched prior accounting/analytics; all recorded Git dirty false. The newest source remains7ca17f91dbee927d7c9c788879ccfe6f1e878338954dc618b1f867393ffc9c15. Evidence-only commits do not change that source identity. Next P0 implementation is the independently reviewed dividend receivable/payment contract; qualified real data and all other documented full-scope requirements remain unfinished.

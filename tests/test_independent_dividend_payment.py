@@ -123,12 +123,13 @@ def claim(point_or_event) -> float:
     return math.fsum(point_or_event.receivables.values())
 
 
-def independently_reconstruct(result: ReplayResult) -> None:
+def independently_reconstruct(result: ReplayResult, expected_source_ids: set[str] | None = None) -> None:
     """Rebuild balances only from public fills/accruals/payments and fixed identities."""
     cash = result.config.initial_cash
     outstanding: dict[str, float] = {}
     earned = paid = 0.0
     entitlements = {e.entitlement_id: e for e in result.dividend_entitlements}
+    allowed_sources = expected_source_ids if expected_source_ids is not None else {"ordinary-AAA-20240104-v1"}
     assert len(entitlements) == len(result.dividend_entitlements)
     payment_ids = {p.payment_id for p in result.dividend_payments}
     assert len(payment_ids) == len(result.dividend_payments)
@@ -136,7 +137,7 @@ def independently_reconstruct(result: ReplayResult) -> None:
         for entitlement in result.dividend_entitlements:
             if entitlement.ex_date == p.session:
                 assert entitlement.amount == pytest.approx(entitlement.entitled_quantity * entitlement.cash_per_share)
-                assert entitlement.source_action_id == "ordinary-AAA-20240104-v1"
+                assert entitlement.source_action_id in allowed_sources
                 if entitlement.amount:
                     outstanding[entitlement.entitlement_id] = entitlement.amount
                 earned += entitlement.amount
@@ -215,7 +216,7 @@ def test_replacement_lot_does_not_inherit_old_dividend_right_or_income() -> None
     independently_reconstruct(result)
 
 
-@pytest.mark.parametrize("ratio,quantity,price", [(2.0, 20.0, 49.5), (.5, 5.0, 198.0)])
+@pytest.mark.parametrize("ratio,quantity,price", [(2.0, 20.0, 49.5), (.5, 5.0, 198.0), (.25, 2.5, 396.0)])
 def test_intervening_split_changes_shares_but_not_fixed_dollar_claim(ratio: float, quantity: float, price: float) -> None:
     result = replay(fixture_data(split_ratio=ratio))
     split = point(result, date(2024, 1, 5))
@@ -426,3 +427,55 @@ def test_dividend_benchmark_uses_matching_entitlement_and_cash_availability_sema
     assert incompatible["benchmark_status"].startswith("BLOCKED")
     assert incompatible["metrics"]["beta"] is None
     assert incompatible["metrics"]["information_ratio"] is None
+
+
+def test_two_pre_ex_entry_lots_allocate_earned_income_through_a_partial_fifo_exit() -> None:
+    source_id = "ordinary-AAA-two-entry-lots-v1"
+    data = fixture_data(dividend_changes={"effective_date": date(2024, 1, 8),
+        "payment_date": date(2024, 1, 10), "source_action_id": source_id})
+    result = replay(data, {date(2024, 1, 2): {"AAA": .5}, date(2024, 1, 3): {"AAA": 1}, date(2024, 1, 8): {"AAA": .25}})
+    assert [(fill.session, fill.quantity) for fill in result.fills] == [
+        (ENTRY, 5), (EX, 5), (date(2024, 1, 9), -8)]
+    before_payment = point(result, date(2024, 1, 9))
+    assert (before_payment.cash, claim(before_payment), before_payment.market_values["AAA"], before_payment.nav) == pytest.approx((797, 10, 198, 1005))
+    trades = analyze_trades(result, data)
+    assert trades["status"] == "VERIFIED"
+    assert [lot["dividend_income_usd"] for lot in trades["closed_lots"]] == [5, 3]
+    assert trades["open_lots"][0]["dividend_income_usd"] == 2
+    assert (result.equity[-1].cash, result.equity[-1].nav) == pytest.approx((807, 1005))
+    assert sum(row["total_pnl_usd"] for row in trades["asset_attribution"]) == pytest.approx(5)
+    independently_reconstruct(result, {source_id})
+
+
+def test_two_distinct_entitlements_settle_at_the_same_open_once_each() -> None:
+    data = fixture_data(split_ratio=2)
+    second_id = "ordinary-AAA-second-distribution-v1"
+    second = data.actions[0].model_copy(update={"effective_date": date(2024, 1, 8),
+        "cash_amount": .5, "source_action_id": second_id})
+    data = data.model_copy(update={"actions": [*data.actions, second]})
+    result = replay(data)
+    assert [item.amount for item in result.dividend_entitlements] == [10, 10]
+    assert len(result.dividend_payments) == 2
+    assert {item.at.date() for item in result.dividend_payments} == {AVAILABLE}
+    assert (point(result, AVAILABLE).cash, claim(point(result, AVAILABLE)), result.equity[-1].nav) == pytest.approx((20, 0, 1010))
+    assert analyze_trades(result, data)["status"] == "VERIFIED"
+    independently_reconstruct(result, {"ordinary-AAA-20240104-v1", second_id})
+
+
+def test_duplicate_source_identity_is_rejected_before_double_accrual() -> None:
+    data = fixture_data()
+    duplicate = data.actions[0].model_copy(update={"effective_date": date(2024, 1, 8)})
+    with pytest.raises(ValueError, match="duplicate dividend source"):
+        replay(data.model_copy(update={"actions": [*data.actions, duplicate]}))
+
+
+def test_future_prices_cannot_change_prior_dividend_rights_or_paid_cash_events() -> None:
+    data = fixture_data()
+    first = replay(data)
+    future = data.model_copy(update={"bars": {symbol: [bar.model_copy(update={key: getattr(bar, key) * 1.3 for key in ("open", "high", "low", "close")})
+        if bar.session > date(2024, 1, 10) else bar for bar in bars] for symbol, bars in data.bars.items()}})
+    changed = replay(future)
+    assert first.dividend_entitlements == changed.dividend_entitlements
+    assert first.dividend_payments == changed.dividend_payments
+    assert [row for row in first.equity if row.session <= AVAILABLE] == [row for row in changed.equity if row.session <= AVAILABLE]
+    assert [row for row in first.events if row.at.date() <= AVAILABLE] == [row for row in changed.events if row.at.date() <= AVAILABLE]

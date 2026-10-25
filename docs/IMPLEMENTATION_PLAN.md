@@ -8,7 +8,7 @@ Goal: preserve existing work, isolate research from trading, version validated d
 
 ## P1 — costs, baselines, analytics and experiments
 
-Goal: reproducible fixed experiments with all successes and failures retained. Dependencies: P0. Acceptance: explicit fee/slippage/spread/delay/volume/lot/cash caps; human-checkable annual metrics; same-config result equality; artifact integrity and incomplete/failed status. FIFO matched-lot statistics and additive asset accounting are implemented and independently reconciled. Next: payment-date dividends, cash-in-lieu and broader independently sourced golden datasets. Full covariance optimization remains Planned.
+Goal: reproducible fixed experiments with all successes and failures retained. Dependencies: P0. Acceptance: explicit fee/slippage/spread/delay/volume/lot/cash caps; human-checkable annual metrics; same-config result equality; artifact integrity and incomplete/failed status. FIFO/asset accounting and ordinary dividend entitlement/receivable/payment are implemented with independent reconstruction, immutable legacy semantics and cross-model comparison gates. Next: cash-in-lieu/special/delisting economics, causal RAW weekly action adjustment and broader independently sourced golden data. Full covariance optimization remains Planned.
 
 ## P2 — validation, reports and terminal
 

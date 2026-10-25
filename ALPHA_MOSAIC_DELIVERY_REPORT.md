@@ -1,5 +1,15 @@
 # AlphaMosaic Renaissance — engineering delivery
 
+## Latest ordinary-dividend payment checkpoint — 2026-10-25
+
+Read [machine acceptance](docs/evidence/dividend-payment-20261025/acceptance.json), [unpaid FIXTURE sample](docs/evidence/dividend-payment-20261025/sample-fixture-unpaid-report.md) and the retained failing/passing JUnit records. A fresh base wheel with optional providers/UI absent completed the payment cases, isolated plan and31-tool MCP. Browser verification records the viewer source hash and actual selected IDs. Action/feature evidence-class and identity gaps were independently reproduced and closed alongside the accounting work; real provider/PIT certification remains missing.
+
+![Cash and unpaid dividend rights](docs/evidence/dividend-payment-20261025/12-dividend-accounting.png)
+
+Ordinary cash rights now accrue at sourced ex-open as non-spendable receivables and become cash at the declared conservative open after the sourced payment date. Sale/re-entry, partial FIFO exits and intervening splits preserve the original right. Schema3 exports, model-aware benchmark/comparison gates and readable cash/claim/report views are implemented. Legacy artifacts remain immutable and legacy dividends cannot qualify strict real replay. Full local regression:346 passed; source0c934375a1f29c85cdd4740bafec9015916bc0a43aaf3c5178e77fb34cbdffb2. Read [payment acceptance](docs/DIVIDEND_PAYMENT_ACCEPTANCE_20261025.md) for measured evidence, retained failures and actual final wheel/CI scope. Independent snapshots/worktrees survived sub-agent usage limits; parent completed their integration without purchasing resources.
+
+Full platform acceptance remains incomplete. Real licensed PIT/actions/universe/delisting data, cash-in-lieu/special economics, action-aware RAW weekly adjustment, advanced portfolio/statistical/report/recovery/model requirements remain. The older CI links and payment-design-only statements below are historical checkpoints, not the current implementation status. No real-market return, validated alpha or brokerage route is claimed.
+
 ## Latest risk terminal follow-up — 2026-10-25
 
 Implementation02133ef is pushed with matching remote SHA. [CI40159458375](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40159458375) passed every quality gate and271 Linux tests; [draft PR #4](https://github.com/SiriZhao/alpha-mosaic/pull/4) remains unmerged and stacked on #3. Clean-commit realistic/stress replay and analysis exactly matched precommit records. [Publication evidence](docs/evidence/risk-terminal-20261025/hosted-ci.json) names the tested implementation; subsequent evidence-only commits have separate CI runs.

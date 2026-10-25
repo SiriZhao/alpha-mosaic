@@ -1,5 +1,7 @@
 # Return and risk conventions
 
+Under payment accounting schema2, stock market exposure uses marked stock value/NAV; unpaid dividend claims are a separate receivable_weight, alongside cash_weight and market_weight. HHI includes squared stock/ETF weights in total NAV, excluding cash and claims. Missing/inconsistent marks or claims prevent qualified concentration rather than inventing values. FIFO economic P&L includes earned dividends, including unpaid amounts; paid and outstanding dollar amounts and entitlement allocations are disclosed separately. It is not cash-realized or tax-lot profit. Legacy/payment accounting mismatch blocks daily/weekly benchmark statistics and pooled experiment comparisons. See docs/DIVIDEND_PAYMENT_ACCEPTANCE_20261025.md.
+
 Risk Lab presents persisted daily rolling statistics, cash/NAV, NAV-weighted HHI, drawdown episodes and reconciled asset/cost records. Each new exposure grid includes every equity session: known flat positions reconcile to HHI0/cash weight1, while incomplete or inconsistent marks leave concentration null. Legacy records are aligned only for display, with missing values retained. Risk-free/annualization/window assumptions and chart provenance remain explicit; full simulation configurations distinguish preset changes from a fee-only counterfactual. See docs/TERMINAL_RISK_ACCEPTANCE_20261025.md.
 
 ## Qualified execution analysis

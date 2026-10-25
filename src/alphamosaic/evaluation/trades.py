@@ -81,6 +81,11 @@ def _analyze(result: ReplayResult, dataset: ReplayDataset | None) -> dict[str, A
         qualities = {bar.data_quality for rows in dataset.bars.values() for bar in rows}
         if not qualities <= {DataQuality.FIXTURE, DataQuality.REAL, DataQuality.HISTORICAL, DataQuality.DELAYED}:
             raise ValueError("observed market or explicit fixture price evidence required")
+        for action in dataset.actions:
+            if action.data_quality not in {DataQuality.FIXTURE, DataQuality.REAL, DataQuality.HISTORICAL, DataQuality.DELAYED}:
+                raise ValueError("corporate action evidence cannot be inference or missing")
+            if (action.data_quality == DataQuality.FIXTURE) != (qualities == {DataQuality.FIXTURE}):
+                raise ValueError("fixture and observed corporate action evidence cannot be mixed")
         expected_class = "FIXTURE" if qualities == {DataQuality.FIXTURE} else "REAL_PIT" if dataset.mode == "STRICT_PIT" else "REAL_RECONSTRUCTED"
         if DataQuality.FIXTURE in qualities and qualities != {DataQuality.FIXTURE} or result.acceptance != expected_class:
             raise ValueError("dataset and result evidence class mismatch")

@@ -1,5 +1,13 @@
 # Reproduce the local research prototype
 
+Ordinary-dividend/split/cost/unpaid-cutoff cases and four frozen daily worker trials:
+
+```powershell
+uv run python scripts/run_dividend_cases.py --home runtime/dividend-research
+```
+
+The generated suite retains every case, an explicitly legacy diagnostic, model-comparison gates and an expected FAILED action-aware RAW weekly control. This generator's known synthetic split is accepted only with preserved review provenance; no real provider data exception is introduced. New experiments use explicit payment-accounting schema2; old saved configurations without accounting fields retain schema1 legacy behavior. Inspect Dividend accounting and cash/market/claim weights in the terminal. See docs/DIVIDEND_PAYMENT_ACCEPTANCE_20261025.md for model boundaries and actual verification.
+
 Continuation examples include actual calendar-week rules, FIFO accounting reconciliation and a frozen6-trial supervised workflow:
 
 ```powershell

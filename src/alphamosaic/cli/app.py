@@ -68,6 +68,22 @@ def research_plans() -> None:
     output(ApplicationService().research_plans())
 
 
+@app.command("reconcile-research-plan")
+def reconcile_research_plan(plan_id: str) -> None:
+    """Inspect and close interrupted saved attempts; never execute or retry trials."""
+    service = ApplicationService()
+    try:
+        state = service.reconcile_research_plan(plan_id)
+    except (ValueError, OSError) as exc:
+        output({"status": "RECONCILIATION_BLOCKED", "reason": str(exc)})
+        raise typer.Exit(1) from exc
+    try:
+        output(service.research_plan_report(plan_id))
+    except (ValueError, OSError) as exc:
+        output({**state, "report_status": "BLOCKED", "report_error": str(exc)})
+        raise typer.Exit(1) from exc
+
+
 @app.command()
 def providers() -> None:
     """Installed provider capabilities and availability boundaries."""

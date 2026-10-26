@@ -24,6 +24,10 @@ _RESPONSE_LIMIT = 65536
 _CLASSIFICATIONS = {"RECORDED_OUTCOME_PRESERVED", "RECOVERED_COMPLETED_ARTIFACT", "INTERRUPTED_UNRESOLVED"}
 
 
+def _hex_identity(value: Any, length: int) -> bool:
+    return isinstance(value, str) and len(value) == length and all(c in "0123456789abcdef" for c in value)
+
+
 def _response(path: Path) -> dict[str, Any]:
     """Snapshot bounded immutable response bytes, without inferring a writer's exit."""
     try:
@@ -48,6 +52,18 @@ def _validate_snapshot(snapshot: dict[str, Any]) -> None:
         raise ValueError("unknown response snapshot state")
     elif snapshot["state"] == "ABSENT_OBSERVED" and snapshot.get("absence_is_final") is not False:
         raise ValueError("response absence cannot establish process exit")
+
+
+def _validate_recovered_response(snapshot: dict[str, Any], experiment_id: str, source_hash: str) -> None:
+    _validate_snapshot(snapshot)
+    if snapshot["state"] == "PRESENT":
+        actual = json.loads(bytes.fromhex(snapshot["content_hex"]))
+        expected = {"status": "COMPLETED", "experiment_id": experiment_id,
+                    "source_hash": source_hash, "error": None}
+        if actual != expected:
+            raise ValueError("response contradicts the uniquely sealed artifact")
+    elif snapshot["state"] != "ABSENT_OBSERVED":
+        raise ValueError("response evidence is unreadable or outside its bounded schema")
 
 
 def _candidates(home: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
@@ -136,14 +152,7 @@ def _inspect(workflow: ResearchWorkflow, plan: dict[str, Any], call: dict[str, A
             raise ValueError("candidate status, context, full configuration or data hash mismatch")
         if item.get("dataset_manifest", {}).get("manifest_hash") != plan["manifest_hash"] or item.get("reproducibility", {}).get("source_hash") != plan["source_hash"]:
             raise ValueError("candidate source or provenance differs from frozen plan")
-        if response["state"] == "PRESENT":
-            actual = json.loads(bytes.fromhex(response["content_hex"]))
-            expected_response = {"status": "COMPLETED", "experiment_id": item["experiment_id"],
-                "source_hash": plan["source_hash"], "error": None}
-            if actual != expected_response:
-                raise ValueError("response contradicts the uniquely sealed artifact")
-        elif response["state"] != "ABSENT_OBSERVED":
-            raise ValueError("response evidence is unreadable or outside its bounded schema")
+        _validate_recovered_response(response, item["experiment_id"], plan["source_hash"])
         evidence.update(classification="RECOVERED_COMPLETED_ARTIFACT",
             artifact_qualification="CHECKSUMS_AND_FROZEN_IDENTITY_VERIFIED_NOT_PROCESS_EXIT_PROOF",
             artifact=matches[0]["fingerprints"], dataset_hash=plan["dataset_hash"],
@@ -219,8 +228,10 @@ def validate_reconciliation(plan: dict[str, Any], original: list[dict[str, Any]]
     results = {e["payload"]["attempt_id"]: e["payload"] for e in original if e["kind"] == "TOOL_RESULT"}
     start = events[0]["payload"]
     reconciliation_id = start["reconciliation_id"]
-    if len(reconciliation_id) != 32 or any(c not in "0123456789abcdef" for c in reconciliation_id):
+    if not _hex_identity(reconciliation_id, 32):
         raise ValueError("invalid reconciliation identity")
+    if not _hex_identity(start.get("reviewer_source_hash"), 64):
+        raise ValueError("reviewer source fingerprint is required")
     if not original or any(e["kind"] == "RUN_FINISHED" for e in original) or start.get("original_event_count") != len(original) or start.get("original_head_hash") != original[-1]["content_hash"] or start.get("dispatch_disabled") is not True:
         raise ValueError("reconciliation fence differs from original audit")
     records: list[dict[str, Any]] = []
@@ -246,10 +257,11 @@ def validate_reconciliation(plan: dict[str, Any], original: list[dict[str, Any]]
                 fingerprints = [artifact.get(name, "") for name in ("experiment_sha256", "checksums_sha256", "config_sha256")]
                 experiment_id = artifact.get("experiment_id", "")
                 fingerprints.append(payload.get("request_sha256", ""))
-                if payload.get("source_hash") != plan["source_hash"] or payload.get("dataset_hash") != plan["dataset_hash"] or payload.get("manifest_hash") != plan["manifest_hash"] or len(experiment_id) != 32 or any(c not in "0123456789abcdef" for c in experiment_id) or any(len(value) != 64 or any(c not in "0123456789abcdef" for c in value) for value in fingerprints):
+                if payload.get("source_hash") != plan["source_hash"] or payload.get("dataset_hash") != plan["dataset_hash"] or payload.get("manifest_hash") != plan["manifest_hash"] or not _hex_identity(experiment_id, 32) or any(not _hex_identity(value, 64) for value in fingerprints):
                     raise ValueError("recovered artifact lacks frozen identity evidence")
                 if payload.get("artifact_qualification") != "CHECKSUMS_AND_FROZEN_IDENTITY_VERIFIED_NOT_PROCESS_EXIT_PROOF" or payload.get("candidate_issues") != [] or payload.get("candidate_ids") != [experiment_id]:
                     raise ValueError("recovered artifact qualification contradicts its candidate evidence")
+                _validate_recovered_response(payload["response_snapshot"], experiment_id, plan["source_hash"])
             _validate_snapshot(payload["response_snapshot"])
             if payload.get("response_snapshot_hash") != digest(canonical(payload["response_snapshot"])):
                 raise ValueError("reconciliation response snapshot hash mismatch")

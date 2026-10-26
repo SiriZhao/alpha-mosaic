@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="3" time="13.763" timestamp="2026-10-26T17:54:45.960934+08:00" hostname="YOGA"><testcase classname="tests.test_reconciliation_evidence_boundaries" name="test_recovered_artifact_cannot_have_a_contradictory_response_in_a_valid_hash_chain[failed_response]" time="8.284"><failure message="Failed: DID NOT RAISE ValueError">tmp_path = WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-reconciliation-proof-before-002/test_recovered_artifact_cannot0')
+contradiction = 'failed_response'
+
+    @pytest.mark.parametrize("contradiction", ["failed_response", "wrong_experiment"])
+    def test_recovered_artifact_cannot_have_a_contradictory_response_in_a_valid_hash_chain(tmp_path: Path, contradiction: str) -&gt; None:
+        _, workflow, plan, attempt, path, _, experiment_id = sealed(tmp_path)
+        events = workflow.store.events(plan["plan_id"])
+        identity = uuid4().hex
+        workflow.store.append(plan["plan_id"], "RECONCILIATION_STARTED", {
+            "reconciliation_id": identity, "original_event_count": len(events),
+            "original_head_hash": events[-1]["content_hash"], "dispatch_disabled": True,
+            "reviewer_source_hash": plan["source_hash"]})
+        raw = canonical({"status": "FAILED" if contradiction == "failed_response" else "COMPLETED",
+            "experiment_id": "f" * 32 if contradiction == "wrong_experiment" else experiment_id,
+            "source_hash": plan["source_hash"], "error": None})
+        snapshot = {"state": "PRESENT", "bytes": len(raw), "sha256": digest(raw), "content_hex": raw.hex()}
+        directory = tmp_path / "experiments" / experiment_id
+        record = {"reconciliation_id": identity, "attempt_id": attempt, "ordinal": 0,
+            "classification": "RECOVERED_COMPLETED_ARTIFACT", "recorded_outcome": None,
+            "exit_status": "NOT_OBSERVED", "response_snapshot": snapshot,
+            "response_snapshot_hash": digest(canonical(snapshot)),
+            "artifact_qualification": "CHECKSUMS_AND_FROZEN_IDENTITY_VERIFIED_NOT_PROCESS_EXIT_PROOF",
+            "candidate_issues": [], "candidate_ids": [experiment_id],
+            "request_sha256": digest(path.read_bytes()), "source_hash": plan["source_hash"],
+            "dataset_hash": plan["dataset_hash"], "manifest_hash": plan["manifest_hash"],
+            "artifact": {"experiment_id": experiment_id,
+                "experiment_sha256": digest((directory / "experiment.json").read_bytes()),
+                "config_sha256": digest((directory / "config.json").read_bytes()),
+                "checksums_sha256": digest((directory / "checksums.json").read_bytes())}}
+        workflow.store.append(plan["plan_id"], "RECOVERED_ATTEMPT", record)
+&gt;       with pytest.raises(ValueError, match="response.*contradicts|contradictory.*response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_reconciliation_evidence_boundaries.py:39: Failed</failure></testcase><testcase classname="tests.test_reconciliation_evidence_boundaries" name="test_recovered_artifact_cannot_have_a_contradictory_response_in_a_valid_hash_chain[wrong_experiment]" time="1.546"><failure message="Failed: DID NOT RAISE ValueError">tmp_path = WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-reconciliation-proof-before-002/test_recovered_artifact_cannot1')
+contradiction = 'wrong_experiment'
+
+    @pytest.mark.parametrize("contradiction", ["failed_response", "wrong_experiment"])
+    def test_recovered_artifact_cannot_have_a_contradictory_response_in_a_valid_hash_chain(tmp_path: Path, contradiction: str) -&gt; None:
+        _, workflow, plan, attempt, path, _, experiment_id = sealed(tmp_path)
+        events = workflow.store.events(plan["plan_id"])
+        identity = uuid4().hex
+        workflow.store.append(plan["plan_id"], "RECONCILIATION_STARTED", {
+            "reconciliation_id": identity, "original_event_count": len(events),
+            "original_head_hash": events[-1]["content_hash"], "dispatch_disabled": True,
+            "reviewer_source_hash": plan["source_hash"]})
+        raw = canonical({"status": "FAILED" if contradiction == "failed_response" else "COMPLETED",
+            "experiment_id": "f" * 32 if contradiction == "wrong_experiment" else experiment_id,
+            "source_hash": plan["source_hash"], "error": None})
+        snapshot = {"state": "PRESENT", "bytes": len(raw), "sha256": digest(raw), "content_hex": raw.hex()}
+        directory = tmp_path / "experiments" / experiment_id
+        record = {"reconciliation_id": identity, "attempt_id": attempt, "ordinal": 0,
+            "classification": "RECOVERED_COMPLETED_ARTIFACT", "recorded_outcome": None,
+            "exit_status": "NOT_OBSERVED", "response_snapshot": snapshot,
+            "response_snapshot_hash": digest(canonical(snapshot)),
+            "artifact_qualification": "CHECKSUMS_AND_FROZEN_IDENTITY_VERIFIED_NOT_PROCESS_EXIT_PROOF",
+            "candidate_issues": [], "candidate_ids": [experiment_id],
+            "request_sha256": digest(path.read_bytes()), "source_hash": plan["source_hash"],
+            "dataset_hash": plan["dataset_hash"], "manifest_hash": plan["manifest_hash"],
+            "artifact": {"experiment_id": experiment_id,
+                "experiment_sha256": digest((directory / "experiment.json").read_bytes()),
+                "config_sha256": digest((directory / "config.json").read_bytes()),
+                "checksums_sha256": digest((directory / "checksums.json").read_bytes())}}
+        workflow.store.append(plan["plan_id"], "RECOVERED_ATTEMPT", record)
+&gt;       with pytest.raises(ValueError, match="response.*contradicts|contradictory.*response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_reconciliation_evidence_boundaries.py:39: Failed</failure></testcase><testcase classname="tests.test_reconciliation_evidence_boundaries" name="test_reconciliation_fence_requires_a_named_source_fingerprint" time="0.129"><failure message="Failed: DID NOT RAISE ValueError">tmp_path = WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-reconciliation-proof-before-002/test_reconciliation_fence_requ0')
+
+    def test_reconciliation_fence_requires_a_named_source_fingerprint(tmp_path: Path) -&gt; None:
+        _, workflow, plan, _, _, _ = interrupted(tmp_path)
+        events = workflow.store.events(plan["plan_id"])
+        workflow.store.append(plan["plan_id"], "RECONCILIATION_STARTED", {
+            "reconciliation_id": uuid4().hex, "original_event_count": len(events),
+            "original_head_hash": events[-1]["content_hash"], "dispatch_disabled": True,
+            "reviewer_source_hash": "MISSING"})
+&gt;       with pytest.raises(ValueError, match="reviewer.*source|source.*fingerprint"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_reconciliation_evidence_boundaries.py:50: Failed</failure></testcase></testsuite></testsuites>

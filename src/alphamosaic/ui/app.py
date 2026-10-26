@@ -191,24 +191,55 @@ elif page == "AI Research":
         state = service.research_plan(plan_id)
         st.write("Status: " + state["status"])
         st.json(state["plan"], expanded=False)
-        if state["status"] == "FROZEN" and st.button("Execute frozen local plan", type="primary"):
-            if "plan_job" in st.session_state and not st.session_state.plan_job.done():
-                st.warning("A plan is already running.")
-            else:
-                st.session_state.plan_job = executor.submit(service.run_research_plan, plan_id)
+        plan_busy = "plan_job" in st.session_state and not st.session_state.plan_job.done()
+        if state["status"] == "FROZEN" and st.button("Execute frozen local plan", type="primary", disabled=plan_busy):
+            st.session_state.plan_job = executor.submit(service.run_research_plan, plan_id)
+            st.session_state.plan_job_plan_id = plan_id
+            st.session_state.plan_job_label = "Executing frozen research trials"
+        if state["status"] in {"INCOMPLETE_OR_RUNNING", "RECONCILIATION_IN_PROGRESS", "INTERRUPTED"}:
+            st.caption("Saved state does not prove a process is running. Reconciliation inspects existing work and closes interrupted attempts without rerunning trials; active execution blocks it.")
+            label = "Inspect late response evidence" if state["status"] == "INTERRUPTED" else "Reconcile saved attempts (no rerun)"
+            if st.button(label, disabled=plan_busy):
+                st.session_state.plan_job = executor.submit(service.reconcile_research_plan, plan_id)
+                st.session_state.plan_job_plan_id = plan_id
+                st.session_state.plan_job_label = "Reconciling saved evidence; no trials run"
         if "plan_job" in st.session_state:
+            st.caption("Job plan: " + st.session_state.get("plan_job_plan_id", "previous selection"))
             if st.session_state.plan_job.done():
                 try:
                     st.write(st.session_state.plan_job.result()["status"])
                 except Exception as exc:
                     st.error(str(exc))
             else:
-                st.status("Bounded research workers are running; deadlines and every outcome are audited.")
+                st.status(st.session_state.get("plan_job_label", "Research job pending"))
                 st.button("Refresh plan")
-        report = service.research_plan_report(plan_id)
-        st.json(report, expanded=False)
-        st.dataframe(state["events"], width="stretch")
-        st.download_button("Download plan evidence", data=json.dumps(report, indent=2), file_name="research-plan.json", mime="application/json")
+        try:
+            report = service.research_plan_report(plan_id)
+        except (ValueError, OSError) as exc:
+            st.error("Computed plan report unavailable; saved audit remains available: " + str(exc))
+            report = None
+        if report is not None and report.get("reconciliation"):
+            st.subheader("Interrupted-run evidence")
+            st.caption("Recovered artifacts remain separate from original tool outcomes. A saved complete artifact does not prove the original process exited successfully.")
+            summary = next((event["payload"] for event in report["reconciliation"] if event["kind"] == "RECONCILIATION_FINISHED"), None)
+            if summary is not None:
+                for column, title, value in zip(st.columns(4),
+                    ["Recorded outcomes", "Recovered artifacts", "Unresolved attempts", "Trials not started"],
+                    [summary["recorded_outcomes"], summary["recovered_completed_artifacts"], summary["unresolved_attempts"], len(summary["unattempted_ordinals"])], strict=True):
+                    column.metric(title, value)
+            records = [event["payload"] for event in report["reconciliation"] if event["kind"] == "RECOVERED_ATTEMPT"]
+            if records:
+                st.dataframe([{"Trial": record["ordinal"] + 1,
+                    "Evidence": {"RECORDED_OUTCOME_PRESERVED": "Original outcome retained", "RECOVERED_COMPLETED_ARTIFACT": "Matched complete artifact", "INTERRUPTED_UNRESOLVED": "Unresolved attempt"}[record["classification"]],
+                    "Original outcome": (record.get("recorded_outcome") or {}).get("status", "Not recorded"),
+                    "Artifact": (record.get("artifact") or {}).get("experiment_id"),
+                    "Process exit": "Not observed" if record["exit_status"] == "NOT_OBSERVED" else "Not reevaluated",
+                    "Uncertainty": record.get("unresolved_reason", {}).get("reason")} for record in records], width="stretch")
+        if report is not None:
+            st.json(report, expanded=False)
+        with st.expander("Audit events", expanded=False):
+            st.dataframe(state["events"], width="stretch")
+        st.download_button("Download plan evidence" if report is not None else "Download saved audit", data=json.dumps(report if report is not None else state, indent=2), file_name="research-plan.json", mime="application/json")
     else:
         st.info("Freeze a plan to inspect its hypothesis, fixed trials, dataset review and quota before execution.")
 else:

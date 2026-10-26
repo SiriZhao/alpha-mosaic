@@ -1,12 +1,12 @@
 # AlphaMosaic Renaissance — current delivery report
 
-Updated 2026-10-25, Asia/Shanghai. Full objective: **ACTIVE, incomplete**. This report describes the current accepted implementation; timestamped checkpoint evidence remains immutable. No production-grade research acceptance, real historical strategy performance or demonstrated alpha is claimed.
+Updated 2026-10-26, Asia/Shanghai. Full objective: **ACTIVE, incomplete**. This report describes current source-specific verification; timestamped checkpoint evidence remains immutable. No production-grade research acceptance, real historical strategy performance or demonstrated alpha is claimed.
 
 ## 1. Verified release identity
 
-Development branch: codex/renaissance-20261024. Latest tested implementation: f9dcfe33e7d9698e1f080a5d5e553567efe2f652. Source SHA256: a26523a908f264868dee7eb4da6a3df92f4ab0b16a2bf65514c52d74b1b1c988.
+Development branch: codex/renaissance-20261024. Current locally qualified reconciliation source SHA256:0754fabeee4494cff23fbf0ec5ec325972b07138ce7fbfae27c5a8419e05f1f9. Recovered core is integrated as1e80320; current composite publication/CI must be verified separately from the earlier published f9dcfe3 dispatch implementation.
 
-Local and hosted full regression both passed **361 tests**, with RuntimeWarning treated as error. Local suite had zero failed/error/skipped tests and included both actual Windows junction fixtures. Four upstream calendar deprecation warnings remain visible. [Hosted CI40202837163](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40202837163) passed every quality gate. Evidence-only follow-up commits retain the same source identity and have separate CI observation.
+Current local full regression passed **397 tests**, with RuntimeWarning treated as error, zero failed/error/skipped tests, actual Windows junctions and genuine owned-parent termination. Four upstream calendar deprecations remain visible. Current fresh base-wheel/CLI/32-tool MCP,60-file package identity, payment/recovery cases and eight-page/action browser checks passed; [machine evidence](docs/evidence/research-reconciliation-20261026/acceptance.json) names this exact source. The earlier [361-test hosted CI40202837163](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40202837163) remains prior-source evidence; it does not certify the new composite. Current hosted publication is a separate gate.
 
 [Draft PR #4](https://github.com/SiriZhao/alpha-mosaic/pull/4) remains stacked on unmerged PR #3. Normal pushes were verified by matching local and remote SHAs; no merge, force push, visibility change or main rewrite occurred. The existing repository is public. Original dirty root files and all independent worktrees were preserved.
 
@@ -56,7 +56,7 @@ The deterministic planner freezes a hypothesis and at most6 strategy/cost trials
 
 Six reproduced dispatch defects were repaired. Planned experiment creation now verifies one pending frozen audit call and canonical config/request/source/manifest under the same global OS lease as execution. Missing context, changed/late/duplicate attempts, original-directory redirection and unidentified/corrupt/unsealed artifacts fail closed. An independent reviewer passed14 dispatch tests; parent full testing included its separately deselected junction case.
 
-Explicit interrupted-plan reconciliation is **not yet integrated**; isolated implementation/review is in runtime/renaissance-recovery-20261025. A recovered complete artifact cannot prove an unobserved original process exit; late immutable responses may arrive after the experiment lock releases. No silent retry or automatic evidence-grade promotion occurs. Adaptive model-driven planning and selection-adjusted statistics remain incomplete. See [methodology](RESEARCH_METHODOLOGY.md) and [dispatch acceptance](docs/RESEARCH_DISPATCH_ACCEPTANCE_20261025.md).
+Explicit interrupted-plan reconciliation is integrated and locally verified. Plan/global OS leases and a durable fence protect append-only reviews; matched artifacts, original outcomes and unresolved attempts remain separate, with no missing trial scheduled. A recovered artifact cannot prove an unobserved original exit; late responses add evidence without reclassification. CLI/asynchronous MCP/terminal share the same service and truthful corrupt-report handling. The parent preserved capped sub-agent work, repaired three semantic counterexamples and completed397 tests. After verified reset, [independent current-source review](docs/evidence/research-reconciliation-20261026/independent-review.json) passed36 target tests with unchanged source hashes and no blockers, including real process/junction/surface checks; original cap/ACL failures remain separate. No silent retry/promotion occurs. Adaptive planning, automatic quarantine and selection-adjusted statistics remain incomplete. See [methodology](RESEARCH_METHODOLOGY.md) and [reconciliation acceptance](docs/RESEARCH_RECONCILIATION_ACCEPTANCE_20261026.md).
 
 ## 7. Reproducible experiments and reports
 
@@ -70,7 +70,9 @@ Current clean-commit reruns matched all financial replay, benchmark and analysis
 
 Eight local pages provide overview, datasets, strategy lab, results, compatible experiment comparison, risk, frozen AI research/critics and downloadable reports. Background jobs expose progress/failure. No old/static price pretends to be live. This is a localhost single-user product.
 
-The payment milestone rendered all eight pages/mobile with13 captures, asserted actual selected compatible/unpaid experiment IDs, and checked the viewer source hash. Current dispatch work changes no UI/report code; those captures retain their original source identity rather than being relabeled as new browser tests. AppTest remains in the current full regression. Broad scenario/robustness controls, active cancellation and comprehensive interaction coverage remain incomplete.
+Current browser QA rendered all eight pages/mobile with15 captures, asserted actual compatible/unpaid experiment IDs and an explicit reconciliation action, and checked before/after viewer source identity. A focused three-capture view verified the matched artifact/unknown exit row visibly; its screenshot was inspected. Five actual CLI/MCP/AppTest surface checks include corrupt original reporting while the saved audit stays available. Earlier payment captures retain their original source identity. Broad scenario/robustness controls, active cancellation and comprehensive interaction coverage remain incomplete.
+
+![FIXTURE matched artifact with unknown original process exit](docs/evidence/research-reconciliation-20261026/16-readable-recovered-artifact.png)
 
 ![FIXTURE unpaid-dividend accounting; payment milestone source](docs/evidence/dividend-payment-20261025/12-dividend-accounting.png)
 
@@ -78,7 +80,7 @@ The payment milestone rendered all eight pages/mobile with13 captures, asserted 
 
 ## 9. Quality, security and measured performance
 
-Current local/hosted361-test suites, Ruff, Pyright, lock validation, wheel/sdist, fresh base-wheel workflows, CLI,31-tool stdio MCP, dependency audit and secret scan passed. All59 installed and packaged Python files match the tested source. Fresh base-wheel acceptance excludes OpenBB/QuantStats/Streamlit/Plotly yet completes payment cases and isolated workers. Remote ChatGPT remains NOT_VERIFIED; provider installation health is separate from data validity.
+Current local397-test suite, Ruff, Pyright, lock validation, wheel/sdist, fresh base-wheel payment/recovery workflows, CLI,32-tool stdio MCP and secret scan passed. All60 installed and packaged Python files match the tested source. Base-wheel acceptance excludes OpenBB/QuantStats/Streamlit/Plotly. Current hosted dependency/quality gates must be observed on the published composite; previous successful audits remain dated evidence. Remote ChatGPT remains NOT_VERIFIED; provider installation health is separate from data validity.
 
 Financial tests cover no phantom constant-price profit, positive-cost loss, cash/share/NAV conservation, split/dividend consistency, insufficient cash/long-only limits, next-open causality, future perturbations, repeated results, missing/misaligned bars, annualization, finite extremes and benchmark basis. Independent accounting, generated constraint cases, failure/corruption/lifecycle tests and frozen worker tests retain original negative evidence.
 
@@ -95,6 +97,7 @@ Use Python3.12 in the reviewed development checkout. These commands require no m
     uv run python scripts/run_research_cases.py --home runtime/new-research
     uv run python scripts/run_extended_research.py --home runtime/new-weekly-research
     uv run python scripts/run_dividend_cases.py --home runtime/new-dividend-research
+    uv run python scripts/run_reconciliation_cases.py --home runtime/new-recovery-research
     $env:ALPHAMOSAIC_HOME = (Join-Path (Get-Location) 'runtime/new-dividend-research')
     uv run python -m streamlit run src/alphamosaic/ui/app.py --theme.base dark
 
@@ -106,17 +109,17 @@ Quality commands:
     uv build
     uv run python scripts/mcp_smoke.py --home runtime/new-mcp-check
 
-Choose a unique home for a new case suite. Freeze source/environment and restart services before acceptance. Fixed-plan source/data changes require a newly reviewed plan; incomplete attempts never authorize silent replay. More commands and export conventions are in [reproducibility](REPRODUCIBILITY.md).
+Choose a unique home for a new case suite. Use an actual generated ID with alphamosaic reconcile-research-plan PLAN_ID, or the explicit AI Research action; neither retries a trial. The recovery suite clearly labels fault injection and its pending browser fixture. Freeze source/environment and restart services before acceptance. Fixed-plan source/data changes require a newly reviewed plan; archived source-consistent artifact review does not rerun old code. More commands and exports are in [reproducibility](REPRODUCIBILITY.md).
 
 ## 11. Status and remaining acceptance
 
-- **Implemented & Verified:** research-only shared service, local versioned data/quality gates, causal paper replay, ordinary-dividend claim/payment accounting, explicit costs, fixed daily/qualified weekly rules, independent metrics/FIFO accounting, chronological controls, experiment/report storage, local terminal, frozen offline workflow/critics, dispatch safety, tests/build/clean wheel/current implementation CI.
+- **Implemented & Verified locally:** research-only shared service, local versioned data/quality gates, causal paper replay, ordinary-dividend accounting, explicit costs, fixed daily/qualified weekly rules, independent metrics/FIFO, chronological controls, experiment/report storage, local terminal, frozen workflow/critics, dispatch safety and explicit interrupted-plan reconciliation, tests/build/clean wheel. Current composite hosted CI is separate from prior published green runs.
 - **Implemented but Unverified externally:** remote ChatGPT, authorized optional model/provider integration and real opening-liquidity assumptions. Local MCP or an installed provider is insufficient proof.
 - **Partially Implemented:** broader portfolio/risk/robustness/benchmark/attribution workflows, adaptive AI research and all-interaction terminal coverage.
-- **Planned / isolated development:** explicit interrupted-plan reconciliation, cash-in-lieu/special/delisting economics, causal RAW weekly adjustment, covariance/sector optimization, selection-adjusted statistics, richer scenario controls and PDF/Parquet export.
+- **Planned:** controlled quarantine of unsealed artifacts, cash-in-lieu/special/delisting economics, causal RAW weekly adjustment, covariance/sector optimization, selection-adjusted statistics, richer scenario controls and PDF/Parquet export.
 - **Blocked:** strictly qualified licensed real historical three-asset/PIT/actions/universe/delisting research. No FIXTURE result, heuristic rank or descriptive alpha bypasses this gate.
 
-Production-grade research-prototype acceptance is incomplete. The next feasible safety task is independently reviewed append-only reconciliation; the highest-value external prerequisite remains licensed qualified raw-plus-actions historical evidence. Subsequent work must preserve financial correctness, all failed experiments and immutable forward evidence rather than optimize attractive curves.
+Production-grade research-prototype acceptance is incomplete. Current composite publication and hosted quality evidence precede further features. Highest-value next work remains licensed qualified raw-plus-actions historical evidence and source-qualified corporate-action/RAW-weekly boundaries; benchmark/portfolio/scientific capabilities follow the documented task graph. Preserve financial correctness, failed experiments and immutable forward evidence rather than optimize attractive curves.
 
 ## 12. Commits and immutable checkpoint index
 
@@ -127,6 +130,7 @@ Important integrated milestones: a6dd38e initial research prototype; a583a1e wee
 - [Risk terminal acceptance](docs/TERMINAL_RISK_ACCEPTANCE_20261025.md).
 - [Payment source/wheel/browser acceptance](docs/evidence/dividend-payment-20261025/acceptance.json) and [its CI](docs/evidence/dividend-payment-20261025/hosted-ci.json).
 - [Current dispatch local/independent/wheel acceptance](docs/evidence/research-dispatch-20261025/acceptance.json), [CI](docs/evidence/research-dispatch-20261025/hosted-ci.json) and [clean reproduction](docs/evidence/research-dispatch-20261025/committed-reproduction.json).
+- [Current reconciliation local/package/browser/process evidence](docs/evidence/research-reconciliation-20261026/acceptance.json) and [its explicit contract/limits](docs/RESEARCH_RECONCILIATION_ACCEPTANCE_20261026.md).
 - [Implementation dependencies](docs/IMPLEMENTATION_PLAN.md), [recoverable progress](docs/PROGRESS.md), [next steps](NEXT_STEPS.md) and [draft PR #4](https://github.com/SiriZhao/alpha-mosaic/pull/4).
 
 Older report versions remain in Git history; their measurements belong to their named commits, not automatically to the current tree.

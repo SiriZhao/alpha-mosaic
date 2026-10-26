@@ -1,5 +1,16 @@
 # Reproduce the local research prototype
 
+Explicit parent-loss/reconciliation software cases and a retained pending browser fixture:
+
+```powershell
+uv run python scripts/run_reconciliation_cases.py --home runtime/new-recovery-research
+$env:ALPHAMOSAIC_HOME = (Join-Path (Get-Location) 'runtime/new-recovery-research')
+uv run alphamosaic research-plans
+uv run alphamosaic reconcile-research-plan PLAN_ID
+```
+
+Use an actual generated ID. The suite labels exception injection around real fixed workers, verifies matched artifacts/late-child refusal and never executes missing trials during reconciliation. A separate genuine owned-parent termination test is part of the full regression. Repeated calls preserve original outcomes and append only new bounded late observations. Unsealed or ambiguous artifacts remain unresolved; a new reviewed research home can be used while preserving the old one. The command does not delete/quarantine/repair files. New explicit terminal actions and source-specific package/browser evidence are in docs/RESEARCH_RECONCILIATION_ACCEPTANCE_20261026.md.
+
 Ordinary-dividend/split/cost/unpaid-cutoff cases and four frozen daily worker trials:
 
 ```powershell

@@ -1,0 +1,97 @@
+{
+  "plan_id": "a0eb11c2a57f4201bcaff39568a7523d",
+  "status": "INTERRUPTED",
+  "hypothesis": "Can frozen synthetic work survive explicit parent-loss injection without duplicate execution or invented process success?",
+  "dataset_hash": "ec4373d4528ab64b3b75127f433570e9e2c8a73349910288d8122c0e99a2ecd1",
+  "outcomes": [],
+  "comparison": null,
+  "critics": [],
+  "trials_attempted": 0,
+  "selection": "ALL_OUTCOMES_RETAINED",
+  "evidence_grade": "Exploratory",
+  "automatic_promotion": false,
+  "broker_enabled": false,
+  "reconciliation": [
+    {
+      "event_id": "964e7dd410a64a02bd49d4b1500db903",
+      "sequence": 3,
+      "plan_id": "a0eb11c2a57f4201bcaff39568a7523d",
+      "at": "2026-10-26T10:17:25.932163+00:00",
+      "kind": "RECONCILIATION_STARTED",
+      "payload": {
+        "dispatch_disabled": true,
+        "original_event_count": 2,
+        "original_head_hash": "e6ba251e21f020e33567c7f1bb1be99b5ddbdc90e84020827b4794c66d49f60c",
+        "reconciliation_id": "37ddfe1a593c48f79ae111215ebbff26",
+        "reviewer_source_hash": "0754fabeee4494cff23fbf0ec5ec325972b07138ce7fbfae27c5a8419e05f1f9"
+      },
+      "previous_hash": "e6ba251e21f020e33567c7f1bb1be99b5ddbdc90e84020827b4794c66d49f60c",
+      "content_hash": "8bf9f5799931c3cdad2462001b7534d45e5c45b7fe592864afa70b4d1a36a3a2"
+    },
+    {
+      "event_id": "510b32af747a4621b65d84ca85783cb3",
+      "sequence": 4,
+      "plan_id": "a0eb11c2a57f4201bcaff39568a7523d",
+      "at": "2026-10-26T10:17:26.000338+00:00",
+      "kind": "RECOVERED_ATTEMPT",
+      "payload": {
+        "artifact": {
+          "checksums_sha256": "b7fb0ae4dc35e1b9e2a23247762009e12e2445af2ded455009a9fdb36bb0f7af",
+          "config_sha256": "6bb5ed6a41cac60291374b4b873c788444a94183c7d0a848b3d0c6dfc2847bac",
+          "experiment_id": "b57f8fce2b5248a1a7088fa09e7d71a0",
+          "experiment_sha256": "603f63bf25735b67d8f94f1c977f5fb72639540d6e0d9fc515f7fcaa1ea82253"
+        },
+        "artifact_qualification": "CHECKSUMS_AND_FROZEN_IDENTITY_VERIFIED_NOT_PROCESS_EXIT_PROOF",
+        "attempt_id": "584fec49c66c49d6855bcfa65d1f0a82",
+        "candidate_ids": [
+          "b57f8fce2b5248a1a7088fa09e7d71a0"
+        ],
+        "candidate_issues": [],
+        "classification": "RECOVERED_COMPLETED_ARTIFACT",
+        "dataset_hash": "ec4373d4528ab64b3b75127f433570e9e2c8a73349910288d8122c0e99a2ecd1",
+        "exit_status": "NOT_OBSERVED",
+        "manifest_hash": "40711163842a8bb6ba1c2089ddea7b9c14a039ff96c04ccb8a865522eff3d153",
+        "ordinal": 0,
+        "reconciliation_id": "37ddfe1a593c48f79ae111215ebbff26",
+        "recorded_outcome": null,
+        "request_sha256": "b4faf6e7471e55653e01d451f3da0eb423fdf23029f33d7b9fe516d1a33e2d12",
+        "response_snapshot": {
+          "bytes": 167,
+          "content_hex": "7b226572726f72223a6e756c6c2c226578706572696d656e745f6964223a226235376638666365326235323438613161373038386661303965376437316130222c22736f757263655f68617368223a2230373534666162656565343439346366663233666266306563356563333235393732623037313338636537666266616532376335613834313965303566316639222c22737461747573223a22434f4d504c45544544227d",
+          "sha256": "162d69b3c00ed88079dfaac3f8ee3fe9386da54019a2b4bf3c675a3ad6af21a2",
+          "state": "PRESENT"
+        },
+        "response_snapshot_hash": "1f2b4c7e3ab5160b07a276e6ed3244b82419e0f988af6e7fb86589691f4339b9",
+        "source_hash": "0754fabeee4494cff23fbf0ec5ec325972b07138ce7fbfae27c5a8419e05f1f9"
+      },
+      "previous_hash": "8bf9f5799931c3cdad2462001b7534d45e5c45b7fe592864afa70b4d1a36a3a2",
+      "content_hash": "e3b0b9b7f00bd04dd17053b7208573f5550f3ffa3b091a56c70264af63f2df53"
+    },
+    {
+      "event_id": "0ca5d56bc6a748a3a32f38e6389d1669",
+      "sequence": 5,
+      "plan_id": "a0eb11c2a57f4201bcaff39568a7523d",
+      "at": "2026-10-26T10:17:26.008454+00:00",
+      "kind": "RECONCILIATION_FINISHED",
+      "payload": {
+        "automatic_promotion": false,
+        "declared": 2,
+        "dispatched": 1,
+        "new_trials_executed": 0,
+        "original_outcomes_rewritten": false,
+        "process_liveness": "NOT_INFERRED_FROM_PERSISTED_STATE",
+        "reconciliation_id": "37ddfe1a593c48f79ae111215ebbff26",
+        "recorded_outcomes": 0,
+        "recovered_completed_artifacts": 1,
+        "status": "INTERRUPTED",
+        "unattempted_ordinals": [
+          1
+        ],
+        "unresolved_attempts": 0
+      },
+      "previous_hash": "e3b0b9b7f00bd04dd17053b7208573f5550f3ffa3b091a56c70264af63f2df53",
+      "content_hash": "696dd7e08e654386b387782e5088043663e65841f629703b411986eb3845b70f"
+    }
+  ],
+  "trials_dispatched": 1
+}

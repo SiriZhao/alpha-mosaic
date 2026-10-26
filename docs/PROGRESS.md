@@ -1,5 +1,11 @@
 # Recoverable progress
 
+## Interrupted-plan reconciliation — 2026-10-26
+
+Following verified passage of the quota-reset time, the resumed independent reviewer completed36 current-main target tests, including actual junction/native parent termination and all surfaces, with no failures/errors/skips, unchanged before/after0754 source and no blockers. Original usage-cap and35 setup-error records remain immutable; the new independent-review.json supersedes only the earlier unfinished-review status. No paid resources or source changes.
+
+Goal turn classification: PROGRESS. Recovered corecf0ebcf remains preserved and is integrated locally as1e80320. Final source0754fabeee4494cff23fbf0ec5ec325972b07138ce7fbfae27c5a8419e05f1f9 passed397 full tests, Ruff/Pyright/lock/secret checks, matched60-file fresh base-wheel/CLI/32-MCP, three recovery cases and four payment cases/four trials. Real owned-parent termination proves native lineage/image, automatic OS lease release and unchanged artifacts. Eight-page/action browser QA passed15 captures; focused readable view passed three more. Three parent semantic counterexamples failed before repair; five real surface checks cover ordinary and corrupt-report state. Earlier396-test/source975d4c3 evidence, Windows launcher-PID scaffold failure and refresh-button replacement timeout are retained. Final independent sub-agent testing did not complete before usage caps; parent integration is separately evidenced. Publication/current CI is still a separate gate. Full goal remains ACTIVE; real-data and all other documented scope gaps remain.
+
 ## Frozen-dispatch safety continuation — 2026-10-25
 
 Published f9dcfe3 with matching remote SHA; CI40202837163 passed361 Linux tests and every quality gate. Eight clean committed cases/trials preserved exact earlier financial results/analysis and identity-normalized critics. PR #4 is updated and remains draft/stacked/unmerged. Next implementation is isolated in runtime/renaissance-recovery-20261025 branch codex/renaissance-recovery-20261025 from f9dcfe3, with independent read-only review; no reconciliation code is yet integrated or accepted in this source.

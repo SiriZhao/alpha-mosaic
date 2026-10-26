@@ -1,4 +1,8 @@
-# Current state (2026-10-25)
+# Current state (2026-10-26)
+
+## Latest interrupted-plan reconciliation checkpoint
+
+Full goal ACTIVE. Final source0754fabeee4494cff23fbf0ec5ec325972b07138ce7fbfae27c5a8419e05f1f9 passed397 full tests, zero failures/errors/skips, Ruff/Pyright/lock/secret checks, matching60-file fresh base wheel, CLI/32-tool MCP, three recovery cases and four payment cases/four trials. Eight-page/mobile/action browser QA passed15 captures plus a focused three-capture readable view. Explicit append-only review preserves original outcomes/files, fences late dispatch and distinguishes matched artifacts from unknown process success without retry. Genuine owned-parent termination/lease release passed. After a verified quota reset, independent current-main review passed36 targeted tests with unchanged before/after source hash and no blockers; initial cap/ACL failures remain separately preserved. See docs/RESEARCH_RECONCILIATION_ACCEPTANCE_20261026.md and evidence/independent-review.json. Current publication/CI remains separate from old green runs. Corecf0ebcf is preserved/integrated as1e80320; earlier checkpoints below are historical.
 
 ## Latest frozen research dispatch checkpoint
 

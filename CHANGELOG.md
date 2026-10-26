@@ -1,5 +1,9 @@
 # Changelog
 
+## Explicit interrupted-plan reconciliation — 2026-10-26
+
+Added append-only dispatch fencing, separate original/recovered/unresolved attempt evidence, idempotent interrupted reconciliation and bounded late-response snapshots without replay or invented process exit. CLI, asynchronous MCP and nonblocking terminal actions share ApplicationService; corrupt computed reports preserve a truthful saved audit. Repaired three semantic evidence contradictions beyond hash integrity and verified real owned-parent termination/lease release. Current local397-test/package/browser evidence is source-specific; full Renaissance acceptance and real-data qualification remain incomplete.
+
 ## Dividend accounting and frozen dispatch — 2026-10-25
 
 Ordinary dividends now freeze earned ex-date rights as non-spendable receivables and transfer them to cash under the explicit sourced post-pay-date simulation rule. Independent FIFO/claim/NAV reconciliation, schema3 exports, legacy preservation and model-aware comparisons are verified. Model/missing/mixed actions and unqualified dated signals cannot supply observed research values. Fixed research workers now require a unique pending canonical call under the global execution lease, refusing duplicates, terminal plans, unknown/unsealed artifacts and original-path redirects. Independent reviews and original failing counterexamples are retained. Explicit interrupted-plan reconciliation and full platform acceptance remain incomplete.

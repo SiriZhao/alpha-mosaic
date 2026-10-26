@@ -1,5 +1,7 @@
 # Architecture
 
+Frozen research plans use typed requests, immutable configuration/source/data identities and an append-only hashed audit. A fixed worker must qualify its unique pending call under the same per-home OS lease as experiment creation. Explicit reconciliation holds plan then global leases, fences delayed dispatch and preserves original outcomes/artifacts. It separates matched sealed evidence from unresolved attempts and never invents process exit or retries a trial. Late bounded response observations cannot upgrade history. ApplicationService shares this operation across CLI, MCP jobs and the nonblocking terminal. See docs/RESEARCH_RECONCILIATION_ACCEPTANCE_20261026.md for exact verification and single-user limitations.
+
 AlphaMosaic is a modular monolith with one authoritative `ApplicationService`. The CLI and
 MCP server call that service; they do not implement separate decision logic. Domain contracts
 in `core` are Pydantic models and contain provenance, timestamps, data-quality labels and

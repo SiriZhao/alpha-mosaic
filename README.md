@@ -1,6 +1,6 @@
 # AlphaMosaic
 
-Latest continuation: frozen research workers require one pending audited call and unchanged request/config/source/data identity under the execution lease; duplicate, late and unsealed attempts fail closed.361 full tests and independent14-case dispatch review passed; see [dispatch verification](docs/RESEARCH_DISPATCH_ACCEPTANCE_20261025.md). Ordinary dividends retain separate earned claims and spendable cash with independent accounting and readable terminal/report evidence; see [payment verification](docs/DIVIDEND_PAYMENT_ACCEPTANCE_20261025.md). Explicit interrupted-plan reconciliation, strict real-data acceptance and the full Renaissance scope remain incomplete.
+Latest continuation: explicit interrupted-plan reconciliation preserves original outcomes, matches sealed artifacts without inventing process success, and never reruns missing trials. CLI, bounded MCP jobs and the terminal share this operation.397 full tests, genuine owned-parent termination, fresh base-wheel/32-tool MCP and actual browser actions passed locally; see [reconciliation verification](docs/RESEARCH_RECONCILIATION_ACCEPTANCE_20261026.md) for current source and separate publication gates. Ordinary dividends retain earned claims and spendable cash separately. Strict real-data acceptance and the full Renaissance scope remain incomplete.
 
 ## Renaissance research milestone
 

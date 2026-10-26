@@ -40,7 +40,9 @@ def verify() -> dict:
     dividends = run(Path("wheel-dividend-research"))
     if dividends["status"] != "PASSED":
         raise AssertionError("base-wheel payment accounting cases failed")
-    return {"status": "PASSED", "package_path": str(package), "python": sys.version.split()[0], "optional": optional, "experiment_id": result["experiment_id"], "plan_id": plan["plan_id"], "plan_status": state["status"], "fifo_reconciliation": result["analysis"]["trade_analysis"]["reconciliation"]["status"], "weekly_analysis": result["analysis"]["weekly"]["status"], "dividend_cases": len(dividends["cases"]), "dividend_plan": dividends["frozen_plan"], "unsupported_weekly_action_status": dividends["weekly_action_boundary"]["status"], "acceptance": result["acceptance"], "broker_enabled": False}
+    from run_reconciliation_cases import run as reconcile_cases
+    recovery = reconcile_cases(Path("wheel-reconciliation-research"))
+    return {"status": "PASSED", "package_path": str(package), "python": sys.version.split()[0], "optional": optional, "experiment_id": result["experiment_id"], "plan_id": plan["plan_id"], "plan_status": state["status"], "fifo_reconciliation": result["analysis"]["trade_analysis"]["reconciliation"]["status"], "weekly_analysis": result["analysis"]["weekly"]["status"], "dividend_cases": len(dividends["cases"]), "dividend_plan": dividends["frozen_plan"], "unsupported_weekly_action_status": dividends["weekly_action_boundary"]["status"], "reconciliation_cases": len(recovery["cases"]), "reconciliation_new_experiments": recovery["reconciliation_experiments_executed"], "acceptance": result["acceptance"], "broker_enabled": False}
 
 
 if __name__ == "__main__":

@@ -114,6 +114,13 @@ def create_server(service: ApplicationService | None = None) -> MCPServer:
         application.research_plan(plan_id)
         return {"status": "READY", "job_id": jobs.submit(lambda: application.run_research_plan(plan_id))}
 
+    @server.tool(annotations=_annotations(False, read_only=False, open_world=False))
+    def reconcile_research_plan(plan_id: str) -> dict[str, Any]:
+        """Inspect interrupted local attempts and close their audit; never retry trials."""
+        application.research_plan(plan_id)
+        return {"status": "READY", "job_id": jobs.submit(lambda: application.reconcile_research_plan(plan_id)),
+                "message": "Local saved-evidence reconciliation only; no experiments rerun. Poll job_status."}
+
     @server.tool(annotations=_annotations(open_world=False))
     def research_plan_status(plan_id: str) -> dict[str, Any]:
         return application.research_plan(plan_id)

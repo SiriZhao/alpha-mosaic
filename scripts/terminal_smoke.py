@@ -10,18 +10,23 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 import httpx
+from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 from playwright.sync_api import expect, sync_playwright
 
 from alphamosaic.experiments.runner import source_manifest
 
 
-def check(url: str, output: Path, compare_ids: list[str] | None = None, experiment_id: str | None = None) -> dict:
+def check(url: str, output: Path, compare_ids: list[str] | None = None, experiment_id: str | None = None, reconcile_plan_id: str | None = None, recovered_plan_id: str | None = None, focus_recovery: bool = False) -> dict:
     source_hash = source_manifest()["source_hash"]
     parsed = urlparse(url)
     if parsed.hostname not in {"localhost", "127.0.0.1"} or parsed.scheme != "http":
         raise ValueError("local HTTP terminal only")
     output.mkdir(parents=True, exist_ok=True)
     pages = ["Research Overview", "Data Explorer", "Strategy Lab", "Backtest Results", "Experiment Comparison", "Risk Lab", "AI Research", "Reports"]
+    if focus_recovery:
+        if not recovered_plan_id and not reconcile_plan_id:
+            raise ValueError("focused recovery QA requires an actual plan ID")
+        pages = ["AI Research"]
     errors = []
     extra_screenshots = 0
     with sync_playwright() as p:
@@ -83,16 +88,59 @@ def check(url: str, output: Path, compare_ids: list[str] | None = None, experime
                 page.locator('[data-testid="stPlotlyChart"]').filter(visible=True).nth(1).scroll_into_view_if_needed()
                 page.screenshot(path=str(output / "13-cash-market-receivable-weights.png"), full_page=True)
                 extra_screenshots += 1
+            if label == "AI Research" and reconcile_plan_id:
+                selection = page.get_by_role("combobox", name="Frozen plan", exact=True)
+                if selection.input_value() != reconcile_plan_id:
+                    selection.click()
+                    selection.fill(reconcile_plan_id)
+                    page.get_by_role("option", name=reconcile_plan_id, exact=True).click()
+                expect(selection).to_have_value(reconcile_plan_id)
+                page.get_by_role("button", name="Reconcile saved attempts (no rerun)", exact=True).click()
+                page.wait_for_function("document.querySelector('[data-testid=stApp]')?.getAttribute('data-test-script-state') === 'notRunning'", timeout=45000)
+                deadline = time.monotonic() + 45
+                while not page.get_by_text("Status: INTERRUPTED", exact=True).is_visible():
+                    if time.monotonic() > deadline:
+                        raise AssertionError("browser reconciliation did not reach its recorded terminal state")
+                    refresh = page.get_by_role("button", name="Refresh plan", exact=True)
+                    if refresh.is_visible():
+                        try:
+                            refresh.click(timeout=1000)
+                        except PlaywrightTimeoutError:
+                            # Streamlit may replace the refresh button during a
+                            # completed rerender. The terminal-state assertion
+                            # still has to pass within the unchanged deadline.
+                            pass
+                    page.wait_for_timeout(200)
+                page.get_by_role("heading", name="Interrupted-run evidence", exact=True).wait_for()
+                page.get_by_text("Unresolved attempts", exact=True).scroll_into_view_if_needed()
+                page.locator('[data-testid="stDataFrame"]').filter(visible=True).first.scroll_into_view_if_needed()
+                expect(page.get_by_role("button", name="Inspect late response evidence", exact=True)).to_be_visible()
+                page.screenshot(path=str(output / "14-reconciliation-action.png"), full_page=True)
+                extra_screenshots += 1
+            if label == "AI Research" and recovered_plan_id:
+                selection = page.get_by_role("combobox", name="Frozen plan", exact=True)
+                if selection.input_value() != recovered_plan_id:
+                    selection.click()
+                    selection.fill(recovered_plan_id)
+                    page.get_by_role("option", name=recovered_plan_id, exact=True).click()
+                expect(selection).to_have_value(recovered_plan_id)
+                page.get_by_role("heading", name="Interrupted-run evidence", exact=True).wait_for()
+                metric = page.get_by_test_id("stMetric").filter(has_text="Recovered artifacts")
+                expect(metric.get_by_test_id("stMetricValue")).to_have_text("1")
+                metric.scroll_into_view_if_needed()
+                page.locator('[data-testid="stDataFrame"]').filter(visible=True).first.scroll_into_view_if_needed()
+                page.screenshot(path=str(output / "15-recovered-artifact-evidence.png"), full_page=True)
+                extra_screenshots += 1
         collapse = page.locator('[data-testid="stSidebarCollapseButton"] button')
         if collapse.is_visible():
             collapse.click()
         page.set_viewport_size({"width": 390, "height": 844})
         page.wait_for_timeout(300)
-        page.screenshot(path=str(output / "09-mobile-reports.png"), full_page=True)
+        page.screenshot(path=str(output / ("09-mobile-recovery.png" if focus_recovery else "09-mobile-reports.png")), full_page=True)
         browser.close()
     if source_manifest()["source_hash"] != source_hash:
         errors.append("Source changed during browser verification")
-    result = {"status": "PASSED" if not errors else "FAILED", "viewer_source_hash": source_hash, "pages": pages, "browser_errors": errors, "screenshots": 9 + extra_screenshots, "comparison_selection": compare_ids or [], "result_selection": experiment_id, "scope": "Navigation, render, populated local fixture reports, selected qualified comparison and result when requested, and mobile degradation; scrolled viewports where needed; not every interactive action"}
+    result = {"status": "PASSED" if not errors else "FAILED", "viewer_source_hash": source_hash, "pages": pages, "browser_errors": errors, "screenshots": len(pages) + 1 + extra_screenshots, "comparison_selection": compare_ids or [], "result_selection": experiment_id, "reconciliation_action_plan": reconcile_plan_id, "recovered_artifact_plan": recovered_plan_id, "scope": "Focused recovery view and mobile degradation" if focus_recovery else "Navigation, render, populated local fixture reports, selected qualified comparison/result and explicit reconciliation action when requested, and mobile degradation; scrolled viewports where needed; not every interactive action"}
     (output / "browser-qa.json").write_text(json.dumps(result, indent=2))
     return result
 
@@ -105,6 +153,9 @@ if __name__ == "__main__":
     parser.add_argument("--home", type=Path, default=Path("runtime/renaissance-demo"))
     parser.add_argument("--compare", nargs="+", help="Actual comparable local experiment IDs to select in the browser")
     parser.add_argument("--experiment", help="Actual completed local experiment ID for results, risk and reports")
+    parser.add_argument("--reconcile-plan", help="Actual interrupted fixture plan to reconcile through the browser without rerunning trials")
+    parser.add_argument("--recovered-plan", help="Actual reconciled plan with one recovered completed artifact to inspect")
+    parser.add_argument("--focus-recovery", action="store_true", help="Verify only the recovery page and its readable records")
     args = parser.parse_args()
     process = None
     try:
@@ -124,7 +175,7 @@ if __name__ == "__main__":
                     if time.monotonic() > deadline or process.poll() is not None:
                         raise RuntimeError("local terminal failed startup health check") from None
                     time.sleep(.2)
-        result = check(args.url, args.output, args.compare, args.experiment)
+        result = check(args.url, args.output, args.compare, args.experiment, args.reconcile_plan, args.recovered_plan, args.focus_recovery)
     finally:
         if process is not None:
             process.terminate()

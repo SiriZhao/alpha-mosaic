@@ -1,0 +1,165 @@
+{
+  "status": "PASSED",
+  "commit": "a4c5f2e53575b6a86e862aa64251de2483b86ba0",
+  "source_hash": "0754fabeee4494cff23fbf0ec5ec325972b07138ce7fbfae27c5a8419e05f1f9",
+  "git_dirty_during_runs": false,
+  "scope": "SAME_WINDOWS_CHECKOUT_FIXTURE_SOFTWARE_REPRODUCTION_ONLY",
+  "financial_output_matches": [
+    {
+      "case": "realistic_full",
+      "before": "111a7856c4ce4538a2e09bbd0dd9f111",
+      "committed": "f487e636aff849a3afa715879c01d291",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_validated_record_id": true,
+      "result_sha256": "ebbda55910e99d49ae21cb5f3a24799b693cec505a922a089ef3e3deb005a93e"
+    },
+    {
+      "case": "stress_full",
+      "before": "5dc51f5363cc41eb8e72315496175dd7",
+      "committed": "2d6b86ba0db44a028f2f7ae527769a2d",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_validated_record_id": true,
+      "result_sha256": "aa3cdf0084cc5785dc2a40ded87e7a2dcfb5945ebda3dfd2bd710664f40956cd"
+    },
+    {
+      "case": "realistic_unpaid_cutoff",
+      "before": "cf51d8370074429092332845be3342ee",
+      "committed": "2cb0a2756ce84320ac1e9fe20e394a67",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_validated_record_id": true,
+      "result_sha256": "fbf2a0e9a7421829a92e4f8a86c3bd25e91c8748214f386f043e948996373772"
+    },
+    {
+      "case": "legacy_diagnostic",
+      "before": "f966f04e460e42ac960629af8dedab3f",
+      "committed": "9b95e71db8264755b7379795abf5b337",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_validated_record_id": true,
+      "result_sha256": "fadb016289ab510005de2f535244ab9abecf626c894239479ce93348c666a535"
+    },
+    {
+      "case": "frozen_trial_0",
+      "before": "b239497fd47b4575bf15aa2211c6911b",
+      "committed": "37d0f7dd0ab7457b8b30e168284fdc52",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_validated_record_id": true,
+      "result_sha256": "ebbda55910e99d49ae21cb5f3a24799b693cec505a922a089ef3e3deb005a93e"
+    },
+    {
+      "case": "frozen_trial_1",
+      "before": "b0459bb9447d47fdb8d3876cdb7d3656",
+      "committed": "7a8a5debdde34556a5838432484b5344",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_validated_record_id": true,
+      "result_sha256": "aa3cdf0084cc5785dc2a40ded87e7a2dcfb5945ebda3dfd2bd710664f40956cd"
+    },
+    {
+      "case": "frozen_trial_2",
+      "before": "392a3a3b868749059eff5df4b80f7050",
+      "committed": "7ebb837f07ea4549986e05217677bc05",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_validated_record_id": true,
+      "result_sha256": "6c5f3e11b4ae2878585145a5d75d00585e522877ae5a62e5abdd9b8b0758c9cf"
+    },
+    {
+      "case": "frozen_trial_3",
+      "before": "f5bcf3445acb463b84151375d1804ea7",
+      "committed": "0f56b1ac44cd44c6930f5d149037fa7e",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_validated_record_id": true,
+      "result_sha256": "6a9f28f63a669ff4a05f38ccc050de827c237bd2e35e401bce7c804468c78dde"
+    },
+    {
+      "case": "recovered_original_artifact",
+      "before": "b57f8fce2b5248a1a7088fa09e7d71a0",
+      "committed": "48ccd31283e94b8da3c97c84a413bad0",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_validated_record_id": true,
+      "result_sha256": "c4a2c9d464836192706fb828f87f6c5017ac3717ed8f69508c3ce46584f33348"
+    }
+  ],
+  "recovery_classification_cases": 3,
+  "reconciliation_new_experiments": 0,
+  "process_success_inferred": false,
+  "original_artifact_unchanged_assertions": "PASSED_IN_BOTH_SUITE_RUNS",
+  "excluded_metadata": [
+    "generated plan/attempt/experiment/event identities",
+    "created_at and elapsed times",
+    "Git/dependency/provenance identity",
+    "audit-chain hashes and raw response hashes bound to distinct IDs"
+  ],
+  "cross_platform_exact_financial_reproduction": "NOT_CLAIMED",
+  "market_performance_inference": "PROHIBITED"
+}

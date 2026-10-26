@@ -2,6 +2,8 @@
 
 Status: **Implemented & locally verified within the explicit contract**. Full Renaissance objective remains ACTIVE and incomplete. Published-commit/hosted-CI proof is recorded separately from these local measurements.
 
+Publication addendum: qualified commit a4c5f2e is pushed with matching remote SHA. [Hosted CI40312008132](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40312008132) passed397 Linux tests and every quality/build/wheel/MCP/dependency/secret gate. Its actual installed source hash matches Git's LF blob hash below; Windows bytes remain separate. Clean committed reruns exactly reproduce nine financial outputs and three recovery classifications in the same environment, with no missing trial executed. `qualification-summary.json`, `hosted-ci.json` and `committed-reproduction.json` provide the current gate decision; initial pending/failed records are preserved. Later evidence-only commits have their own CI observation. Draft PR #4 stays unmerged/stacked on #3.
+
 Source SHA256: `0754fabeee4494cff23fbf0ec5ec325972b07138ce7fbfae27c5a8419e05f1f9`.
 
 This is the actual Windows-checkout/package byte hash. Git's normalized source-blob hash is eb95dc08e3be43f543261860fe627a50737f01162511aebc23a54bb5f22d5713; all49 differing files were verified to differ only in line endings. Hosted Linux/source identity is captured separately from local byte qualification. No cross-platform exact-result claim or silent relaxation of source-comparison gates is introduced.

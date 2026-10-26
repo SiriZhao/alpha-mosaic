@@ -24,6 +24,22 @@ def dividend_accounting_evidence(item: dict[str, Any]) -> dict[str, Any]:
     return evidence
 
 
+def weekly_feature_evidence(item: dict[str, Any]) -> dict[str, Any]:
+    """Keep the signal's price hypothesis distinct from portfolio return accounting."""
+    config, result = item["config"]["replay"], item["result"]
+    policy = config.get("weekly_feature_policy", "LEGACY_REJECT_RAW_ACTIONS")
+    signals = result.get("signals", [])
+    rows = [row for signal in signals for row in signal.get("feature_evidence", [])]
+    return {"requested_policy": policy, "recorded_feature_rows": len(rows),
+        "signals_with_features": sum(bool(signal.get("feature_evidence")) for signal in signals),
+        "consumption_status": "RECORDED_DERIVED_PRICE_FEATURES" if rows else "NO_DERIVED_FEATURES_RECORDED",
+        "portfolio_return_basis": item.get("return_basis", "NOT_RECORDED"),
+        "feature_return_basis": "PRICE_ONLY_EXCLUDES_DIVIDENDS" if rows else "NOT_RECORDED",
+        "feature_pit_status": "NOT_APPLICABLE" if rows else "NOT_RECORDED",
+        "convention": "Split-only derived closes use the last complete available week's share units. Ordinary dividend income is excluded from the signal feature; portfolio dividend rights and cash follow the separate recorded accounting model. Raw observations determine fills, liquidity and marks. Derived features are not observed quotes or certified PIT data.",
+        "artifact": "weekly_price_features.csv" if item.get("artifact_schema_version", 1) >= 4 else "Per-signal feature_evidence when recorded; no separate legacy feature export"}
+
+
 def write_report(path: Path, item: dict[str, Any]) -> None:
     c, r = item["config"], item["result"]
     analysis = item["analysis"]
@@ -36,6 +52,7 @@ def write_report(path: Path, item: dict[str, Any]) -> None:
         "Strategy Definition": json.dumps({"strategy": c["strategy"], "symbols": c["symbols"], "start": r["equity"][0]["session"], "end": r["equity"][-1]["session"]}, indent=2),
         "Backtest Assumptions": json.dumps(c["replay"], indent=2),
         "Dividend Accounting": json.dumps(dividend_accounting_evidence(item), indent=2),
+        "Weekly Signal Price Features": json.dumps(weekly_feature_evidence(item), indent=2),
         "Performance and Risk": json.dumps({k: analysis.get(k) for k in ("metrics", "conventions", "benchmark_status", "drawdown_episodes")}, indent=2),
         "Matched Trades and Accounting Contribution": json.dumps({"status": trades.get("status", "NOT_EVALUATED"), "conventions": trades.get("conventions"), "reconciliation": trades.get("reconciliation"), "assets": trades.get("asset_attribution")}, indent=2),
         "Weekly Research View": json.dumps({"status": weekly.get("status", "NOT_EVALUATED"), "metrics": weekly.get("metrics"), "conventions": weekly.get("conventions"), "partial_intervals": weekly.get("weekly_equity", {}).get("partial_intervals", []), "inception_return_through_last_completed_week": weekly.get("weekly_equity", {}).get("inception_return_through_last_completed_week"), "decision_frequency": c["replay"].get("decision_frequency", "DAILY"), "warnings": weekly.get("warnings", [])}, indent=2),
@@ -67,7 +84,8 @@ def write_report(path: Path, item: dict[str, Any]) -> None:
         provider = html.escape(", ".join(item["dataset_manifest"]["provider"]))
         costs = ", ".join(f"{k}={c['replay'][k]}" for k in ("fee_bps", "slippage_bps", "spread_bps"))
         model = html.escape(c["replay"].get("dividend_accounting", "LEGACY_EX_DATE_CASH"))
-        fig.update_layout(template="plotly_dark", title=f"{r['acceptance']} · {item['return_basis']} · {c['strategy']} · {item['experiment_id'][:8]}<br>{r['equity'][0]['session']} — {r['equity'][-1]['session']} · UTC · {provider}<br>{costs} · benchmark {c['benchmark']} · {c['validation']}<br>Dividend model: {model}", height=720)
+        feature = html.escape(c["replay"].get("weekly_feature_policy", "LEGACY_REJECT_RAW_ACTIONS"))
+        fig.update_layout(template="plotly_dark", title=f"{r['acceptance']} · {item['return_basis']} · {c['strategy']} · {item['experiment_id'][:8]}<br>{r['equity'][0]['session']} — {r['equity'][-1]['session']} · UTC · {provider}<br>{costs} · benchmark {c['benchmark']} · {c['validation']}<br>Dividend model: {model} · signal policy: {feature}", height=720)
         fig.update_yaxes(title_text="NAV / initial cash", row=1, col=1)
         fig.update_yaxes(title_text="Drawdown", tickformat=".0%", row=2, col=1)
         chart = fig.to_html(full_html=False, include_plotlyjs=True)

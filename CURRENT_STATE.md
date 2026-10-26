@@ -1,5 +1,9 @@
 # Current state (2026-10-26)
 
+## Current RAW weekly continuation — 2026-10-26
+
+Full goal ACTIVE. Final source1824b28cee25aaa1a585553b3f6c030eaab244d579c27346b35a771da102afee (62files) passed434 full tests, Ruff/Pyright/lock, source-identical wheel/sdist/clean base installation,32-tool MCP, actual eight-page/mobile browser14captures and final independent12 targets. Eight retained service cases passed11criteria: one expected default refusal, seven completions, exact repeat, raw next-open execution and separate dividend claims/cash. Explicit RAW_SPLIT_PRICE_ONLY_V1 features are derived price inputs, not observed/PIT or total-return prices. Artifact schema4 seals per-signal CSV; defaults/legacy remain unchanged. See docs/RAW_WEEKLY_ACCEPTANCE_20261026.md and immutable acceptance.json. Current publication/hosted CI is a distinct gate; previous397-test CI does not certify this source. Earlier checkpoints below are historical.
+
 ## Latest interrupted-plan reconciliation checkpoint
 
 Published qualified commit a4c5f2e53575b6a86e862aa64251de2483b86ba0 has matching remote SHA. [CI40312008132](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40312008132) passed397 Linux tests and every quality/build/wheel/MCP/dependency/secret gate. Its installed LF source hash eb95dc08e3be43f543261860fe627a50737f01162511aebc23a54bb5f22d5713 matches Git source blobs; Windows0754 byte identity is separately qualified. Nine clean-commit financial outputs and three recovery classifications reproduced exactly within the same environment; no missing trial ran. Latest evidence is qualification-summary.json plus hosted-ci/committed-reproduction in the reconciliation bundle, superseding earlier pending gate snapshots without rewriting them. Subsequent evidence-only HEAD CI is observed separately. Next RAW-weekly feature work is isolated in runtime/renaissance-raw-weekly-20261026 from this commit; its design is not an accepted implementation.

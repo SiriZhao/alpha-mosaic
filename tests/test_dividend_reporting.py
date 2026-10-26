@@ -52,7 +52,7 @@ def test_terminal_shows_unpaid_claims_and_separate_market_weight_from_a_real_exp
     assert not app.exception
     assert any(tab.label == "Dividend accounting" for tab in app.tabs)
     assert any(metric.label == "Unpaid dividend claims" and metric.value == "$10.00" for metric in app.metric)
-    disclosure = json.loads(app.json[-1].value)
+    disclosure = json.loads(next(tab for tab in app.tabs if tab.label == "Dividend accounting").json[0].value)
     assert sum(disclosure["final_receivables"].values()) == 10
     assert disclosure["payments"] == []
     assert disclosure["dividend_accounting"] == "PAY_DATE_RECEIVABLE"

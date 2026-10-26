@@ -1,5 +1,9 @@
 # Changelog
 
+## Opt-in RAW weekly price features — 2026-10-26
+
+Added typed split-only completed-week price inputs, bounded dependencies, per-signal evidence and sealed schema4 CSV. Reports and terminal expose price-vs-portfolio accounting and readable share-unit/split tables. Default RAW refusal, passive benchmark truthfulness and legacy records remain. Eight reproducible service records retain failures;434 full tests, final independent12, clean base-wheel32MCP and actual browser gates passed locally. Full objective and real-data acceptance remain incomplete.
+
 ## Explicit interrupted-plan reconciliation — 2026-10-26
 
 Added append-only dispatch fencing, separate original/recovered/unresolved attempt evidence, idempotent interrupted reconciliation and bounded late-response snapshots without replay or invented process exit. CLI, asynchronous MCP and nonblocking terminal actions share ApplicationService; corrupt computed reports preserve a truthful saved audit. Repaired three semantic evidence contradictions beyond hash integrity and verified real owned-parent termination/lease release. Current local397-test/package/browser evidence is source-specific; full Renaissance acceptance and real-data qualification remain incomplete.

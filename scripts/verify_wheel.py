@@ -42,7 +42,11 @@ def verify() -> dict:
         raise AssertionError("base-wheel payment accounting cases failed")
     from run_reconciliation_cases import run as reconcile_cases
     recovery = reconcile_cases(Path("wheel-reconciliation-research"))
-    return {"status": "PASSED", "source_hash": result["reproducibility"]["source_hash"], "source_kind": result["reproducibility"]["source_kind"], "package_path": str(package), "python": sys.version.split()[0], "optional": optional, "experiment_id": result["experiment_id"], "plan_id": plan["plan_id"], "plan_status": state["status"], "fifo_reconciliation": result["analysis"]["trade_analysis"]["reconciliation"]["status"], "weekly_analysis": result["analysis"]["weekly"]["status"], "dividend_cases": len(dividends["cases"]), "dividend_plan": dividends["frozen_plan"], "unsupported_weekly_action_status": dividends["weekly_action_boundary"]["status"], "reconciliation_cases": len(recovery["cases"]), "reconciliation_new_experiments": recovery["reconciliation_experiments_executed"], "acceptance": result["acceptance"], "broker_enabled": False}
+    from run_raw_weekly_cases import run as raw_weekly_cases
+    weekly = raw_weekly_cases(Path("wheel-raw-weekly-research"))
+    if weekly["status"] != "PASSED":
+        raise AssertionError("base-wheel RAW weekly feature cases failed")
+    return {"status": "PASSED", "source_hash": result["reproducibility"]["source_hash"], "source_kind": result["reproducibility"]["source_kind"], "package_path": str(package), "python": sys.version.split()[0], "optional": optional, "experiment_id": result["experiment_id"], "plan_id": plan["plan_id"], "plan_status": state["status"], "fifo_reconciliation": result["analysis"]["trade_analysis"]["reconciliation"]["status"], "weekly_analysis": result["analysis"]["weekly"]["status"], "dividend_cases": len(dividends["cases"]), "dividend_plan": dividends["frozen_plan"], "unsupported_weekly_action_status": dividends["weekly_action_boundary"]["status"], "raw_weekly_cases": len(weekly["cases"]), "raw_weekly_checks": weekly["checks"], "reconciliation_cases": len(recovery["cases"]), "reconciliation_new_experiments": recovery["reconciliation_experiments_executed"], "acceptance": result["acceptance"], "broker_enabled": False}
 
 
 if __name__ == "__main__":

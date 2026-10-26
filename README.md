@@ -1,5 +1,7 @@
 # AlphaMosaic
 
+Latest RAW weekly continuation adds explicit split-only derived signal prices, separate raw execution and dividend accounting, per-signal sealed CSV and readable terminal evidence. Default RAW-action refusal stays in force. Current source passed434 full tests, final independent12 checks, clean base-wheel/32-tool MCP and eight-page browser QA. All examples remain FIXTURE software evidence; real/PIT qualification and full platform acceptance are incomplete. See [current acceptance](docs/RAW_WEEKLY_ACCEPTANCE_20261026.md). Run `uv run python scripts/run_raw_weekly_cases.py --home runtime/my-weekly-research` to create a new unique suite home.
+
 Latest continuation: explicit interrupted-plan reconciliation preserves original outcomes, matches sealed artifacts without inventing process success, and never reruns missing trials. CLI, bounded MCP jobs and the terminal share this operation.397 full tests, genuine owned-parent termination, fresh base-wheel/32-tool MCP and actual browser actions passed locally; see [reconciliation verification](docs/RESEARCH_RECONCILIATION_ACCEPTANCE_20261026.md) for current source and separate publication gates. Ordinary dividends retain earned claims and spendable cash separately. Strict real-data acceptance and the full Renaissance scope remain incomplete.
 
 ## Renaissance research milestone

@@ -1,5 +1,7 @@
 # Reproduce the local research prototype
 
+RAW weekly cases: `uv run python scripts/run_raw_weekly_cases.py --home runtime/my-weekly-research` prints a new unique child research_home and summary path. It retains the expected failed default guard plus seven completed momentum/trend/equal-weight/cost/repeat/unpaid cases, full configurations, raw datasets/actions, reports and sealed per-signal CSV. Point ALPHAMOSAIC_HOME at the printed child before opening the terminal or rerunning its config.json. Results remain FIXTURE; zero cost is only a control. See docs/RAW_WEEKLY_ACCEPTANCE_20261026.md for commands and source-specific gates.
+
 Explicit parent-loss/reconciliation software cases and a retained pending browser fixture:
 
 ```powershell

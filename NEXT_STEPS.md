@@ -1,5 +1,9 @@
 # Next steps
 
+## Current RAW weekly handoff
+
+Current source1824b28cee25aaa1a585553b3f6c030eaab244d579c27346b35a771da102afee passed434 tests, clean62-file wheel/base workflows,32MCP,14browser captures and independent final12. Core2b9e215 and runner6243966 are integrated asf7d61c2/2ecd699. Below isolated-handoff notes are historical; do not replay integration. Read docs/RAW_WEEKLY_ACCEPTANCE_20261026.md, current Git and hosted CI before continuing; publication remains source-specific. Highest-value next work: explicitly modeled cash/equal-weight benchmarks and compatible scenario workflows, then source-qualified exceptional action economics. Strict real licensed/PIT/universe/delisting qualification remains blocked. Full objective ACTIVE; no merge or full completion is implied.
+
 ## Active full-objective continuation
 
 Next isolated handoff is ready: runtime/renaissance-raw-weekly-20261026, branch codex/renaissance-raw-weekly-20261026, local commit2b9e21595f467e38121ec05971dd19828c5381df froma4c5f2e, clean/unpushed. Sourceef6079ec1f8527a97689c73a8ea60861f7d7e352272eaa55673a7702e103e402 (62files);189 compatibility cases and independent28 (including six runtime-only oracles) passed. Review actual six-path diff/contracts and runtime/raw-weekly-freeze-02.sha256 before integration; parent full regression/UI/report/package/CI remain pending. MAIN stays accepted0754; do not count this opt-in RAW feature as delivered yet. Independent oracles are retained at that worktree's runtime/independent_raw_weekly_review_001.py and JUnit independent-raw-weekly-001.xml.

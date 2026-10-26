@@ -1,5 +1,9 @@
 # Recoverable progress
 
+## RAW weekly feature integration — 2026-10-26
+
+Goal turn classification: PROGRESS. Reviewed isolated core2b9e215 and runner6243966 integrated asf7d61c2/2ecd699. Explicit derived split-only price inputs now have per-signal evidence, sealed schema4 CSV, policy disclosures and actual Strategy Lab submission/result/download paths. Final1824b28cee25aaa1a585553b3f6c030eaab244d579c27346b35a771da102afee passed434 full tests, independent12 final targets (earlier core28/integration30 scopes separate), Ruff/Pyright/lock, source-identical62-file clean base wheel,32MCP and14browser captures. All11 criteria passed across eight retained service cases; default failure stays visible. Screenshot inspection repaired nested split-object display. Initial selector/collection/path/sandbox errors remain; no assertion weakened. Predecessor display-source profile retained without optimization claim. Current commit publication/CI is separate; full objective ACTIVE. Earlier checkpoint text below is historical.
+
 ## Interrupted-plan reconciliation — 2026-10-26
 
 Next bounded core handoff completed separately: RAW-weekly opt-in derived close candidate2b9e215 in runtime/renaissance-raw-weekly-20261026 is clean/unpushed, sourceef6079ec1f8527a97689c73a8ea60861f7d7e352272eaa55673a7702e103e402,189 own compatibility tests plus independent28 (six extra oracles), no core blockers. No UI/docs edits or MAIN integration. Root still must inspect/integrate, retain independent tests and qualify complete source/package/browser/CI. Existing default rejection remains. Full goal ACTIVE; this is not a main-release capability.

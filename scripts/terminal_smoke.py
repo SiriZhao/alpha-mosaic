@@ -16,7 +16,7 @@ from playwright.sync_api import expect, sync_playwright
 from alphamosaic.experiments.runner import source_manifest
 
 
-def check(url: str, output: Path, compare_ids: list[str] | None = None, experiment_id: str | None = None, reconcile_plan_id: str | None = None, recovered_plan_id: str | None = None, focus_recovery: bool = False) -> dict:
+def check(url: str, output: Path, compare_ids: list[str] | None = None, experiment_id: str | None = None, reconcile_plan_id: str | None = None, recovered_plan_id: str | None = None, focus_recovery: bool = False, weekly_features: bool = False) -> dict:
     source_hash = source_manifest()["source_hash"]
     parsed = urlparse(url)
     if parsed.hostname not in {"localhost", "127.0.0.1"} or parsed.scheme != "http":
@@ -28,6 +28,8 @@ def check(url: str, output: Path, compare_ids: list[str] | None = None, experime
             raise ValueError("focused recovery QA requires an actual plan ID")
         pages = ["AI Research"]
     errors = []
+    if weekly_features and not experiment_id:
+        raise ValueError("weekly feature QA requires an actual completed experiment ID")
     extra_screenshots = 0
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -83,6 +85,20 @@ def check(url: str, output: Path, compare_ids: list[str] | None = None, experime
                 page.get_by_text("Unpaid dividend claims", exact=True).scroll_into_view_if_needed()
                 page.screenshot(path=str(output / "12-dividend-accounting.png"), full_page=True)
                 extra_screenshots += 1
+                if weekly_features:
+                    feature_tab = page.get_by_role("tab", name="Signal price features", exact=True)
+                    feature_tab.click()
+                    expect(feature_tab).to_have_attribute("aria-selected", "true")
+                    page.get_by_role("heading", name="Derived weekly signal prices", exact=True).wait_for()
+                    feature_panel = page.get_by_role("tabpanel", name="Signal price features", exact=True)
+                    disclosure = feature_panel.get_by_test_id("stJson")
+                    disclosure.locator(".collapsed-icon").first.click()
+                    expect(disclosure).to_contain_text("RECORDED_DERIVED_PRICE_FEATURES")
+                    feature_panel.get_by_test_id("stDataFrame").scroll_into_view_if_needed()
+                    page.screenshot(path=str(output / "16-derived-weekly-price-evidence.png"), full_page=True)
+                    extra_screenshots += 1
+            if label == "Reports" and weekly_features:
+                expect(page.get_by_role("button", name="Download weekly_price_features.csv", exact=True)).to_be_visible()
             if label == "Risk Lab" and experiment_id:
                 page.get_by_role("tab", name="Exposure and concentration", exact=True).click()
                 page.locator('[data-testid="stPlotlyChart"]').filter(visible=True).nth(1).scroll_into_view_if_needed()
@@ -141,6 +157,7 @@ def check(url: str, output: Path, compare_ids: list[str] | None = None, experime
     if source_manifest()["source_hash"] != source_hash:
         errors.append("Source changed during browser verification")
     result = {"status": "PASSED" if not errors else "FAILED", "viewer_source_hash": source_hash, "pages": pages, "browser_errors": errors, "screenshots": len(pages) + 1 + extra_screenshots, "comparison_selection": compare_ids or [], "result_selection": experiment_id, "reconciliation_action_plan": reconcile_plan_id, "recovered_artifact_plan": recovered_plan_id, "scope": "Focused recovery view and mobile degradation" if focus_recovery else "Navigation, render, populated local fixture reports, selected qualified comparison/result and explicit reconciliation action when requested, and mobile degradation; scrolled viewports where needed; not every interactive action"}
+    result["weekly_feature_evidence_checked"] = weekly_features
     (output / "browser-qa.json").write_text(json.dumps(result, indent=2))
     return result
 
@@ -156,6 +173,7 @@ if __name__ == "__main__":
     parser.add_argument("--reconcile-plan", help="Actual interrupted fixture plan to reconcile through the browser without rerunning trials")
     parser.add_argument("--recovered-plan", help="Actual reconciled plan with one recovered completed artifact to inspect")
     parser.add_argument("--focus-recovery", action="store_true", help="Verify only the recovery page and its readable records")
+    parser.add_argument("--weekly-features", action="store_true", help="Assert recorded derived feature evidence and its CSV download for the selected experiment")
     args = parser.parse_args()
     process = None
     try:
@@ -175,7 +193,7 @@ if __name__ == "__main__":
                     if time.monotonic() > deadline or process.poll() is not None:
                         raise RuntimeError("local terminal failed startup health check") from None
                     time.sleep(.2)
-        result = check(args.url, args.output, args.compare, args.experiment, args.reconcile_plan, args.recovered_plan, args.focus_recovery)
+        result = check(args.url, args.output, args.compare, args.experiment, args.reconcile_plan, args.recovered_plan, args.focus_recovery, args.weekly_features)
     finally:
         if process is not None:
             process.terminate()

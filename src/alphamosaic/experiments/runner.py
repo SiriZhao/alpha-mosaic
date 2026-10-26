@@ -144,6 +144,8 @@ class ExperimentStore:
                 required |= {"closed_lots.csv", "open_lots.csv", "asset_attribution.csv", "weekly_equity.csv"}
             if payload.get("artifact_schema_version", 1) >= 3:
                 required |= {"dividend_entitlements.csv", "dividend_payments.csv", "receivables.csv"}
+            if payload.get("artifact_schema_version", 1) >= 4:
+                required |= {"weekly_price_features.csv"}
         if not isinstance(manifest, dict) or not required <= manifest.keys():
             raise ValueError("incomplete experiment artifact manifest")
         for name, expected in manifest.items():
@@ -204,7 +206,7 @@ class ExperimentRunner:
         path.mkdir()
         started = time.perf_counter()
         payload: dict[str, Any] = {"experiment_id": experiment_id, "created_at": utc_now().isoformat(),
-            "artifact_schema_version": 3,
+            "artifact_schema_version": 4 if config.replay.weekly_feature_policy == "RAW_SPLIT_PRICE_ONLY_V1" else 3,
             "config": config.model_dump(mode="json"),
             "status": "RUNNING", "broker_enabled": False, "evidence_grade": "Exploratory", "validated_alpha": False}
         # An interrupted process leaves a visible RUNNING record; it never appears successful.
@@ -258,6 +260,10 @@ class ExperimentRunner:
                 _csv(path / f"{name}.csv", payload["result"].get(name, []))
             for name in ("dividend_entitlements", "dividend_payments"):
                 _csv(path / f"{name}.csv", payload["result"][name])
+            if payload["artifact_schema_version"] >= 4:
+                _csv(path / "weekly_price_features.csv", [{"signal_id": signal["signal_id"],
+                    "signal_generated_at": signal["generated_at"], **feature}
+                    for signal in payload["result"]["signals"] for feature in signal["feature_evidence"]])
             entitlements = {item["entitlement_id"]: item for item in payload["result"]["dividend_entitlements"]}
             _csv(path / "receivables.csv", [{"session": point["session"], "entitlement_id": key,
                 "symbol": entitlements[key]["symbol"], "amount": amount}

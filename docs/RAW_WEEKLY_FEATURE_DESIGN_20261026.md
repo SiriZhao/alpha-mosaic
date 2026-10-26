@@ -1,4 +1,6 @@
-# RAW weekly feature boundary — design, not implementation
+# RAW weekly feature boundary — preserved design
+
+Implementation is now integrated and locally qualified on final1824 source; see RAW_WEEKLY_ACCEPTANCE_20261026.md. The initial design/component handoff below is historical, not an instruction to replay integration. Full objective remains ACTIVE.
 
 Isolated implementation handoff now exists as2b9e21595f467e38121ec05971dd19828c5381df in runtime/renaissance-raw-weekly-20261026 (basea4c5f2e). Its62-file sourceef6079ec1f8527a97689c73a8ea60861f7d7e352272eaa55673a7702e103e402 passed189 compatibility controls and independent28 targeted cases with no blockers. It covers existing weekly equal-weight/momentum/trend only. MAIN integration/full regression/UI/report/package/CI are not yet complete; the design and local component results must not be presented as an accepted platform feature. See NEXT_STEPS.md for preserved proof paths.
 

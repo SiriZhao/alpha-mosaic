@@ -123,8 +123,11 @@ elif page == "Strategy Lab":
             weekly_strategy = strategy.startswith("weekly_")
             lookback = 63
             weekly_parameters = {"lookback_weeks": 12, "trend_short_weeks": 4, "trend_long_weeks": 12}
+            weekly_feature_policy = "LEGACY_REJECT_RAW_ACTIONS"
             if weekly_strategy:
                 st.caption("Signals use completed natural weeks; execution remains at a later daily open.")
+                weekly_feature_policy = st.selectbox("Weekly signal price policy", ["LEGACY_REJECT_RAW_ACTIONS", "RAW_SPLIT_PRICE_ONLY_V1"])
+                st.caption("RAW_SPLIT_PRICE_ONLY_V1 derives split-only price features. Dividends are excluded from the signal; separate portfolio accounting retains earned income. Derived values are not observed quotes or certified PIT data. The default refuses RAW corporate-action weekly research.")
                 if strategy == "weekly_momentum":
                     weekly_parameters["lookback_weeks"] = int(st.number_input("Lookback weeks", 2, 104, 12))
                 if strategy == "weekly_trend":
@@ -141,7 +144,7 @@ elif page == "Strategy Lab":
             else:
                 from alphamosaic.backtesting.models import preset_config
                 replay_config = preset_config(costs).model_dump(mode="json")
-                replay_config.update(lookback=int(lookback), decision_frequency="WEEKLY" if weekly_strategy else "DAILY", weekly_parameters=weekly_parameters)
+                replay_config.update(lookback=int(lookback), decision_frequency="WEEKLY" if weekly_strategy else "DAILY", weekly_parameters=weekly_parameters, weekly_feature_policy=weekly_feature_policy)
                 config = {"dataset_id": dataset_id, "strategy": strategy, "symbols": symbols, "benchmark": benchmark, "start": str(start), "end": str(end), "question": question, "replay": replay_config}
                 st.session_state.job = executor.submit(service.research_experiment, config)
         if "job" in st.session_state:
@@ -250,7 +253,7 @@ else:
             if page == "Backtest Results":
                 st.json(item["analysis"], expanded=False)
             if page == "Backtest Results":
-                tabs = st.tabs(["Fills", "Orders", "Positions", "Cash ledger", "Warnings", "Closed FIFO matches", "Asset accounting", "Weekly view", "Dividend accounting"])
+                tabs = st.tabs(["Fills", "Orders", "Positions", "Cash ledger", "Warnings", "Closed FIFO matches", "Asset accounting", "Weekly view", "Dividend accounting", "Signal price features"])
                 for tab, key in zip(tabs[:5], ["fills", "orders", "equity", "cash_ledger", "diagnostics"], strict=True):
                     tab.dataframe(item["result"].get(key, []), width="stretch")
                 trades = item["analysis"].get("trade_analysis", {})
@@ -289,6 +292,26 @@ else:
                         else:
                             st.info("No dividend cash payments in this evaluated period; inspect outstanding claims separately.")
                     st.json(dividend_evidence, expanded=False)
+                with tabs[9]:
+                    from alphamosaic.reporting.research import weekly_feature_evidence
+                    feature_evidence = weekly_feature_evidence(item)
+                    st.subheader("Derived weekly signal prices")
+                    st.caption(feature_evidence["convention"])
+                    st.json(feature_evidence, expanded=False)
+                    feature_rows = [{"Signal": signal["signal_id"], "Instrument": feature["symbol"],
+                        "Week ending": feature["last_session"], "Share-unit anchor": feature["unit_anchor"],
+                        "Price (USD/anchor share)": feature["close"],
+                        "Applied splits (new/old shares)": "; ".join(f"{split['effective_date']}: {split['ratio']:g}"
+                            for split in feature["applied_splits"]) or "None",
+                        "Decision (UTC)": feature["decision_at"], "Evidence": feature["evidence_kind"],
+                        "Price basis": feature["return_basis"], "Parent quality": feature["parent_data_quality"],
+                        "Dependency fingerprint": feature["dependency_fingerprint"],
+                        "Input fingerprints": json.dumps(feature["input_row_fingerprints"])}
+                        for signal in item["result"].get("signals", []) for feature in signal.get("feature_evidence", [])]
+                    if feature_rows:
+                        st.dataframe(feature_rows, width="stretch", hide_index=True)
+                    else:
+                        st.info("No derived price features were recorded for this experiment; the requested policy alone does not prove consumption.")
             else:
                 risk_views(item)
                 st.warning("Cost stress is a separate experiment. Factor causality, capacity certification and executable opening liquidity remain unverified.")
@@ -296,4 +319,6 @@ else:
             path = service.experiment_runner().store.path(item["experiment_id"])
             for name, mime in (("report.html", "text/html"), ("report.md", "text/markdown"), ("experiment.json", "application/json")):
                 st.download_button("Download " + name, (path / name).read_bytes(), file_name=name, mime=mime)
+            if item.get("artifact_schema_version", 1) >= 4:
+                st.download_button("Download weekly_price_features.csv", (path / "weekly_price_features.csv").read_bytes(), file_name="weekly_price_features.csv", mime="text/csv")
             st.markdown((path / "report.md").read_text(encoding="utf-8"))

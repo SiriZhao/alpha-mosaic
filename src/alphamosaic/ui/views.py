@@ -21,7 +21,8 @@ def evidence_caption(item: dict[str, Any]) -> str:
         f"dataset {config['dataset_id']} · experiment {item['experiment_id']} · "
         f"benchmark {config['benchmark']} · fees/slippage/spread bps "
         f"{costs.get('fee_bps')}/{costs.get('slippage_bps')}/{costs.get('spread_bps')} · "
-        f"dividends {costs.get('dividend_accounting', 'LEGACY_EX_DATE_CASH')}"
+        f"dividends {costs.get('dividend_accounting', 'LEGACY_EX_DATE_CASH')} · "
+        f"signal policy {costs.get('weekly_feature_policy', 'LEGACY_REJECT_RAW_ACTIONS')}"
     )
 
 
@@ -37,6 +38,7 @@ def qualify_figure(fig: go.Figure, items: list[dict[str, Any]]) -> None:
         f"Experiment {item['experiment_id']} · fees/slippage/spread bps {costs.get('fee_bps')}/{costs.get('slippage_bps')}/{costs.get('spread_bps')}"
         if len(items) == 1 else "Each legend records its experiment and fee/slippage/spread bps; full configurations and provenance accompany the chart.",
         f"Dividend model: {costs.get('dividend_accounting', 'LEGACY_EX_DATE_CASH')}",
+        f"Signal policy: {costs.get('weekly_feature_policy', 'LEGACY_REJECT_RAW_ACTIONS')}",
     ]
     fig.add_annotation(x=0, y=-0.22, xref="paper", yref="paper", xanchor="left", yanchor="top",
                        text="<br>".join(escape(line) for line in lines), showarrow=False, align="left", font=dict(size=10))

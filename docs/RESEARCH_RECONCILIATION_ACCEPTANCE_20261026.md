@@ -4,6 +4,8 @@ Status: **Implemented & locally verified within the explicit contract**. Full Re
 
 Source SHA256: `0754fabeee4494cff23fbf0ec5ec325972b07138ce7fbfae27c5a8419e05f1f9`.
 
+This is the actual Windows-checkout/package byte hash. Git's normalized source-blob hash is eb95dc08e3be43f543261860fe627a50737f01162511aebc23a54bb5f22d5713; all49 differing files were verified to differ only in line endings. Hosted Linux/source identity is captured separately from local byte qualification. No cross-platform exact-result claim or silent relaxation of source-comparison gates is introduced.
+
 ## Behavior and evidence boundaries
 
 An explicit reconciliation acquires the plan and global execution OS leases, in that order. A busy lease refuses the operation without inferring process liveness from a file, PID string or timestamp. A durable RECONCILIATION_STARTED fence prevents a delayed child from creating an experiment under the same global lease. Existing call/result events and experiment files are preserved.

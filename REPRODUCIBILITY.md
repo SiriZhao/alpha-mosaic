@@ -55,6 +55,8 @@ uv run python scripts/mcp_smoke.py --home runtime/mcp-check
 
 Substitute the actual generated ID. Source hashes use canonical relative POSIX paths; package versions/lock hash/Git dirty state are recorded. A source change during computation fails the run. Disk fingerprints cannot certify old in-memory imports: restart after any code change. Wheel installs may have no Git checkout/lock and record unavailable fields explicitly.
 
+Source fingerprints currently hash actual Python file bytes, including line endings. The qualified Windows checkout hash0754fabeee4494cff23fbf0ec5ec325972b07138ce7fbfae27c5a8419e05f1f9 and its Git-blob/LF hash eb95dc08e3be43f543261860fe627a50737f01162511aebc23a54bb5f22d5713 differ in49 files solely by CRLF/LF. Do not relabel one as the other's byte-level test. Hosted wheel smoke now logs its actual installed source hash separately. Strict comparisons continue to reject different source hashes; portable canonical source identity and stronger frozen-environment qualification require a versioned design, not silently weakening that gate. See docs/evidence/research-reconciliation-20261026/source-hash-provenance.json.
+
 Optional browser verification, after installing Playwright's browser locally:
 
 ```powershell

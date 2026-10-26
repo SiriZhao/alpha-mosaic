@@ -27,6 +27,7 @@ from alphamosaic.backtesting.strategies import StrategyRegistry
 from alphamosaic.common.locking import exclusive_lease
 from alphamosaic.common.paths import unredirected
 from alphamosaic.core.contracts import Contract, utc_now
+from alphamosaic.data.basis import market_return_basis
 from alphamosaic.data.datasets import DatasetStore
 from alphamosaic.evaluation.analytics import analyze
 from alphamosaic.evaluation.scientific import HoldoutAudit
@@ -225,9 +226,9 @@ class ExperimentRunner:
             benchmark_data = subset(data, [config.benchmark])
             benchmark = PaperReplayEngine().run(benchmark_data, registry.get("buy_and_hold"), "buy_and_hold",
                                                config.replay, config.start, config.end)
-            policies = {b.adjustment_policy for bars in data.bars.values() for b in bars}
-            basis = "RAW_WITH_CASH_ACTIONS" if policies == {"RAW"} else "TOTAL_RETURN" if policies == {"TOTAL_RETURN"} else "PRICE" if policies == {"SPLIT"} else None
-            analysis = analyze(result, benchmark, return_basis=basis, benchmark_return_basis=basis)
+            basis = market_return_basis(selected.bars)
+            benchmark_basis = market_return_basis(benchmark_data.bars)
+            analysis = analyze(result, benchmark, return_basis=basis, benchmark_return_basis=benchmark_basis)
             trades = analyze_trades(result, selected)
             if trades["status"] != "VERIFIED":
                 payload["rejected_result"] = result.model_dump(mode="json")
@@ -238,12 +239,12 @@ class ExperimentRunner:
             analysis["attribution"]["asset_pnl"] = trades["asset_attribution"]
             analysis["warnings"] = [w for w in analysis["warnings"] if not w.startswith("Trade statistics requiring matched closed lots are unavailable")]
             analysis["warnings"].extend(trades["warnings"])
-            analysis["weekly"] = analyze_weekly(result, benchmark_result=benchmark, return_basis=basis, benchmark_return_basis=basis)
+            analysis["weekly"] = analyze_weekly(result, benchmark_result=benchmark, return_basis=basis, benchmark_return_basis=benchmark_basis)
             if source_manifest()["source_hash"] != payload["reproducibility"]["source_hash"]:
                 raise ValueError("SOURCE_CHANGED_DURING_RUN: freeze code and restart service")
             payload.update(status="COMPLETED", acceptance=result.acceptance,
                 dataset_hash=dataset_manifest["dataset_hash"], dataset_manifest=dataset_manifest,
-                return_basis=basis, result=result.model_dump(mode="json"),
+                return_basis=basis, benchmark_return_basis=benchmark_basis, result=result.model_dump(mode="json"),
                 benchmark_result=benchmark.model_dump(mode="json"), analysis=analysis,
                 warnings=list(dict.fromkeys([*result.diagnostics, *analysis.get("warnings", []),
                     "No demonstrated alpha; fixed historical rules are research diagnostics",

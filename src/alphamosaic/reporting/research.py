@@ -48,7 +48,7 @@ def write_report(path: Path, item: dict[str, Any]) -> None:
     sections = {
         "Executive Summary": f"Research only. {r['acceptance']}. No demonstrated alpha. Experiment {item['experiment_id']}.",
         "Research Question": c["question"],
-        "Data & Provenance": json.dumps({"dataset_id": c["dataset_id"], "hash": item["dataset_hash"], "basis": item["return_basis"], "dataset": item["dataset_manifest"], "code": code}, indent=2),
+        "Data & Provenance": json.dumps({"dataset_id": c["dataset_id"], "hash": item["dataset_hash"], "basis": item["return_basis"], "benchmark_basis": item.get("benchmark_return_basis", "NOT_RECORDED"), "dataset": item["dataset_manifest"], "code": code}, indent=2),
         "Strategy Definition": json.dumps({"strategy": c["strategy"], "symbols": c["symbols"], "start": r["equity"][0]["session"], "end": r["equity"][-1]["session"]}, indent=2),
         "Backtest Assumptions": json.dumps(c["replay"], indent=2),
         "Dividend Accounting": json.dumps(dividend_accounting_evidence(item), indent=2),

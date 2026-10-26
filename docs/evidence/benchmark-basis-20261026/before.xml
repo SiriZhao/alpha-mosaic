@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="3" time="9.346" timestamp="2026-10-26T21:12:48.864177+08:00" hostname="YOGA"><testcase classname="tests.test_benchmark_basis_selection" name="test_unselected_asset_does_not_poison_matching_raw_research_basis" time="2.223"><failure message="AssertionError: assert None == 'RAW_WITH_CASH_ACTIONS'">tmp_path = WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-benchmark-integration-20261026/runtime/pytest-basis-before-001/test_unselected_asset_does_not0')
+
+    def test_unselected_asset_does_not_poison_matching_raw_research_basis(tmp_path: Path) -&gt; None:
+        service = ApplicationService(tmp_path)
+        item = service.research_experiment({"dataset_id": _registered(service), "strategy": "buy_and_hold",
+            "symbols": ["SPY"], "benchmark": "QQQM"})
+        assert item["status"] == "COMPLETED", item.get("error")
+&gt;       assert item["return_basis"] == "RAW_WITH_CASH_ACTIONS"
+E       AssertionError: assert None == 'RAW_WITH_CASH_ACTIONS'
+
+tests\test_benchmark_basis_selection.py:22: AssertionError</failure></testcase><testcase classname="tests.test_benchmark_basis_selection" name="test_disjoint_asset_basis_mismatch_stays_explicit_and_uncompared" time="1.396"><failure message="AssertionError: assert (None == 'RAW_WITH_CASH_ACTIONS')">tmp_path = WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-benchmark-integration-20261026/runtime/pytest-basis-before-001/test_disjoint_asset_basis_mism0')
+
+    def test_disjoint_asset_basis_mismatch_stays_explicit_and_uncompared(tmp_path: Path) -&gt; None:
+        service = ApplicationService(tmp_path)
+        item = service.research_experiment({"dataset_id": _registered(service), "strategy": "buy_and_hold",
+            "symbols": ["SPY"], "benchmark": "TLT"})
+        assert item["status"] == "COMPLETED", item.get("error")
+&gt;       assert item["return_basis"] == "RAW_WITH_CASH_ACTIONS" and item["benchmark_return_basis"] == "PRICE"
+E       AssertionError: assert (None == 'RAW_WITH_CASH_ACTIONS')
+
+tests\test_benchmark_basis_selection.py:33: AssertionError</failure></testcase><testcase classname="tests.test_benchmark_basis_selection" name="test_mixed_selected_basis_is_not_assigned_the_benchmark_basis" time="1.363"><failure message="KeyError: 'benchmark_return_basis'">tmp_path = WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-benchmark-integration-20261026/runtime/pytest-basis-before-001/test_mixed_selected_basis_is_n0')
+
+    def test_mixed_selected_basis_is_not_assigned_the_benchmark_basis(tmp_path: Path) -&gt; None:
+        service = ApplicationService(tmp_path)
+        item = service.research_experiment({"dataset_id": _registered(service), "strategy": "buy_and_hold",
+            "symbols": ["SPY", "TLT"], "benchmark": "QQQM"})
+        assert item["status"] == "COMPLETED", item.get("error")
+&gt;       assert item["return_basis"] is None and item["benchmark_return_basis"] == "RAW_WITH_CASH_ACTIONS"
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'benchmark_return_basis'
+
+tests\test_benchmark_basis_selection.py:44: KeyError</failure></testcase></testsuite></testsuites>

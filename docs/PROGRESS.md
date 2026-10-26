@@ -1,5 +1,7 @@
 # Recoverable progress
 
+Isolated benchmark-basis component source5f86be17f76e876e460af4775b1c6d69327fbc698480f5bbf670fb4630184608 passed42 targets and independent4. Three pre-fix failures proved whole-dataset convention propagation; strategy/benchmark bases now resolve per selected basket and legacy missing metadata stays NOT_RECORDED. See docs/BENCHMARK_BASIS_ACCEPTANCE_20261026.md. This is not published/main acceptance: full regression/package/UI/current CI remain pending. Explicit BenchmarkSpec/scheduler work remains separately in progress; full objective ACTIVE.
+
 Published8345b8e94918cdbb0410c9ea840f81c61a14fbf6 has matching remote SHA; [CI40325500811](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40325500811) passed434 tests and every quality/build/base-wheel/MCP/dependency/secret gate. Seven completed financial outputs and the expected default refusal reproduced exactly from the clean commit in the same environment. Hosted installed source0f213a895bb56ece42d60e6ed165aa8e6ea531d54b07c0c3e593aeee58724dcd matches raw Git blobs;51 Windows differences are line endings only. See qualification-summary.json, hosted-ci.json and committed-reproduction.json in the RAW-weekly bundle. Later evidence-only HEAD CI is observed separately.
 
 ## RAW weekly feature integration — 2026-10-26

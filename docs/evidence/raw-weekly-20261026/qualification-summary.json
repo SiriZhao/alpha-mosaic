@@ -1,0 +1,33 @@
+{
+  "status": "LOCAL_AND_HOSTED_SOFTWARE_CHECKPOINT_PASSED",
+  "full_goal": "ACTIVE_NOT_COMPLETE",
+  "published_commit": "8345b8e94918cdbb0410c9ea840f81c61a14fbf6",
+  "windows_source_hash": "1824b28cee25aaa1a585553b3f6c030eaab244d579c27346b35a771da102afee",
+  "hosted_and_git_source_hash": "0f213a895bb56ece42d60e6ed165aa8e6ea531d54b07c0c3e593aeee58724dcd",
+  "local_full_tests": 434,
+  "hosted_full_tests": 434,
+  "final_independent_targets": 12,
+  "source_package_python_files": 62,
+  "actual_mcp_tools": 32,
+  "browser_captures": 14,
+  "service_cases_retained": 8,
+  "completed_exact_financial_reruns": 7,
+  "expected_default_refusals": 1,
+  "source_line_ending_only_differences": 51,
+  "evidence": [
+    "acceptance.json",
+    "pytest.xml",
+    "independent-final.xml",
+    "browser.json",
+    "wheel.json",
+    "mcp.json",
+    "fixture-cases.json",
+    "hosted-ci.json",
+    "committed-reproduction.json",
+    "source-hash-provenance.json"
+  ],
+  "original_pending_and_error_snapshots": "Preserved; later qualification supersedes pending publication without rewriting initial local snapshot",
+  "real_data_qualification": "BLOCKED",
+  "remote_chatgpt": "NOT_VERIFIED",
+  "cross_platform_exact_financial_reproduction": "NOT_CLAIMED"
+}

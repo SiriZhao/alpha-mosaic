@@ -1,5 +1,7 @@
 # Explicit RAW weekly price-feature acceptance
 
+Published8345b8e94918cdbb0410c9ea840f81c61a14fbf6 has matching remote SHA; [CI40325500811](https://github.com/SiriZhao/alpha-mosaic/actions/runs/40325500811) passed434 tests and every quality/build/base-wheel/MCP/dependency/secret gate. Seven completed financial outputs and the expected default refusal reproduced exactly from the clean commit in the same environment. Hosted installed source0f213a895bb56ece42d60e6ed165aa8e6ea531d54b07c0c3e593aeee58724dcd matches raw Git blobs;51 Windows differences are line endings only. See qualification-summary.json, hosted-ci.json and committed-reproduction.json in the RAW-weekly bundle. Later evidence-only HEAD CI is observed separately.
+
 Full Renaissance objective remains ACTIVE. This is research software qualification on generated FIXTURE inputs, not real-market/PIT acceptance or evidence of alpha.
 
 The registered weekly equal-weight, momentum and trend rules can explicitly select `RAW_SPLIT_PRICE_ONLY_V1`. The default `LEGACY_REJECT_RAW_ACTIONS` refusal stays unchanged. Derived close(t) is raw close(t) divided by eligible subsequent split ratios through the last complete available week L. Shares are in L's units. A current partial-week or announced future action cannot change L. Dividend income is excluded from the price hypothesis; the independent ex-date receivable/pay-date cash model retains earned economic rights. No derived value becomes an observed quote, raw execution price or certified PIT series.

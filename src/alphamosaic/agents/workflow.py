@@ -189,7 +189,9 @@ class ResearchWorkflow:
         events = self.store.events(plan_id)
         self._validate_audit(plan, events)
         finished = [e for e in events if e["kind"] == "RUN_FINISHED"]
-        state = finished[-1]["payload"]["status"] if finished else "INCOMPLETE_OR_RUNNING" if events else "FROZEN"
+        reconciled = any(e["kind"] == "RECONCILIATION_FINISHED" for e in events)
+        reconciling = any(e["kind"] == "RECONCILIATION_STARTED" for e in events)
+        state = "INTERRUPTED" if reconciled else "RECONCILIATION_IN_PROGRESS" if reconciling else finished[-1]["payload"]["status"] if finished else "INCOMPLETE_OR_RUNNING" if events else "FROZEN"
         return {"plan": plan, "status": state, "events": events,
                 "process_liveness": "NOT_INFERRED_FROM_PERSISTED_STATE", "broker_enabled": False}
 
@@ -284,8 +286,19 @@ class ResearchWorkflow:
             if (item["config"].get("research_context") or {}).get("attempt_id") == context.attempt_id:
                 raise ValueError("research attempt already has an experiment; explicit reconciliation required")
 
+    def reconcile(self, plan_id: str) -> dict[str, Any]:
+        from alphamosaic.agents.reconciliation import reconcile
+        return reconcile(self, plan_id)
+
     @staticmethod
     def _validate_audit(plan: dict[str, Any], events: list[dict[str, Any]]) -> None:
+        fences = [i for i, event in enumerate(events) if event["kind"] == "RECONCILIATION_STARTED"]
+        if fences:
+            from alphamosaic.agents.reconciliation import validate_reconciliation
+            first = fences[0]
+            ResearchWorkflow._validate_audit(plan, events[:first])
+            validate_reconciliation(plan, events[:first], events[first:])
+            return
         calls: dict[str, int] = {}
         results: dict[str, str] = {}
         started = finished = False
@@ -369,6 +382,8 @@ class ResearchWorkflow:
                     "outcomes": results, "comparison": compare_experiments(completed) if completed else None,
                     "critics": [r["review"] for r in completed], "trials_attempted": len(results),
                     "selection": "ALL_OUTCOMES_RETAINED", "evidence_grade": "Exploratory", "automatic_promotion": False, "broker_enabled": False}
+        evidence["reconciliation"] = [e for e in state["events"] if e["kind"].startswith("RECONCILIATION_") or e["kind"] == "RECOVERED_ATTEMPT"]
+        evidence["trials_dispatched"] = sum(e["kind"] == "TOOL_CALL" for e in state["events"])
         if adapter is not None:
             text = adapter.explain(json.loads(canonical(evidence)))
             if not isinstance(text, str) or len(text) > 20000:

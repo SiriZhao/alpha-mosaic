@@ -75,6 +75,10 @@ class ApplicationService:
     def run_research_plan(self, plan_id: str) -> dict[str, Any]:
         return self.research_workflow().run(plan_id)
 
+    def reconcile_research_plan(self, plan_id: str) -> dict[str, Any]:
+        """Review and terminalize an interrupted local plan without executing a trial."""
+        return self.research_workflow().reconcile(plan_id)
+
     def research_plan(self, plan_id: str) -> dict[str, Any]:
         return self.research_workflow().status(plan_id)
 

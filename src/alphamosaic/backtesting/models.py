@@ -7,6 +7,7 @@ from typing import Literal, Self
 from pydantic import Field, field_validator, model_validator
 
 from alphamosaic.core.contracts import Contract, CorporateAction, HistoricalBar, SecurityIdentity
+from alphamosaic.core.weekly_features import DerivedWeeklyClose
 
 
 class DatedSignal(Contract):
@@ -86,10 +87,13 @@ class ReplayConfig(Contract):
     rebalance_sessions: int = Field(default=21, ge=1, le=252)
     decision_frequency: Literal["DAILY", "WEEKLY"] = "DAILY"
     weekly_parameters: WeeklyStrategyParameters = Field(default_factory=WeeklyStrategyParameters)
+    weekly_feature_policy: Literal["LEGACY_REJECT_RAW_ACTIONS", "RAW_SPLIT_PRICE_ONLY_V1"] = "LEGACY_REJECT_RAW_ACTIONS"
     seed: int = 42
 
     @model_validator(mode="after")
     def accounting_model(self) -> Self:
+        if self.weekly_feature_policy == "RAW_SPLIT_PRICE_ONLY_V1" and self.decision_frequency != "WEEKLY":
+            raise ValueError("RAW weekly feature policy requires WEEKLY decisions")
         expected = "LEGACY_EX_DATE_CASH" if self.accounting_schema_version == 1 else "PAY_DATE_RECEIVABLE"
         if self.dividend_accounting != expected:
             raise ValueError("accounting schema and dividend model are contradictory")
@@ -131,6 +135,7 @@ class TargetAllocation(Contract):
     decision_at: datetime
     weights: dict[str, float]
     evidence_ids: list[str] = Field(default_factory=list)
+    feature_evidence: list[DerivedWeeklyClose] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def valid(self) -> Self:
@@ -162,6 +167,7 @@ class SignalEvent(Contract):
     generated_at: datetime
     weights: dict[str, float]
     evidence_ids: list[str] = Field(default_factory=list)
+    feature_evidence: list[DerivedWeeklyClose] = Field(default_factory=list)
 
 
 class OrderEvent(Contract):

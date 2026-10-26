@@ -21,6 +21,7 @@ from alphamosaic.backtesting.models import (
     TargetAllocation,
 )
 from alphamosaic.backtesting.strategies import Strategy
+from alphamosaic.backtesting.weekly_strategy import WeeklyBaselineStrategy
 from alphamosaic.core.contracts import DataQuality, HistoricalBar
 from alphamosaic.portfolio.construction import constrain_weights
 
@@ -261,8 +262,13 @@ class PaperReplayEngine:
             raise ValueError("insufficient replay sessions")
         first, last = selected[0], selected[-1]
         if config.decision_frequency == "WEEKLY" and name != "buy_and_hold":
-            if any(a.effective_date <= sessions[last] for a in data.actions):
+            if config.weekly_feature_policy == "LEGACY_REJECT_RAW_ACTIONS" and any(a.effective_date <= sessions[last] for a in data.actions):
                 raise ValueError("weekly RAW corporate-action research requires a reviewed adjustment model")
+            if config.weekly_feature_policy == "RAW_SPLIT_PRICE_ONLY_V1":
+                if not isinstance(strategy, WeeklyBaselineStrategy):
+                    raise ValueError("RAW weekly features require a registered typed weekly strategy")
+                flags.extend(["RAW_SPLIT_PRICE_ONLY_V1_DERIVED_FEATURE_NOT_OBSERVATION_OR_CERTIFIED_PIT",
+                    "WEEKLY_PRICE_HYPOTHESIS_EXCLUDES_DIVIDEND_INCOME"])
             flags.append("WEEKLY_COMPLETED_XNYS_WEEK_SIGNAL_NEXT_ELIGIBLE_DAILY_OPEN_FILL")
         cash = config.initial_cash
         positions = dict.fromkeys(data.bars, 0.0)
@@ -549,7 +555,10 @@ class PaperReplayEngine:
                 rebalance = not bought and not any(pending.values())
             if not rebalance:
                 continue
-            history = _causal_history(data, index + 1)
+            use_features = (config.weekly_feature_policy == "RAW_SPLIT_PRICE_ONLY_V1"
+                and isinstance(strategy, WeeklyBaselineStrategy))
+            history = ({s: bars[:index + 1] for s, bars in data.bars.items()}
+                if use_features else _causal_history(data, index + 1))
             at = closed
             if data.mode == "STRICT_PIT":
                 at = max([closed, *[b.known_at for rows in history.values() for b in rows]])
@@ -558,7 +567,11 @@ class PaperReplayEngine:
             if submitted >= eligible:
                 raise ValueError("look-ahead: history not available before execution")
             available_signals = [s for s in data.signals if s.known_at <= at <= s.valid_until]
-            target = strategy.allocation(history, available_signals, at, config)
+            if use_features and isinstance(strategy, WeeklyBaselineStrategy):
+                from alphamosaic.data.weekly_features import derive_raw_weekly_closes
+                target = strategy.allocation_features(derive_raw_weekly_closes(data, decision_at=at), at, config)
+            else:
+                target = strategy.allocation(history, available_signals, at, config)
             target = TargetAllocation.model_validate(target.model_dump())
             if target.decision_at > at or set(target.weights) - set(current):
                 raise ValueError("future or unknown target allocation")
@@ -572,6 +585,7 @@ class PaperReplayEngine:
                     generated_at=at,
                     weights=weights,
                     evidence_ids=target.evidence_ids,
+                    feature_evidence=target.feature_evidence,
                 )
             )
             event(at, "SIGNAL", signal_id)

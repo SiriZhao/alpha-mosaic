@@ -1,5 +1,13 @@
 # Next steps
 
+## Typed benchmark integration — 2026-10-27
+
+Full goal ACTIVE. BenchmarkSpecV1 is optional in ExperimentConfig and frozen research plans; legacy ticker configs serialize unchanged. ApplicationService persists cash/equal-weight references separately from benchmark_result, daily/weekly analytics distinguish model-assumption cash comparisons, and reports/terminal traces label typed references. Frozen cash plans/workers passed. Current source hash24a28b1f8cca6a09a0855409081fd1b719a52c5518fb28b8e5f18b68097a09c6 (65 Python files) passed447 full tests, 2 direct benchmark integration tests, 3 plan/worker integration tests, Ruff, Pyright and secret scan. Typed cash browser QA passed 12 captures with no browser errors. Second-model review was unavailable due capacity; real/PIT qualification remains blocked.
+
+## Typed benchmark integration — 2026-10-27
+
+Full goal ACTIVE. BenchmarkSpecV1 is now accepted as an optional ExperimentConfig reference while legacy benchmark ticker configs serialize unchanged. ApplicationService persists cash/equal-weight references separately from benchmark_result; daily and weekly analytics distinguish model-assumption cash comparisons from ordinary simulated market comparisons; reports and terminal chart labels handle typed references. Current source hash04b13c174888670389f507417b6dc7a2908bd725af5a4ed8f96ddf956d4a957c (65 Python files) passed446 full tests, 2 service integration tests, Ruff, Pyright and secret scan. Existing 7 benchmark-core tests and hand oracle remain evidence; second-model review was unavailable due capacity. Browser benchmark interaction and frozen-plan/worker benchmark wiring remain pending; real data/PIT qualification remains blocked.
+
 ## Benchmark reference continuation — 2026-10-27
 
 Full goal ACTIVE. Main source now includes typed BenchmarkSpecV1 cash-zero-interest and explicit equal-weight references plus legacy-preserving first-eligible-open scheduling. The exact selected-asset return-basis fix is integrated as9e3d80f. Current local source hash is b617f682003bebb246ef55e1de57a4cad2534d730d453922e0493e6979af13bc across65 Python files. Full regression passed444 tests; focused benchmark tests passed7; Ruff/Pyright/secret checks passed. A separate hand-oracle process passed flat cash, exact zero-cost shares, first-open phase, fee accounting and fail-closed configuration/grid paths with unchanged source fingerprints. A second model review was attempted but unavailable due model capacity; this is explicitly unverified. Core is not yet wired into ExperimentConfig/plans/workers/analytics/UI/reports and is not published or real-data qualified. See docs/BENCHMARK_REFERENCE_ACCEPTANCE_20261027.md and evidence/benchmark-reference-20261027.

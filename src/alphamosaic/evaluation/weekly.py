@@ -9,6 +9,7 @@ from typing import Any, Literal
 import exchange_calendars as xcals
 
 from alphamosaic.backtesting.models import EquityPoint, ReplayResult, dividend_accounting_signature
+from alphamosaic.core.benchmark_contracts import BenchmarkReference
 from alphamosaic.core.contracts import Contract
 from alphamosaic.data.weekly import aware_utc, sessions_of_week, week_start
 from alphamosaic.evaluation.analytics import benchmark_metrics, returns_metrics
@@ -48,6 +49,21 @@ class WeeklyEquitySeries(Contract):
     cutoff: datetime
     frequency: Literal["WEEKLY_XNYS"] = "WEEKLY_XNYS"
     periods_per_year: Literal[52] = 52
+
+
+def _reference_weekly_returns(reference: BenchmarkReference, series: WeeklyEquitySeries) -> tuple[list[tuple[date, date, date]], list[float]]:
+    by_session = {point.session: point.nav for point in reference.points}
+    reference_sessions = sorted(by_session)
+    keys: list[tuple[date, date, date]] = []
+    values: list[float] = []
+    for point in series.points:
+        if point.last_session not in by_session:
+            raise ValueError("benchmark reference is missing a weekly mark")
+        prior = [session for session in reference_sessions if session < point.first_session]
+        starting = by_session[prior[-1]] if prior else reference.spec.initial_cash
+        keys.append((point.week_start, point.first_session, point.last_session))
+        values.append(by_session[point.last_session] / starting - 1)
+    return keys, values
 
 
 def weekly_equity(result: ReplayResult, cutoff: datetime | None = None) -> WeeklyEquitySeries:
@@ -114,6 +130,7 @@ def analyze_weekly(
     cutoff: datetime | None = None,
     benchmark_result: ReplayResult | None = None,
     *,
+    benchmark_reference: BenchmarkReference | None = None,
     return_basis: str | None = None,
     benchmark_return_basis: str | None = None,
     rolling_weeks: int = 13,
@@ -135,6 +152,8 @@ def analyze_weekly(
         "Week-end sampled drawdown and volatility do not capture all intraweek daily losses; retain the daily risk report.",
         "Weekly NAV available_at is the simulated XNYS valuation time, not independently verified market-data availability or PIT certification.",
     ]
+    if benchmark_result is not None and benchmark_reference is not None:
+        raise ValueError("provide either benchmark_result or benchmark_reference")
     if benchmark_result is not None:
         benchmark = weekly_equity(benchmark_result, series.cutoff)
         allowed = {"PRICE", "TOTAL_RETURN", "RAW_WITH_CASH_ACTIONS"}
@@ -156,6 +175,29 @@ def analyze_weekly(
             status = "COMPARABLE_SIMULATED_WEEKLY_RETURNS"
             if result.config != benchmark_result.config:
                 warnings.append("Benchmark and strategy execution/cost configurations differ.")
+        if status.startswith("BLOCKED"):
+            warnings.append(status)
+    elif benchmark_reference is not None:
+        allowed = {"PRICE", "TOTAL_RETURN", "RAW_WITH_CASH_ACTIONS", "MODEL_ASSUMPTION_CASH_ZERO_INTEREST"}
+        if return_basis not in allowed or benchmark_return_basis not in allowed:
+            status = "BLOCKED_UNKNOWN_RETURN_BASIS"
+        elif benchmark_return_basis == "MODEL_ASSUMPTION_CASH_ZERO_INTEREST":
+            _, reference = _reference_weekly_returns(benchmark_reference, series)
+            if len(reference) != len(values):
+                status = "BLOCKED_UNALIGNED_WEEKS"
+            else:
+                metrics.update(benchmark_metrics(values, reference, periods_per_year=52))
+                status = "COMPARABLE_MODEL_ASSUMPTION_REFERENCE"
+                warnings.append("Weekly cash reference is a zero-interest model assumption, not a sourced risk-free series.")
+        elif return_basis != benchmark_return_basis:
+            status = "BLOCKED_RETURN_BASIS_MISMATCH"
+        else:
+            _, reference = _reference_weekly_returns(benchmark_reference, series)
+            if len(reference) != len(values):
+                status = "BLOCKED_UNALIGNED_WEEKS"
+            else:
+                metrics.update(benchmark_metrics(values, reference, periods_per_year=52))
+                status = "COMPARABLE_TYPED_REFERENCE"
         if status.startswith("BLOCKED"):
             warnings.append(status)
     rolling = []

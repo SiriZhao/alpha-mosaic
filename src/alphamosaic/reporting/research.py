@@ -6,6 +6,19 @@ from pathlib import Path
 from typing import Any
 
 
+def benchmark_display_points(item: dict[str, Any]) -> tuple[str, list[dict[str, Any]]] | None:
+    """Return chart points for either a replay benchmark or a typed reference."""
+    if item.get("benchmark_result") is not None:
+        result = item["benchmark_result"]
+        return str(item["config"].get("benchmark", "BENCHMARK")), result["equity"]
+    reference = item.get("benchmark_reference")
+    if reference is not None:
+        spec = reference["spec"]
+        return str(spec["name"]), [{"session": point["session"], "nav": point["nav"]}
+            for point in reference["points"]]
+    return None
+
+
 def dividend_accounting_evidence(item: dict[str, Any]) -> dict[str, Any]:
     """Describe recorded accounting semantics without filling absent legacy evidence."""
     config, result = item["config"]["replay"], item["result"]
@@ -71,8 +84,9 @@ def write_report(path: Path, item: dict[str, Any]) -> None:
         from plotly.subplots import make_subplots
         fig = make_subplots(rows=2, cols=1, shared_xaxes=True, row_heights=[0.7, 0.3], vertical_spacing=0.08)
         traces = [(c["strategy"], r["equity"])]
-        if item["analysis"]["benchmark_status"] == "COMPARABLE_SIMULATED_RETURNS":
-            traces.append((c["benchmark"], item["benchmark_result"]["equity"]))
+        benchmark_points = benchmark_display_points(item)
+        if benchmark_points is not None and item["analysis"]["benchmark_status"].startswith("COMPARABLE"):
+            traces.append(benchmark_points)
         for label, points in traces:
             fig.add_trace(go.Scatter(x=[p["session"] for p in points], y=[p["nav"] / c["replay"]["initial_cash"] for p in points], name=label), row=1, col=1)
         peak = c["replay"]["initial_cash"]
@@ -85,7 +99,8 @@ def write_report(path: Path, item: dict[str, Any]) -> None:
         costs = ", ".join(f"{k}={c['replay'][k]}" for k in ("fee_bps", "slippage_bps", "spread_bps"))
         model = html.escape(c["replay"].get("dividend_accounting", "LEGACY_EX_DATE_CASH"))
         feature = html.escape(c["replay"].get("weekly_feature_policy", "LEGACY_REJECT_RAW_ACTIONS"))
-        fig.update_layout(template="plotly_dark", title=f"{r['acceptance']} · {item['return_basis']} · {c['strategy']} · {item['experiment_id'][:8]}<br>{r['equity'][0]['session']} — {r['equity'][-1]['session']} · UTC · {provider}<br>{costs} · benchmark {c['benchmark']} · {c['validation']}<br>Dividend model: {model} · signal policy: {feature}", height=720)
+        benchmark = html.escape((c.get("benchmark_spec") or {}).get("name", c.get("benchmark", "NOT_RECORDED")))
+        fig.update_layout(template="plotly_dark", title=f"{r['acceptance']} · {item['return_basis']} · {c['strategy']} · {item['experiment_id'][:8]}<br>{r['equity'][0]['session']} — {r['equity'][-1]['session']} · UTC · {provider}<br>{costs} · benchmark {benchmark} · {c['validation']}<br>Dividend model: {model} · signal policy: {feature}", height=720)
         fig.update_yaxes(title_text="NAV / initial cash", row=1, col=1)
         fig.update_yaxes(title_text="Drawdown", tickformat=".0%", row=2, col=1)
         chart = fig.to_html(full_html=False, include_plotlyjs=True)

@@ -16,9 +16,11 @@ from uuid import uuid4
 
 from pydantic import Field, model_validator
 
+from alphamosaic.backtesting.benchmarks import run_benchmark
 from alphamosaic.backtesting.models import (
     ReplayConfig,
     ReplayDataset,
+    ReplayResult,
     dividend_accounting_signature,
     payment_replay_config,
 )
@@ -26,6 +28,7 @@ from alphamosaic.backtesting.replay import PaperReplayEngine
 from alphamosaic.backtesting.strategies import StrategyRegistry
 from alphamosaic.common.locking import exclusive_lease
 from alphamosaic.common.paths import unredirected
+from alphamosaic.core.benchmark_contracts import BenchmarkSpecV1
 from alphamosaic.core.contracts import Contract, utc_now
 from alphamosaic.data.basis import market_return_basis
 from alphamosaic.data.datasets import DatasetStore
@@ -54,6 +57,7 @@ class ExperimentConfig(Contract):
     strategy: str = Field(default="trend", max_length=50)
     symbols: list[str] = Field(default_factory=lambda: ["SPY"], min_length=1, max_length=10)
     benchmark: str = Field(default="SPY", pattern=r"^[A-Z][A-Z0-9.-]{0,14}$")
+    benchmark_spec: BenchmarkSpecV1 | None = Field(default=None, exclude_if=lambda value: value is None)
     question: str = Field(default="Does this fixed rule survive costs?", min_length=10, max_length=1000)
     replay: ReplayConfig = Field(default_factory=payment_replay_config)
     start: date | None = None
@@ -71,6 +75,10 @@ class ExperimentConfig(Contract):
             raise ValueError("duplicate symbols")
         if self.strategy.startswith("weekly_") and self.replay.decision_frequency != "WEEKLY":
             raise ValueError("weekly strategies require explicit WEEKLY decisions and weekly parameters")
+        if self.benchmark_spec is not None and self.benchmark != "SPY":
+            raise ValueError("benchmark_spec conflicts with an explicit legacy benchmark ticker")
+        if self.benchmark_spec is not None and self.benchmark_spec.initial_cash != self.replay.initial_cash:
+            raise ValueError("benchmark_spec initial_cash must match the strategy replay")
         return self
 
 
@@ -223,12 +231,29 @@ class ExperimentRunner:
             registry = StrategyRegistry()
             result = PaperReplayEngine().run(selected, registry.get(config.strategy), config.strategy,
                                             config.replay, config.start, config.end)
-            benchmark_data = subset(data, [config.benchmark])
-            benchmark = PaperReplayEngine().run(benchmark_data, registry.get("buy_and_hold"), "buy_and_hold",
-                                               config.replay, config.start, config.end)
             basis = market_return_basis(selected.bars)
-            benchmark_basis = market_return_basis(benchmark_data.bars)
-            analysis = analyze(result, benchmark, return_basis=basis, benchmark_return_basis=benchmark_basis)
+            benchmark: ReplayResult | None
+            benchmark_reference = None
+            if config.benchmark_spec is None:
+                benchmark_data = subset(data, [config.benchmark])
+                benchmark = PaperReplayEngine().run(benchmark_data, registry.get("buy_and_hold"), "buy_and_hold",
+                                                   config.replay, config.start, config.end)
+                benchmark_basis = market_return_basis(benchmark_data.bars)
+            else:
+                expected_sessions = tuple(point.session for point in result.equity)
+                if config.benchmark_spec.sessions != expected_sessions:
+                    raise ValueError("benchmark_spec sessions must match the strategy evaluation grid")
+                benchmark_data = None
+                if config.benchmark_spec.kind == "EQUAL_WEIGHT":
+                    benchmark_data = subset(data, list(config.benchmark_spec.symbols))
+                benchmark_reference = run_benchmark(config.benchmark_spec, benchmark_data)
+                benchmark = benchmark_reference.replay_result
+                benchmark_basis = ("MODEL_ASSUMPTION_CASH_ZERO_INTEREST"
+                    if config.benchmark_spec.kind == "CASH_ZERO_INTEREST"
+                    else market_return_basis(benchmark_data.bars if benchmark_data is not None else {}))
+            analysis = analyze(result, None if benchmark_reference is not None else benchmark,
+                benchmark_reference=benchmark_reference,
+                return_basis=basis, benchmark_return_basis=benchmark_basis)
             trades = analyze_trades(result, selected)
             if trades["status"] != "VERIFIED":
                 payload["rejected_result"] = result.model_dump(mode="json")
@@ -239,13 +264,18 @@ class ExperimentRunner:
             analysis["attribution"]["asset_pnl"] = trades["asset_attribution"]
             analysis["warnings"] = [w for w in analysis["warnings"] if not w.startswith("Trade statistics requiring matched closed lots are unavailable")]
             analysis["warnings"].extend(trades["warnings"])
-            analysis["weekly"] = analyze_weekly(result, benchmark_result=benchmark, return_basis=basis, benchmark_return_basis=benchmark_basis)
+            analysis["weekly"] = analyze_weekly(result,
+                benchmark_result=None if benchmark_reference is not None else benchmark,
+                benchmark_reference=benchmark_reference, return_basis=basis,
+                benchmark_return_basis=benchmark_basis)
             if source_manifest()["source_hash"] != payload["reproducibility"]["source_hash"]:
                 raise ValueError("SOURCE_CHANGED_DURING_RUN: freeze code and restart service")
             payload.update(status="COMPLETED", acceptance=result.acceptance,
                 dataset_hash=dataset_manifest["dataset_hash"], dataset_manifest=dataset_manifest,
                 return_basis=basis, benchmark_return_basis=benchmark_basis, result=result.model_dump(mode="json"),
-                benchmark_result=benchmark.model_dump(mode="json"), analysis=analysis,
+                benchmark_result=benchmark.model_dump(mode="json") if benchmark is not None else None,
+                benchmark_reference=benchmark_reference.model_dump(mode="json") if benchmark_reference is not None else None,
+                analysis=analysis,
                 warnings=list(dict.fromkeys([*result.diagnostics, *analysis.get("warnings", []),
                     "No demonstrated alpha; fixed historical rules are research diagnostics",
                     "Daily bars cannot establish executable opening-auction liquidity",

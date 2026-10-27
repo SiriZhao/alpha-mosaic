@@ -9,6 +9,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from alphamosaic.core.service import ApplicationService
+from alphamosaic.reporting.research import benchmark_display_points, dividend_accounting_evidence
 from alphamosaic.ui.views import comparison_views, evidence_caption, qualify_figure, risk_views
 
 st.set_page_config(page_title="AlphaMosaic Research", page_icon="◈", layout="wide")
@@ -37,8 +38,9 @@ def plot_result(item: dict[str, Any], risk: bool = False) -> None:
     st.caption(evidence_caption(item))
     fig = go.Figure()
     traces = [(config["strategy"], result["equity"])]
-    if item["analysis"]["benchmark_status"] == "COMPARABLE_SIMULATED_RETURNS":
-        traces.append((config["benchmark"], item["benchmark_result"]["equity"]))
+    benchmark_points = benchmark_display_points(item)
+    if benchmark_points is not None and item["analysis"]["benchmark_status"].startswith("COMPARABLE"):
+        traces.append(benchmark_points)
     else:
         st.warning("Benchmark comparison blocked: " + item["analysis"]["benchmark_status"])
     for label, points in traces:
@@ -116,7 +118,8 @@ elif page == "Strategy Lab":
         strategy = str(st.selectbox("Strategy", [r["name"] for r in service.research_strategies()]))
         with st.form("experiment"):
             symbols = st.multiselect("Assets", list(data.bars), default=[next(iter(data.bars))])
-            benchmark = st.selectbox("Benchmark", list(data.bars))
+            benchmark_mode = st.selectbox("Benchmark reference", ["Legacy ticker", "Zero-interest cash model", "Equal-weight basket"])
+            benchmark = st.selectbox("Benchmark ticker", list(data.bars)) if benchmark_mode == "Legacy ticker" else "SPY"
             period = next(iter(data.bars.values()))
             start = st.date_input("Evaluation start (earlier data is warmup)", value=period[min(80, len(period) - 2)].session, min_value=period[0].session, max_value=period[-2].session)
             end = st.date_input("Evaluation end", value=period[-1].session, min_value=period[1].session, max_value=period[-1].session)
@@ -142,10 +145,31 @@ elif page == "Strategy Lab":
             if "job" in st.session_state and not st.session_state.job.done():
                 st.warning("One experiment is already running.")
             else:
-                from alphamosaic.backtesting.models import preset_config
+                from alphamosaic.backtesting.models import ReplayConfig, preset_config
                 replay_config = preset_config(costs).model_dump(mode="json")
                 replay_config.update(lookback=int(lookback), decision_frequency="WEEKLY" if weekly_strategy else "DAILY", weekly_parameters=weekly_parameters, weekly_feature_policy=weekly_feature_policy)
                 config = {"dataset_id": dataset_id, "strategy": strategy, "symbols": symbols, "benchmark": benchmark, "start": str(start), "end": str(end), "question": question, "replay": replay_config}
+                if benchmark_mode != "Legacy ticker":
+                    from alphamosaic.backtesting.benchmarks import cash_zero_interest, equal_weight
+                    benchmark_symbols = symbols if benchmark_mode == "Equal-weight basket" else [symbols[0]] if symbols else []
+                    if not benchmark_symbols:
+                        st.error("Select at least one asset before creating a typed benchmark reference.")
+                        st.stop()
+                    benchmark_sessions = tuple(bar.session for bar in data.bars[benchmark_symbols[0]]
+                        if start <= bar.session <= end)
+                    benchmark_replay = ReplayConfig.model_validate(replay_config)
+                    if benchmark_mode == "Equal-weight basket" and weekly_strategy:
+                        benchmark_replay = benchmark_replay.model_copy(update={
+                            "decision_frequency": "DAILY",
+                            "weekly_feature_policy": "LEGACY_REJECT_RAW_ACTIONS",
+                        })
+                    if benchmark_mode == "Zero-interest cash model":
+                        spec = cash_zero_interest(benchmark_sessions, initial_cash=replay_config["initial_cash"],
+                            replay_config=benchmark_replay)
+                    else:
+                        spec = equal_weight(tuple(benchmark_symbols), benchmark_sessions,
+                            initial_cash=replay_config["initial_cash"], replay_config=benchmark_replay)
+                    config["benchmark_spec"] = spec.model_dump(mode="json")
                 st.session_state.job = executor.submit(service.research_experiment, config)
         if "job" in st.session_state:
             if st.session_state.job.done():
@@ -265,7 +289,6 @@ else:
                 weekly = item["analysis"].get("weekly", {})
                 tabs[7].caption("52 completed-week periods/year; boundary intervals and daily risk remain separate.")
                 tabs[7].json(weekly, expanded=False)
-                from alphamosaic.reporting.research import dividend_accounting_evidence
                 dividend_evidence = dividend_accounting_evidence(item)
                 with tabs[8]:
                     st.subheader("Dividend rights and cash availability")

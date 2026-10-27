@@ -13,13 +13,14 @@ def evidence_caption(item: dict[str, Any]) -> str:
     config, manifest = item["config"], item.get("dataset_manifest", {})
     points = item["result"]["equity"]
     costs = config["replay"]
+    benchmark = (config.get("benchmark_spec") or {}).get("name", config.get("benchmark", "NOT_RECORDED"))
     return (
         f"{item.get('acceptance', 'MISSING')} · {item.get('return_basis', 'MISSING')} · "
         f"{points[0]['session']} — {points[-1]['session']} · UTC · "
         f"provider {', '.join(manifest.get('provider', [])) or 'NOT_RECORDED'} · "
         f"dataset as-of {manifest.get('cutoff', 'NOT_RECORDED')} · "
         f"dataset {config['dataset_id']} · experiment {item['experiment_id']} · "
-        f"benchmark {config['benchmark']} · fees/slippage/spread bps "
+        f"benchmark {benchmark} · fees/slippage/spread bps "
         f"{costs.get('fee_bps')}/{costs.get('slippage_bps')}/{costs.get('spread_bps')} · "
         f"dividends {costs.get('dividend_accounting', 'LEGACY_EX_DATE_CASH')} · "
         f"signal policy {costs.get('weekly_feature_policy', 'LEGACY_REJECT_RAW_ACTIONS')}"
@@ -32,8 +33,9 @@ def qualify_figure(fig: go.Figure, items: list[dict[str, Any]]) -> None:
     points, config = item["result"]["equity"], item["config"]
     provider = ", ".join(item.get("dataset_manifest", {}).get("provider", [])) or "NOT_RECORDED"
     costs = config["replay"]
+    benchmark = (config.get("benchmark_spec") or {}).get("name", config.get("benchmark", "NOT_RECORDED"))
     lines = [
-        f"{item.get('acceptance', 'MISSING')} · {item.get('return_basis', 'MISSING')} · {points[0]['session']} — {points[-1]['session']} UTC · benchmark {config['benchmark']}",
+        f"{item.get('acceptance', 'MISSING')} · {item.get('return_basis', 'MISSING')} · {points[0]['session']} — {points[-1]['session']} UTC · benchmark {benchmark}",
         f"Provider {shorten(provider, width=85)} · dataset {config['dataset_id'][:12]}",
         f"Experiment {item['experiment_id']} · fees/slippage/spread bps {costs.get('fee_bps')}/{costs.get('slippage_bps')}/{costs.get('spread_bps')}"
         if len(items) == 1 else "Each legend records its experiment and fee/slippage/spread bps; full configurations and provenance accompany the chart.",

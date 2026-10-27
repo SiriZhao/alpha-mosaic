@@ -23,6 +23,7 @@ from alphamosaic.backtesting.models import WeeklyStrategyParameters, preset_conf
 from alphamosaic.backtesting.strategies import StrategyRegistry
 from alphamosaic.common.locking import exclusive_lease
 from alphamosaic.common.paths import contained_child, unredirected
+from alphamosaic.core.benchmark_contracts import BenchmarkSpecV1
 from alphamosaic.core.contracts import Contract, utc_now
 from alphamosaic.data.datasets import DatasetStore
 from alphamosaic.experiments.runner import ExperimentConfig, canonical, digest, source_manifest
@@ -35,6 +36,7 @@ class ResearchPlanRequest(Contract):
     question: str = Field(min_length=10, max_length=1000)
     symbols: list[str] = Field(default_factory=lambda: ["SPY"], min_length=1, max_length=10)
     benchmark: str = Field(default="SPY", pattern=r"^[A-Z][A-Z0-9.-]{0,14}$")
+    benchmark_spec: BenchmarkSpecV1 | None = Field(default=None, exclude_if=lambda value: value is None)
     strategies: list[str] = Field(default_factory=lambda: ["buy_and_hold", "trend"], min_length=1, max_length=3)
     cost_scenarios: list[Literal["realistic", "stress", "zero"]] = Field(default_factory=lambda: ["realistic", "stress"], min_length=1, max_length=3)
     start: date | None = None
@@ -54,6 +56,8 @@ class ResearchPlanRequest(Contract):
             raise ValueError("a realistic-cost primary case is required")
         for name in self.strategies:
             StrategyRegistry().get(name)
+        if self.benchmark_spec is not None and self.benchmark != "SPY":
+            raise ValueError("benchmark_spec conflicts with an explicit legacy benchmark ticker")
         return self
 
 
@@ -163,7 +167,8 @@ class ResearchWorkflow:
         request = ResearchPlanRequest.model_validate(request.model_dump())
         manifest = self.datasets.manifest(request.dataset_id)
         data = self.datasets.load(request.dataset_id)
-        if set([*request.symbols, request.benchmark]) - data.bars.keys():
+        benchmark_symbols = list(request.benchmark_spec.symbols) if request.benchmark_spec is not None and request.benchmark_spec.kind == "EQUAL_WEIGHT" else [request.benchmark]
+        if set([*request.symbols, *benchmark_symbols]) - data.bars.keys():
             raise ValueError("plan assets/benchmark must belong to the frozen dataset")
         if max(map(len, data.bars.values())) > 2500 or len(data.bars) > 20:
             raise ValueError("research data exceeds the bounded local simulation budget")
@@ -172,6 +177,7 @@ class ResearchWorkflow:
             for scenario in request.cost_scenarios:
                 config = ExperimentConfig(dataset_id=request.dataset_id, strategy=strategy,
                     symbols=request.symbols, benchmark=request.benchmark, question=request.question,
+                    benchmark_spec=request.benchmark_spec,
                     replay=preset_config(scenario).model_copy(update={"decision_frequency": "WEEKLY" if strategy.startswith("weekly_") else "DAILY", "weekly_parameters": request.weekly_parameters}), start=request.start, end=request.end)
                 trials.append({"ordinal": len(trials), "cost_scenario": scenario, "config": config.model_dump(mode="json")})
         plan = {"plan_id": uuid4().hex, "created_at": utc_now().isoformat(),

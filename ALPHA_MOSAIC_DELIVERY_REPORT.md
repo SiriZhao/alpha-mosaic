@@ -82,6 +82,10 @@ Current RAW-weekly browser QA rendered eight pages/mobile with14captures, assert
 
 ![FIXTURE derived weekly inputs and explicit share units](docs/evidence/raw-weekly-20261026/16-derived-weekly-price-evidence.png)
 
+## Typed benchmark references — 2026-10-27
+
+The platform now accepts a versioned `BenchmarkSpecV1` for a zero-interest cash model or an explicit equal-weight security basket. Cash remains a model assumption with no market-bar or risk-free-provider authority. Equal-weight delegates raw prices, actions, costs, fills and accounting to the paper replay engine and uses an explicit first-eligible-open phase; the old ticker benchmark path and legacy scheduler remain unchanged. Typed references are persisted separately, compared in daily/weekly analytics, retained by frozen plans/workers, and shown in reports and the terminal. Local source24a28b1f8cca6a09a0855409081fd1b719a52c5518fb28b8e5f18b68097a09c6 passed447 tests, plan/worker and browser typed-cash checks. A second-model review was unavailable due capacity and is recorded as such. Real/PIT data and full platform acceptance remain incomplete.
+
 ## 9. Quality, security and measured performance
 
 Current local434-test suite, independent final12, Ruff/Pyright, lock/build/fresh-wheel payment/recovery/RAW-weekly workflows, CLI/32-MCP and secret scan passed. All62 local installed/packaged Python files match tested bytes. Base-wheel acceptance excludes OpenBB/QuantStats/Streamlit/Plotly. Current hosted434-test suite and quality/dependency gates passed on8345b8e; prior audits stay dated evidence. Remote ChatGPT remains NOT_VERIFIED; provider installation health remains separate from data validity.

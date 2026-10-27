@@ -1,0 +1,33 @@
+{
+  "status": "LOCAL_BENCHMARK_INTEGRATION_PASSED",
+  "source_hash": "24a28b1f8cca6a09a0855409081fd1b719a52c5518fb28b8e5f18b68097a09c6",
+  "python_files": 65,
+  "full_tests": 447,
+  "full_failures": 0,
+  "full_errors": 0,
+  "full_skipped": 0,
+  "benchmark_integration_tests": 2,
+  "benchmark_core_tests": 7,
+  "ruff": "PASSED",
+  "pyright": "PASSED",
+  "secret_scan": "PASSED",
+  "legacy_ticker_path": "Covered by full regression and explicit serialization assertion",
+  "cash_reference": "ApplicationService artifact stores benchmark_reference without forged benchmark_result; daily/weekly model-assumption comparisons passed",
+  "equal_weight_reference": "ApplicationService artifact stores typed reference and comparable typed analytics passed",
+  "reporting": "Markdown report contains MODEL_ASSUMPTION_CASH_ZERO_INTEREST",
+  "dashboard": "Core trace/display path updated; full browser benchmark interaction not yet rerun",
+  "independent_hand_oracle": "PASSED under prior source b617; current integration source changed only after the same core checks",
+  "second_model_review": "NOT_COMPLETED_MODEL_CAPACITY",
+  "full_goal": "ACTIVE_NOT_COMPLETE",
+  "real_data_qualification": "BLOCKED",
+  "browser_typed_cash": "PASSED",
+  "browser_captures": 12,
+  "browser_errors": [],
+  "plan_integration_tests": 3,
+  "frozen_plan_worker": "PASSED",
+  "limitations": [
+    "No second-model review: model capacity unavailable",
+    "No real/PIT data qualification",
+    "No live/remote ChatGPT end-to-end verification"
+  ]
+}

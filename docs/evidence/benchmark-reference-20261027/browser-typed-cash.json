@@ -1,0 +1,22 @@
+{
+  "status": "PASSED",
+  "viewer_source_hash": "89446036f2540ad682d6ee6046e8d68181bfe42a8b931f053375bc797f7c7260",
+  "pages": [
+    "Research Overview",
+    "Data Explorer",
+    "Strategy Lab",
+    "Backtest Results",
+    "Experiment Comparison",
+    "Risk Lab",
+    "AI Research",
+    "Reports"
+  ],
+  "browser_errors": [],
+  "screenshots": 12,
+  "comparison_selection": [],
+  "result_selection": "6c145a5dccf141798ee30fcac7e319a3",
+  "reconciliation_action_plan": null,
+  "recovered_artifact_plan": null,
+  "scope": "Navigation, render, populated local fixture reports, selected qualified comparison/result and explicit reconciliation action when requested, and mobile degradation; scrolled viewports where needed; not every interactive action",
+  "weekly_feature_evidence_checked": false
+}

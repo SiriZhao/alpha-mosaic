@@ -10,6 +10,7 @@ from typing import Any
 import numpy as np
 
 from alphamosaic.backtesting.models import ReplayResult, dividend_accounting_signature
+from alphamosaic.core.benchmark_contracts import BenchmarkReference
 
 
 def _finite(value: float | np.floating[Any]) -> float | None:
@@ -157,10 +158,24 @@ def _result_returns(result: ReplayResult) -> np.ndarray:
     return nav[1:] / nav[:-1] - 1
 
 
+def _reference_returns(reference: BenchmarkReference) -> tuple[list[Any], np.ndarray]:
+    """Convert a typed reference to returns without granting it market-bar authority."""
+    if len(reference.points) < 2:
+        raise ValueError("benchmark reference requires at least two points")
+    sessions = [point.session for point in reference.points]
+    if sessions != sorted(set(sessions)):
+        raise ValueError("benchmark reference sessions must be unique and chronological")
+    nav = np.asarray([reference.spec.initial_cash, *[point.nav for point in reference.points]], dtype=float)
+    if not np.isfinite(nav).all() or (nav <= 0).any():
+        raise ValueError("benchmark reference requires strictly positive finite NAV")
+    return sessions, nav[1:] / nav[:-1] - 1
+
+
 def analyze(
     result: ReplayResult,
     benchmark_result: ReplayResult | None = None,
     *,
+    benchmark_reference: BenchmarkReference | None = None,
     return_basis: str | None = None,
     benchmark_return_basis: str | None = None,
     periods_per_year: int = 252,
@@ -190,22 +205,43 @@ def analyze(
     benchmark_status = "NOT_PROVIDED"
     benchmark_returns = None
     allowed_basis = {"PRICE", "TOTAL_RETURN", "RAW_WITH_CASH_ACTIONS"}
-    if benchmark_result is not None:
-        if return_basis not in allowed_basis or benchmark_return_basis not in allowed_basis:
+    if benchmark_result is not None and benchmark_reference is not None:
+        raise ValueError("provide either benchmark_result or benchmark_reference")
+    if benchmark_result is not None or benchmark_reference is not None:
+        if return_basis not in allowed_basis or benchmark_return_basis not in (allowed_basis | {"MODEL_ASSUMPTION_CASH_ZERO_INTEREST"}):
             benchmark_status = "BLOCKED_UNKNOWN_RETURN_BASIS"
+        elif benchmark_reference is not None and benchmark_return_basis == "MODEL_ASSUMPTION_CASH_ZERO_INTEREST":
+            reference_sessions, benchmark_returns = _reference_returns(benchmark_reference)
+            if [point.session for point in result.equity] != reference_sessions:
+                benchmark_status = "BLOCKED_UNALIGNED_SESSIONS"
+            else:
+                metrics.update(benchmark_metrics(returns, benchmark_returns, periods_per_year))
+                benchmark_status = "COMPARABLE_MODEL_ASSUMPTION_REFERENCE"
+                warnings.append("Benchmark is a zero-interest cash model assumption, not a sourced risk-free series.")
+        elif benchmark_reference is not None:
+            reference_sessions, benchmark_returns = _reference_returns(benchmark_reference)
+            if return_basis != benchmark_return_basis:
+                benchmark_status = "BLOCKED_RETURN_BASIS_MISMATCH"
+            elif [point.session for point in result.equity] != reference_sessions:
+                benchmark_status = "BLOCKED_UNALIGNED_SESSIONS"
+            else:
+                metrics.update(benchmark_metrics(returns, benchmark_returns, periods_per_year))
+                benchmark_status = "COMPARABLE_TYPED_REFERENCE"
         elif return_basis != benchmark_return_basis:
             benchmark_status = "BLOCKED_RETURN_BASIS_MISMATCH"
-        elif dividend_accounting_signature(result.config) != dividend_accounting_signature(benchmark_result.config):
+        elif benchmark_result is not None and dividend_accounting_signature(result.config) != dividend_accounting_signature(benchmark_result.config):
             benchmark_status = "BLOCKED_ACCOUNTING_MODEL_MISMATCH"
-        elif [point.session for point in result.equity] != [point.session for point in benchmark_result.equity]:
+        elif benchmark_result is not None and [point.session for point in result.equity] != [point.session for point in benchmark_result.equity]:
             benchmark_status = "BLOCKED_UNALIGNED_SESSIONS"
-        elif result.acceptance != benchmark_result.acceptance:
+        elif benchmark_result is not None and result.acceptance != benchmark_result.acceptance:
             benchmark_status = "BLOCKED_EVIDENCE_CLASS_MISMATCH"
         else:
-            benchmark_returns = _result_returns(benchmark_result)
+            benchmark_returns = _result_returns(benchmark_result) if benchmark_result is not None else None
+            if benchmark_returns is None:
+                raise ValueError("benchmark reference return series was not resolved")
             metrics.update(benchmark_metrics(returns, benchmark_returns, periods_per_year))
             benchmark_status = "COMPARABLE_SIMULATED_RETURNS"
-            if result.config != benchmark_result.config:
+            if benchmark_result is not None and result.config != benchmark_result.config:
                 warnings.append("Benchmark and strategy simulation configurations differ; inspect execution and cost assumptions.")
         if benchmark_status.startswith("BLOCKED"):
             warnings.append(benchmark_status)

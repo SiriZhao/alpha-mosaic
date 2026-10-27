@@ -29,5 +29,15 @@
     "No second-model review: model capacity unavailable",
     "No real/PIT data qualification",
     "No live/remote ChatGPT end-to-end verification"
-  ]
+  ],
+  "fresh_base_wheel": "PASSED",
+  "base_wheel_dependencies": 51,
+  "optional_packages_absent": [
+    "openbb-core",
+    "quantstats",
+    "streamlit",
+    "plotly"
+  ],
+  "typed_cash_wheel_workflow": "PASSED",
+  "mcp_and_recovery_weekly_payment_cases": "PASSED"
 }

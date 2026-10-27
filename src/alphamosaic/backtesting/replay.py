@@ -229,10 +229,16 @@ class PaperReplayEngine:
         config: ReplayConfig,
         start: date | None = None,
         end: date | None = None,
+        *,
+        schedule_policy: str | None = None,
     ) -> ReplayResult:
         # Revalidate copies at the trust boundary: model_copy deliberately skips validation.
         config = ReplayConfig.model_validate(config.model_dump())
         data = ReplayDataset.model_validate(data.model_dump())
+        if schedule_policy not in {None, "FIRST_ELIGIBLE_OPEN_THEN_INTERVAL"}:
+            raise ValueError("unsupported benchmark schedule policy")
+        if schedule_policy is not None and config.decision_frequency != "DAILY":
+            raise ValueError("explicit benchmark schedule policy requires DAILY decisions")
         strategy_frequency = getattr(strategy, "decision_frequency", "DAILY")
         if strategy_frequency == "WEEKLY" and config.decision_frequency != "WEEKLY":
             raise ValueError("weekly strategy requires an explicit WEEKLY decision configuration")
@@ -546,7 +552,11 @@ class PaperReplayEngine:
             due = index + config.order_delay_sessions
             if due > last or due < first:
                 continue
-            rebalance = (due - first) % config.rebalance_sessions == 0
+            if schedule_policy == "FIRST_ELIGIBLE_OPEN_THEN_INTERVAL":
+                first_due = first + config.order_delay_sessions
+                rebalance = due >= first_due and (due - first_due) % config.rebalance_sessions == 0
+            else:
+                rebalance = (due - first) % config.rebalance_sessions == 0
             if config.decision_frequency == "WEEKLY":
                 from alphamosaic.data.weekly import is_week_close
                 rebalance = is_week_close(session)

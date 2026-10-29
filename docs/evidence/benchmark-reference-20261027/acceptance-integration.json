@@ -39,5 +39,13 @@
     "plotly"
   ],
   "typed_cash_wheel_workflow": "PASSED",
-  "mcp_and_recovery_weekly_payment_cases": "PASSED"
+  "mcp_and_recovery_weekly_payment_cases": "PASSED",
+  "hosted_ci": {
+    "status": "PASSED",
+    "run_id": 40508524040,
+    "head_sha": "985ec75e3020245938a8760088fb441c9085957f",
+    "url": "https://github.com/SiriZhao/alpha-mosaic/actions/runs/40508524040",
+    "quality_job": "PASSED",
+    "source_specific": true
+  }
 }

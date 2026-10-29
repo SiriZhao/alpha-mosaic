@@ -1,0 +1,16 @@
+{
+  "status": "PASSED",
+  "code_commit": "a6dd38e24ab421493ef056d582490abee62d80f8",
+  "package_python_files_identical_to_clean_wheel_test": 49,
+  "runtime_excluded": true,
+  "artifacts": {
+    "alphamosaic-0.1.0-py3-none-any.whl": {
+      "bytes": 134510,
+      "sha256": "80872de51980f947bb3593790c24ca38fe1da1c25539e8a4617129e37b3f3053"
+    },
+    "alphamosaic-0.1.0.tar.gz": {
+      "bytes": 657465,
+      "sha256": "ea7dd1444b370ace7521c1f540223ba3d5f3f93ef1203194bc1282401b569acb"
+    }
+  }
+}

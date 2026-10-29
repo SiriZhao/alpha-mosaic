@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="16.732" timestamp="2026-10-26T18:09:16.302696+08:00" hostname="YOGA"><testcase classname="tests.test_reconciliation_process" name="test_terminated_parent_preserves_sealed_child_artifact_and_reconciles_without_retry" time="12.242"><failure message="AssertionError: assert (42824 == 42560)&#10; +  where 42560 = &lt;Popen: returncode: None args: ['E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic...&gt;.pid">tmp_path = WindowsPath('E:/CSDIY/Vibe Coding Project/AlphaMosaic/runtime/renaissance-20261024/runtime/pytest-reconciliation-process-001/test_terminated_parent_preserv0')
+
+    def test_terminated_parent_preserves_sealed_child_artifact_and_reconciles_without_retry(tmp_path: Path) -&gt; None:
+        service = ApplicationService(tmp_path)
+        dataset = service.research_demo(80)["dataset_id"]
+        plan = service.plan_research({"dataset_id": dataset,
+            "question": "Does a genuinely terminated research parent preserve a sealed child artifact without retrying its uncertain call?",
+            "strategies": ["buy_and_hold"], "cost_scenarios": ["realistic", "stress"],
+            "per_experiment_seconds": 30, "total_seconds": 60})
+        marker = tmp_path / "owned-parent-ready.json"
+        code = """
+    import json, os, sys
+    from pathlib import Path
+    from alphamosaic.core.service import ApplicationService
+    service = ApplicationService(Path(sys.argv[1]))
+    workflow = service.research_workflow()
+    worker = workflow._worker
+    def pause_before_recording(*args):
+        outcome = worker(*args)
+        if outcome['status'] != 'COMPLETED':
+            raise RuntimeError('fixture child did not complete: ' + str(outcome))
+        with Path(sys.argv[3]).open('x', encoding='utf-8') as stream:
+            json.dump({'parent_pid': os.getpid(), 'experiment_id': outcome['experiment_id']}, stream)
+        sys.stdin.read(1)
+        return outcome
+    workflow._worker = pause_before_recording
+    service.run_research_plan(sys.argv[2])
+    """
+        environment = {key: value for key, value in os.environ.items() if key.upper() in {
+            "PATH", "SYSTEMROOT", "WINDIR", "SYSTEMDRIVE", "COMSPEC", "PATHEXT", "TEMP", "TMP", "LANG", "LC_ALL", "PYTHONUTF8"}}
+        source = Path(__file__).resolve().parents[1] / "src"
+        environment["PYTHONPATH"] = str(source)
+        process = subprocess.Popen([sys.executable, "-W", "error::RuntimeWarning", "-c", code,
+            str(tmp_path), plan["plan_id"], str(marker)], cwd=source, env=environment,
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0)
+        try:
+            deadline = time.monotonic() + 45
+            ready = None
+            while ready is None:
+                assert process.poll() is None, "owned parent exited before its ready marker"
+                assert time.monotonic() &lt; deadline, "bounded child did not reach the parent handoff"
+                try:
+                    ready = json.loads(marker.read_text(encoding="utf-8"))
+                except (FileNotFoundError, json.JSONDecodeError):
+                    time.sleep(.02)
+&gt;           assert ready["parent_pid"] == process.pid and process.poll() is None
+E           AssertionError: assert (42824 == 42560)
+E            +  where 42560 = &lt;Popen: returncode: None args: ['E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic...&gt;.pid
+
+tests\test_reconciliation_process.py:61: AssertionError</failure></testcase></testsuite></testsuites>

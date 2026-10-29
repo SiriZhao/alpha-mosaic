@@ -1,0 +1,155 @@
+{
+  "implementation_commit": "c63deb9c4d4f53399c4994d3e996c0e3bf3b56f1",
+  "source_hash": "0c934375a1f29c85cdd4740bafec9015916bc0a43aaf3c5178e77fb34cbdffb2",
+  "remote_head_verified": true,
+  "pr": "https://github.com/SiriZhao/alpha-mosaic/pull/4",
+  "draft": true,
+  "stacked_on": 3,
+  "run_id": 40201042155,
+  "job_id": 121192083114,
+  "url": "https://github.com/SiriZhao/alpha-mosaic/actions/runs/40201042155",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 121192083114,
+      "name": "quality",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 40201042155,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run astral-sh/setup-uv@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run uv lock --check",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run uv sync --locked --all-extras --dev",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Run uv run ruff check .",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Run uv run pyright",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Run uv run pytest -q -W error::RuntimeWarning",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Offline reproducibility and performance smoke",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Local MCP protocol handshake",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Run uv build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Clean wheel smoke",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        },
+        {
+          "name": "Dependency audit",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14
+        },
+        {
+          "name": "Credential and secret scan",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15
+        },
+        {
+          "name": "Upload build and test diagnostics",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16
+        },
+        {
+          "name": "Post Run astral-sh/setup-uv@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 30
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 31
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 32
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33
+        }
+      ]
+    }
+  ],
+  "verified_log_markers": {
+    "full_tests": true,
+    "ruff": true,
+    "type_check": true,
+    "dependency_audit": true,
+    "four_dividend_cases": true,
+    "base_wheel_payment_workers": true,
+    "mcp": true
+  },
+  "scope": "Hosted Linux software acceptance on explicitly FIXTURE cases; not licensed real-data/PIT or remote ChatGPT acceptance",
+  "overall_goal": "ACTIVE_NOT_COMPLETE"
+}

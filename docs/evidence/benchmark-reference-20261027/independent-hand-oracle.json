@@ -1,0 +1,18 @@
+{
+  "status": "PASSED",
+  "source_hash_before": "b617f682003bebb246ef55e1de57a4cad2534d730d453922e0493e6979af13bc",
+  "source_hash_after": "b617f682003bebb246ef55e1de57a4cad2534d730d453922e0493e6979af13bc",
+  "checks": {
+    "cash_flat": true,
+    "equal_weight_first_open": true,
+    "equal_weight_shares": true,
+    "fees_exact": true,
+    "non_session_rejected": true,
+    "cash_market_bars_rejected": true,
+    "truncation_rejected": true
+  },
+  "cash_points": 30,
+  "equal_weight_fills": 2,
+  "scope": "Independent hand-oracle process; generated FIXTURE inputs only; no market inference",
+  "note": "Fee scenario uses separate cost case; 10bp fees make 12+12 shares unaffordable under cash conservation."
+}

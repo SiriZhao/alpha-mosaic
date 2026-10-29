@@ -1,0 +1,19 @@
+{
+  "scope": "EXACT_CLEAN_COMMIT_FIXTURE_REPRODUCTION",
+  "git_sha": "02133eff52e21c6a71c86c688dbe590039bf22a7",
+  "source_hash": "7ca17f91dbee927d7c9c788879ccfe6f1e878338954dc618b1f867393ffc9c15",
+  "git_dirty": false,
+  "cases": [
+    {
+      "cost_scenario": "realistic",
+      "experiment_id": "2b3de2daa9e942e5938c2f483e440d01",
+      "all_accounting_and_analysis_equal": true
+    },
+    {
+      "cost_scenario": "stress",
+      "experiment_id": "f0f4c00d11a14265b771929c87249b74",
+      "all_accounting_and_analysis_equal": true
+    }
+  ],
+  "market_performance_inference": "PROHIBITED"
+}

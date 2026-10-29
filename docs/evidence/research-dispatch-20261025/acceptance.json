@@ -1,0 +1,122 @@
+{
+  "scope": "RESEARCH_ONLY_SOFTWARE_DISPATCH_NOT_INTERRUPTED_RECOVERY",
+  "source_hash": "a26523a908f264868dee7eb4da6a3df92f4ab0b16a2bf65514c52d74b1b1c988",
+  "full_tests": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "361",
+    "time": "155.124",
+    "timestamp": "2026-10-25T22:22:16.955164+08:00",
+    "hostname": "YOGA"
+  },
+  "independent_tests": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "14",
+    "time": "10.864",
+    "timestamp": "2026-10-25T22:23:01.541767+08:00",
+    "hostname": "YOGA"
+  },
+  "independent_deselected": 1,
+  "parent_full_junction_cases_executed": 2,
+  "ruff": "PASSED",
+  "pyright": "PASSED",
+  "lock_check": "PASSED_140_UNCHANGED",
+  "secret_scan": "PASSED",
+  "base_wheel": {
+    "status": "PASSED",
+    "package_path": "E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\dispatch-wheel-env\\Lib\\site-packages\\alphamosaic\\__init__.py",
+    "python": "3.12.14",
+    "optional": {
+      "openbb-core": "NOT_INSTALLED",
+      "quantstats": "NOT_INSTALLED",
+      "streamlit": "NOT_INSTALLED",
+      "plotly": "NOT_INSTALLED"
+    },
+    "experiment_id": "b075b3f368d14fb283adcee4340b3921",
+    "plan_id": "dbded00a94ba489eb6f2ed165bf5e7a4",
+    "plan_status": "COMPLETED",
+    "fifo_reconciliation": "PASSED",
+    "weekly_analysis": "COMPLETE_WEEKS_AVAILABLE",
+    "dividend_cases": 4,
+    "dividend_plan": {
+      "plan_id": "24d0a2e8551e421a9ed3c3419d7d6570",
+      "status": "COMPLETED",
+      "trials": 4,
+      "critics": 4
+    },
+    "unsupported_weekly_action_status": "FAILED",
+    "acceptance": "FIXTURE",
+    "broker_enabled": false
+  },
+  "base_wheel_mcp": {
+    "status": "PASSED",
+    "protocol_version": "2025-11-25",
+    "tool_count": 31,
+    "invocation": "get_system_status",
+    "ranking_run_id": null,
+    "broker_enabled": false,
+    "remote_chatgpt": "NOT_VERIFIED"
+  },
+  "base_wheel_doctor": {
+    "broker_enabled": false,
+    "mode": "RESEARCH_ONLY",
+    "signal_validity": "NO_VALIDATED_ALPHA",
+    "dependencies": {
+      "pydantic": "2.14.1",
+      "mcp": "2.3.0",
+      "openbb-core": "NOT_INSTALLED",
+      "openbb-nasdaq": "NOT_INSTALLED",
+      "openbb-sec": "NOT_INSTALLED",
+      "quantstats": "NOT_INSTALLED",
+      "exchange-calendars": "4.13.2",
+      "numpy": "2.5.4",
+      "pandas": "2.3.3",
+      "typer": "0.27.3"
+    }
+  },
+  "package_python_bytes_match": 59,
+  "sdist_runtime_excluded": true,
+  "artifacts": {
+    "alphamosaic-0.1.0-py3-none-any.whl": {
+      "sha256": "d0dccdb0f09cd9497f0720334efee137028168c9cef752e290735f533c289b59",
+      "bytes": 176266
+    },
+    "alphamosaic-0.1.0.tar.gz": {
+      "sha256": "ec5046e1274e1f59e1b2103213ac829fd4284f27d891509427895f5eabf1c1c6",
+      "bytes": 1879369
+    }
+  },
+  "retained_pre_fix_failures": {
+    "dispatch-before.xml": 4,
+    "independent-counterexamples-before.xml": 2
+  },
+  "repaired_independent_review_findings": [
+    "missing-context bypass",
+    "invisible metadata-free partial directory",
+    "original experiments junction resolved away",
+    "unsealed RUNNING identity trusted"
+  ],
+  "fresh_install_attempts": [
+    "default uv cache denied writes; build succeeded using explicit repository runtime cache",
+    "pip dependency retrieval stalled after proxy/SSL retries; only verified task-owned pip process stopped",
+    "offline root cache lacked mcp; no requirements changed",
+    "bounded online uv install succeeded in fresh environment;51 packages including project"
+  ],
+  "ui_changes": false,
+  "prior_browser_source_is_not_relabelled": true,
+  "full_goal": "ACTIVE_NOT_COMPLETE",
+  "real_data_acceptance": "BLOCKED",
+  "remote_chatgpt": "NOT_VERIFIED",
+  "hosted_ci": "VERIFY_CURRENT_IMPLEMENTATION_COMMIT_AFTER_PUBLICATION",
+  "limitations": [
+    "explicit interrupted-plan reconciliation not implemented",
+    "global experiment lease does not prove absence of late response writers",
+    "conservative full-directory scan is linear",
+    "local hashes do not authenticate against hostile concurrent rewriting"
+  ]
+}

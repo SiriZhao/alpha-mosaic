@@ -1,0 +1,66 @@
+{
+  "status": "PASSED",
+  "git_sha": "a6dd38e24ab421493ef056d582490abee62d80f8",
+  "source_hash": "06ee532642910d385759c6ca9ceb751d6946119914777e7690dcb680faba5a8e",
+  "cases": [
+    {
+      "case": "A_buy_hold",
+      "experiment_id": "ae9d379ab1ff45fca9b75d44a6b02bfe",
+      "exact_result": true,
+      "exact_analysis": true,
+      "git_dirty": false
+    },
+    {
+      "case": "B_trend",
+      "experiment_id": "e525fd21e24541c2b89087acdf8bc3e1",
+      "exact_result": true,
+      "exact_analysis": true,
+      "git_dirty": false
+    },
+    {
+      "case": "C_allocation",
+      "experiment_id": "5663a814da0249f4a215200872848b6a",
+      "exact_result": true,
+      "exact_analysis": true,
+      "git_dirty": false
+    },
+    {
+      "case": "cost_zero",
+      "experiment_id": "ffd7a1a3ad6940a99dec0df2c9123220",
+      "exact_result": true,
+      "exact_analysis": true,
+      "git_dirty": false
+    },
+    {
+      "case": "cost_stress",
+      "experiment_id": "c1bb9fdebeaa4ae19e51ccb496fdc877",
+      "exact_result": true,
+      "exact_analysis": true,
+      "git_dirty": false
+    },
+    {
+      "case": "parameter_42",
+      "experiment_id": "f3012ab0519c44e1951a23007570cecf",
+      "exact_result": true,
+      "exact_analysis": true,
+      "git_dirty": false
+    },
+    {
+      "case": "parameter_84",
+      "experiment_id": "2ed7a930bf1d4ada83f4c8de1a0816c7",
+      "exact_result": true,
+      "exact_analysis": true,
+      "git_dirty": false
+    },
+    {
+      "case": "declared_holdout",
+      "experiment_id": "3f44410a03154294a2d4451df7e1077c",
+      "exact_result": true,
+      "exact_analysis": true,
+      "git_dirty": false
+    }
+  ],
+  "timing_status": "NOT_A_VALID_PERFORMANCE_SAMPLE_ANOMALOUS_WALL_INTERVAL",
+  "raw_suite_elapsed_seconds": 20001.352053900016,
+  "limitations": "The suite reports an anomalous wall interval and widely separated creation timestamps; the cause was not independently verified. Retain the raw elapsed metadata and exclude this run from performance claims."
+}

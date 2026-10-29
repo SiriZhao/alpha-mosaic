@@ -1,0 +1,185 @@
+{
+  "implementation_commit": "4d6704170da1e5b95a1c3be6965baebe640c199f",
+  "qualified_published_commit": "a4c5f2e53575b6a86e862aa64251de2483b86ba0",
+  "run_id": 40312008132,
+  "job_id": 121535230854,
+  "url": "https://github.com/SiriZhao/alpha-mosaic/actions/runs/40312008132",
+  "event": "pull_request",
+  "conclusion": "success",
+  "local_windows_source_hash": "0754fabeee4494cff23fbf0ec5ec325972b07138ce7fbfae27c5a8419e05f1f9",
+  "hosted_installed_source_hash": "eb95dc08e3be43f543261860fe627a50737f01162511aebc23a54bb5f22d5713",
+  "git_source_blob_hash": "eb95dc08e3be43f543261860fe627a50737f01162511aebc23a54bb5f22d5713",
+  "hosted_hash_matches_commit_blobs": true,
+  "jobs": [
+    {
+      "id": 121535230854,
+      "name": "quality",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 40312008132,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run astral-sh/setup-uv@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run uv lock --check",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run uv sync --locked --all-extras --dev",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Run uv run ruff check .",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Run uv run pyright",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Run uv run pytest -q -W error::RuntimeWarning",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Offline reproducibility and performance smoke",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Local MCP protocol handshake",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Run uv build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Clean wheel smoke",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        },
+        {
+          "name": "Dependency audit",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14
+        },
+        {
+          "name": "Credential and secret scan",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15
+        },
+        {
+          "name": "Upload build and test diagnostics",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16
+        },
+        {
+          "name": "Post Run astral-sh/setup-uv@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 30
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 31
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 32
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33
+        }
+      ]
+    }
+  ],
+  "hosted_base_wheel": {
+    "status": "PASSED",
+    "source_hash": "eb95dc08e3be43f543261860fe627a50737f01162511aebc23a54bb5f22d5713",
+    "source_kind": "INSTALLED_PACKAGE",
+    "package_path": "/home/runner/work/_temp/alphamosaic-wheel/lib/python3.12/site-packages/alphamosaic/__init__.py",
+    "python": "3.12.15",
+    "optional": {
+      "openbb-core": "NOT_INSTALLED",
+      "quantstats": "NOT_INSTALLED",
+      "streamlit": "NOT_INSTALLED",
+      "plotly": "NOT_INSTALLED"
+    },
+    "experiment_id": "eeb6a648f37d4330a653a1c9465ed605",
+    "plan_id": "726e00759e3549ee955151ad4484b11d",
+    "plan_status": "COMPLETED",
+    "fifo_reconciliation": "PASSED",
+    "weekly_analysis": "COMPLETE_WEEKS_AVAILABLE",
+    "dividend_cases": 4,
+    "dividend_plan": {
+      "plan_id": "e837a5a4908f44f299a6e97b6322cec9",
+      "status": "COMPLETED",
+      "trials": 4,
+      "critics": 4
+    },
+    "unsupported_weekly_action_status": "FAILED",
+    "reconciliation_cases": 3,
+    "reconciliation_new_experiments": 0,
+    "acceptance": "FIXTURE",
+    "broker_enabled": false
+  },
+  "verified_log_markers": {
+    "full_397": true,
+    "ruff": true,
+    "pyright": true,
+    "dependency_audit": true,
+    "secret_scan": true,
+    "mcp32": true
+  },
+  "scope": "Current committed research-only FIXTURE software acceptance; no real-data/PIT, remote ChatGPT or cross-platform exact financial qualification",
+  "full_goal": "ACTIVE_NOT_COMPLETE"
+}

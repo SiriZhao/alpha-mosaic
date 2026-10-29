@@ -1,0 +1,244 @@
+{
+  "scope": "RESEARCH_SOFTWARE_AND_FIXTURE_ACCOUNTING_ONLY",
+  "source_hash": "0c934375a1f29c85cdd4740bafec9015916bc0a43aaf3c5178e77fb34cbdffb2",
+  "tests": {
+    "tests": 346,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "runtime_warnings": "ERROR",
+  "upstream_deprecation_warnings": 4,
+  "ruff": "PASSED",
+  "pyright": "ZERO_ERRORS",
+  "fixture_suite": {
+    "status": "PASSED",
+    "scope": "FIXTURE_ACCOUNTING_ONLY",
+    "market_performance_inference": "PROHIBITED",
+    "dataset_id": "fdee48d841419674715267b5f7f300aebca08ff9b8f3c74e6c38e89cf94cc6e2",
+    "cases": [
+      {
+        "case": "realistic_full",
+        "experiment_id": "407ecffcb0384a3d995e888725022910",
+        "status": "COMPLETED",
+        "error": null,
+        "acceptance": "FIXTURE",
+        "accounting": {
+          "status": "PASSED",
+          "initial_cash_usd": 100000.0,
+          "ending_cash_usd": 2999.547196700485,
+          "ending_nav_usd": 96883.14614481812,
+          "portfolio_pnl_usd": -3116.8538551818783,
+          "attributed_pnl_usd": -3116.8538551818783,
+          "allocated_commission_usd": 97.87058222107844,
+          "allocated_dividends_usd": 968.0,
+          "residual_usd": 0.0,
+          "fill_count_checked": 1,
+          "actions_checked": 2,
+          "equity_points_checked": 126,
+          "absolute_tolerance_usd": 1e-07,
+          "relative_tolerance": 1e-10,
+          "paid_dividends_usd": 968.0,
+          "outstanding_dividend_receivables_usd": 0.0,
+          "dividend_payments_checked": 1,
+          "dividend_entitlements_checked": 1
+        }
+      },
+      {
+        "case": "stress_full",
+        "experiment_id": "6fb0ce0686604165bc7fc4032a75b82a",
+        "status": "COMPLETED",
+        "error": null,
+        "acceptance": "FIXTURE",
+        "accounting": {
+          "status": "PASSED",
+          "initial_cash_usd": 100000.0,
+          "ending_cash_usd": 5937.26706616726,
+          "ending_nav_usd": 96620.28877741726,
+          "portfolio_pnl_usd": -3379.711222582744,
+          "attributed_pnl_usd": -3379.711222582744,
+          "allocated_commission_usd": 236.90207714172755,
+          "allocated_dividends_usd": 935.0,
+          "residual_usd": 0.0,
+          "fill_count_checked": 1,
+          "actions_checked": 2,
+          "equity_points_checked": 126,
+          "absolute_tolerance_usd": 1e-07,
+          "relative_tolerance": 1e-10,
+          "paid_dividends_usd": 935.0,
+          "outstanding_dividend_receivables_usd": 0.0,
+          "dividend_payments_checked": 1,
+          "dividend_entitlements_checked": 1
+        }
+      },
+      {
+        "case": "realistic_unpaid_cutoff",
+        "experiment_id": "93ef9ab1f883487ea97dd28e2f176797",
+        "status": "COMPLETED",
+        "error": null,
+        "acceptance": "FIXTURE",
+        "accounting": {
+          "status": "PASSED",
+          "initial_cash_usd": 100000.0,
+          "ending_cash_usd": 2031.547196700485,
+          "ending_nav_usd": 98139.41796784055,
+          "portfolio_pnl_usd": -1860.582032159451,
+          "attributed_pnl_usd": -1860.582032159451,
+          "allocated_commission_usd": 97.87058222107844,
+          "allocated_dividends_usd": 968.0,
+          "residual_usd": 0.0,
+          "fill_count_checked": 1,
+          "actions_checked": 2,
+          "equity_points_checked": 27,
+          "absolute_tolerance_usd": 1e-07,
+          "relative_tolerance": 1e-10,
+          "paid_dividends_usd": 0.0,
+          "outstanding_dividend_receivables_usd": 968.0,
+          "dividend_payments_checked": 0,
+          "dividend_entitlements_checked": 1
+        }
+      },
+      {
+        "case": "legacy_diagnostic",
+        "experiment_id": "bc5d127ad7234ccc8a7c417c94ff18f2",
+        "status": "COMPLETED",
+        "error": null,
+        "acceptance": "FIXTURE",
+        "accounting": {
+          "status": "PASSED",
+          "initial_cash_usd": 100000.0,
+          "ending_cash_usd": 2999.547196700485,
+          "ending_nav_usd": 96883.14614481812,
+          "portfolio_pnl_usd": -3116.8538551818783,
+          "attributed_pnl_usd": -3116.8538551818783,
+          "allocated_commission_usd": 97.87058222107844,
+          "allocated_dividends_usd": 968.0,
+          "residual_usd": 0.0,
+          "fill_count_checked": 1,
+          "actions_checked": 2,
+          "equity_points_checked": 126,
+          "absolute_tolerance_usd": 1e-07,
+          "relative_tolerance": 1e-10
+        }
+      }
+    ],
+    "cost_comparison": "COMPARABLE",
+    "legacy_comparison": "INCOMPATIBLE",
+    "frozen_plan": {
+      "plan_id": "1a756e6097124e549d3fd73cff50ef54",
+      "status": "COMPLETED",
+      "trials": 4,
+      "critics": 4
+    },
+    "weekly_action_boundary": {
+      "experiment_id": "5fb07a8419504095bcfe250c7dbcd53a",
+      "status": "FAILED",
+      "error": {
+        "type": "ValueError",
+        "message": "weekly RAW corporate-action research requires a reviewed adjustment model"
+      }
+    }
+  },
+  "dataset_quality_review": {
+    "policy": "ACCEPT_WITH_PROVENANCE",
+    "flags": [
+      "SPLIT_REQUIRES_REVIEW"
+    ],
+    "metadata": {
+      "purpose": "FIXTURE_ONLY_DIVIDEND_ACCOUNTING",
+      "quality_review": "Known generated two-for-one split; raw price and volume units explicitly transformed; no anomaly repaired or real provider data accepted",
+      "reviewed_flags": [
+        "SPLIT_REQUIRES_REVIEW"
+      ]
+    }
+  },
+  "frozen_plan": {
+    "plan_id": "1a756e6097124e549d3fd73cff50ef54",
+    "status": "COMPLETED",
+    "trials": 4,
+    "critics": 4
+  },
+  "clean_base_wheel": {
+    "status": "PASSED",
+    "package_path": "runtime\\dividend-source-qualified-wheel-env\\Lib\\site-packages\\alphamosaic\\__init__.py",
+    "python": "3.12.14",
+    "optional": {
+      "openbb-core": "NOT_INSTALLED",
+      "quantstats": "NOT_INSTALLED",
+      "streamlit": "NOT_INSTALLED",
+      "plotly": "NOT_INSTALLED"
+    },
+    "experiment_id": "7b3ebbd43c74435fb42332e7780c9b6f",
+    "plan_id": "5f0df0f21f4f4446b1f467c497ddc6db",
+    "plan_status": "COMPLETED",
+    "fifo_reconciliation": "PASSED",
+    "weekly_analysis": "COMPLETE_WEEKS_AVAILABLE",
+    "dividend_cases": 4,
+    "dividend_plan": {
+      "plan_id": "ed20b2bf3a124e32b03ff587ebf724b8",
+      "status": "COMPLETED",
+      "trials": 4,
+      "critics": 4
+    },
+    "unsupported_weekly_action_status": "FAILED",
+    "acceptance": "FIXTURE",
+    "broker_enabled": false
+  },
+  "clean_wheel_mcp": {
+    "status": "PASSED",
+    "protocol_version": "2025-11-25",
+    "tool_count": 31,
+    "invocation": "get_system_status",
+    "ranking_run_id": null,
+    "broker_enabled": false,
+    "remote_chatgpt": "NOT_VERIFIED"
+  },
+  "browser": {
+    "status": "PASSED",
+    "viewer_source_hash": "0c934375a1f29c85cdd4740bafec9015916bc0a43aaf3c5178e77fb34cbdffb2",
+    "pages": [
+      "Research Overview",
+      "Data Explorer",
+      "Strategy Lab",
+      "Backtest Results",
+      "Experiment Comparison",
+      "Risk Lab",
+      "AI Research",
+      "Reports"
+    ],
+    "browser_errors": [],
+    "screenshots": 13,
+    "comparison_selection": [
+      "407ecffcb0384a3d995e888725022910",
+      "6fb0ce0686604165bc7fc4032a75b82a"
+    ],
+    "result_selection": "93ef9ab1f883487ea97dd28e2f176797",
+    "scope": "Navigation, render, populated local fixture reports, selected qualified comparison and result when requested, and mobile degradation; scrolled viewports where needed; not every interactive action"
+  },
+  "package_bytes_match_tested_source": true,
+  "sdist_runtime_excluded": true,
+  "artifacts": {
+    "alphamosaic-0.1.0-py3-none-any.whl": {
+      "bytes": 175376,
+      "sha256": "e9c3c74969a6286f81ec2ccb7b1a866eca6935e70adfb4cca0d0270c78bf94aa"
+    },
+    "alphamosaic-0.1.0.tar.gz": {
+      "bytes": 1481533,
+      "sha256": "634e15036a090d29693d6e45de3a63e6e6091015fdc76eaf778ef7267e3e720d"
+    }
+  },
+  "independent_review": {
+    "first_frozen_snapshot": "37_PASSED_1_FAILED",
+    "later_failures_reproduced": [
+      "DAILY_WEEKLY_ACCOUNTING_MODEL_MISMATCH",
+      "LEGACY_STRICT_REAL_ENTRY",
+      "ACTION_MODEL_MISSING_MIXED_EVIDENCE",
+      "SIGNAL_MODEL_MISSING_IDENTITY_PIT_EVIDENCE"
+    ],
+    "original_test_sha256": "f5c332817d5446bb38baae1633b3558f1b000ad8207a21bd54d38ffd56ef6b60"
+  },
+  "overall_goal": "ACTIVE_NOT_COMPLETE",
+  "real_data_acceptance": "BLOCKED",
+  "remote_chatgpt": "NOT_VERIFIED",
+  "hosted_ci": "VERIFY_FINAL_COMMIT_SEPARATELY"
+}

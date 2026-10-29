@@ -1,0 +1,15 @@
+{
+  "status": "ORACLE_EXPECTATION_CORRECTED",
+  "initial_status": "FAILED_ORACLE_ONLY",
+  "initial_checks": {
+    "cash_flat": true,
+    "equal_weight_first_open": true,
+    "equal_weight_shares": false,
+    "fees_exact": true,
+    "non_session_rejected": true,
+    "cash_market_bars_rejected": true,
+    "truncation_rejected": true
+  },
+  "initial_failure": "Expected 12+12 shares in the fee-bearing scenario; exact cash conservation correctly prevented that allocation because 10bp fees made total notional plus fees exceed 2400. Product behavior was not changed; oracle was split into zero-cost allocation and fee-cost cases.",
+  "final": "benchmark-independent-qa-001.json"
+}

@@ -1,0 +1,37 @@
+{
+  "status": "PASSED",
+  "scope": "Independent current-main reconciliation core/evidence/process/CLI/MCP/UI only; not full-platform or real-data qualification",
+  "reviewer": "/root/recovery_boundary_review",
+  "completed_at": "2026-10-26T10:52:10.559906+00:00",
+  "source_hash_before": "0754fabeee4494cff23fbf0ec5ec325972b07138ce7fbfae27c5a8419e05f1f9",
+  "source_hash_after": "0754fabeee4494cff23fbf0ec5ec325972b07138ce7fbfae27c5a8419e05f1f9",
+  "source_files": 60,
+  "tests": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "36",
+    "time": "77.075",
+    "timestamp": "2026-10-26T18:48:41.781840+08:00",
+    "hostname": "YOGA"
+  },
+  "actual_junction_and_owned_parent_termination": true,
+  "source_edits": false,
+  "reviewed_boundaries": [
+    "dispatch fencing",
+    "append-only idempotence",
+    "ambiguous/unsealed candidates",
+    "original timeout/failure preservation",
+    "unknown process exit",
+    "late response observations",
+    "CLI/MCP/UI report corruption"
+  ],
+  "blocking_findings": [],
+  "previous_attempts": {
+    "initial_usage_limit": "Retained in acceptance.json; this later current-source run supersedes the unfinished review status without relabeling it",
+    "independent-environment-error.xml": "35 setup errors before test execution; actual junction included in successful elevated rerun"
+  },
+  "paid_resources": "NONE",
+  "full_goal": "ACTIVE_NOT_COMPLETE"
+}

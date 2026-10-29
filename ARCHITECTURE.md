@@ -1,5 +1,7 @@
 # Architecture
 
+Frozen research plans use typed requests, immutable configuration/source/data identities and an append-only hashed audit. A fixed worker must qualify its unique pending call under the same per-home OS lease as experiment creation. Explicit reconciliation holds plan then global leases, fences delayed dispatch and preserves original outcomes/artifacts. It separates matched sealed evidence from unresolved attempts and never invents process exit or retries a trial. Late bounded response observations cannot upgrade history. ApplicationService shares this operation across CLI, MCP jobs and the nonblocking terminal. See docs/RESEARCH_RECONCILIATION_ACCEPTANCE_20261026.md for exact verification and single-user limitations.
+
 AlphaMosaic is a modular monolith with one authoritative `ApplicationService`. The CLI and
 MCP server call that service; they do not implement separate decision logic. Domain contracts
 in `core` are Pydantic models and contain provenance, timestamps, data-quality labels and
@@ -23,7 +25,7 @@ immutable; T+5/T+20/T+60 outcomes use only bars after the frozen cutoff and froz
 Forward observations cannot mutate historical signals, create broker orders or be reported as
 real-account returns.
 
-No module can create broker orders. MCP exposes six read-only tools and has no arbitrary file,
+No module can create broker orders. MCP exposes typed research tools and has no arbitrary file,
 shell, credential or order surface. AI-generated commentary is not accepted as a market
 observation.
 
@@ -52,3 +54,19 @@ volume-dependent factors abstain. SPY/QQQM validation and NO_ACTION are independ
 of report-verification/software status. Immutable reports publish by staging and
 atomic rename; explicit-run derived bundles record input/source/generator hashes.
 Legacy report formats remain readable without fabricating a runtime source version.
+
+## Renaissance local research boundary
+
+CLI / MCP / optional Streamlit all call ApplicationService. Its single bounded ExperimentRunner
+loads immutable DatasetStore snapshots, passes available observations to fixed StrategyRegistry
+rules, and delegates simulated execution/accounting to PaperReplayEngine. The engine emits linked
+signals/orders/fills/actions, append-only order adjustments, cash entries and valuation snapshots.
+Independent analytics consume those results without importing OpenBB, UI or MCP internals.
+Chronological scientific controls and holdout audit are separate from execution. Local experiment
+stores persist config, source/dependency/data fingerprints, full accounting exports and reports;
+failed/interrupted work stays visible. Deterministic critic consumes verified outputs only.
+
+Domain core runs without the optional OpenBB/QuantStats/terminal extras or a paid LLM. Dataset
+capture is opt-in and never falls back to synthetic data. Synthetic examples use explicit FIXTURE
+provenance. This remains a modular monolith; no database cluster, microservice mesh or broker
+integration is required. See DATA_MODEL.md and BACKTEST_ASSUMPTIONS.md for the enforced contracts.

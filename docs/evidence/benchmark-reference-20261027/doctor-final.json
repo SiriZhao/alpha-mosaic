@@ -1,0 +1,247 @@
+{
+  "name": "AlphaMosaic",
+  "version": "0.1.0",
+  "python": "3.12.14",
+  "checked_at": "2026-10-27T12:59:43.420011+00:00",
+  "market": "CLOSED",
+  "completed_session": "2026-10-26",
+  "broker_enabled": false,
+  "mode": "RESEARCH_ONLY",
+  "signal_validity": "NO_VALIDATED_ALPHA",
+  "dependencies": {
+    "pydantic": "2.14.1",
+    "mcp": "2.3.0",
+    "openbb-core": "NOT_INSTALLED",
+    "openbb-nasdaq": "NOT_INSTALLED",
+    "openbb-sec": "NOT_INSTALLED",
+    "quantstats": "NOT_INSTALLED",
+    "exchange-calendars": "4.13.2",
+    "numpy": "2.5.4",
+    "pandas": "2.3.3",
+    "typer": "0.27.3"
+  },
+  "providers": [
+    {
+      "name": "openbb-nasdaq",
+      "status": "NOT_INSTALLED",
+      "checked_at": "2026-10-27T12:59:43.647240Z",
+      "capabilities": [
+        "US_UNIVERSE",
+        "HISTORICAL_OHLCV",
+        "PROFILE",
+        "INCOME_STATEMENT",
+        "RATIOS",
+        "ETF_BENCHMARK",
+        "INDEX_HISTORY"
+      ],
+      "diagnostics": [
+        "Installation health only; live access tested separately",
+        "No API key required for selected website endpoints",
+        "Macro providers need separate adapters; not connected"
+      ],
+      "version": null,
+      "lifecycle": {},
+      "last_test": {},
+      "installed": false,
+      "configured": false,
+      "connected": false,
+      "data_validated": false,
+      "research_ready": false,
+      "last_test_at": null,
+      "last_test_status": null
+    },
+    {
+      "name": "sec-edgar",
+      "status": "NOT_CONFIGURED",
+      "checked_at": "2026-10-27T12:59:43.650239Z",
+      "capabilities": [
+        "COMPANY_FACTS",
+        "ANNUAL_FILINGS",
+        "PIT_FACTS"
+      ],
+      "diagnostics": [
+        "set ALPHAMOSAIC_SEC_USER_AGENT='Name contact@example.com'"
+      ],
+      "version": "SEC public data API",
+      "lifecycle": {},
+      "last_test": {},
+      "installed": false,
+      "configured": false,
+      "connected": false,
+      "data_validated": false,
+      "research_ready": false,
+      "last_test_at": null,
+      "last_test_status": null
+    }
+  ],
+  "integrations": [
+    {
+      "name": "OpenBB",
+      "official_url": "https://github.com/openbq-org/OpenBB",
+      "version": "2.0.1 (optional pin)",
+      "license": "Apache-2.0 core; provider terms apply",
+      "interface": "Python adapter / isolated worker",
+      "authentication": "Provider-specific; Nasdaq public endpoint selected",
+      "runtime_cost": "Network latency; no AlphaMosaic paid provisioning",
+      "data_limits": "Website terms, quota and adjustment/PIT limits",
+      "capabilities": [
+        "US_UNIVERSE",
+        "HISTORICAL_OHLCV",
+        "PROFILE",
+        "FUNDAMENTALS"
+      ],
+      "status": "READY_UNCONFIGURED",
+      "connection_status": "NOT_INSTALLED",
+      "test_status": "NOT_RUN",
+      "diagnostics": [
+        "Provider health is separate from signal validity"
+      ]
+    },
+    {
+      "name": "TradingAgents",
+      "official_url": "https://github.com/TauricResearch/TradingAgents",
+      "version": "0.6.0 (optional pin)",
+      "license": "Upstream repository license; review before redistribution",
+      "interface": "Official Python API in isolated worker",
+      "authentication": "LLM and data-provider keys via environment variables",
+      "runtime_cost": "FAST/BALANCED/DEEP bounded model calls",
+      "data_limits": "Provider quotas, model context and upstream source terms",
+      "capabilities": [
+        "FUNDAMENTAL",
+        "TECHNICAL",
+        "NEWS",
+        "SENTIMENT",
+        "DEBATE",
+        "RISK"
+      ],
+      "status": "READY_UNCONFIGURED",
+      "connection_status": "NOT_CONFIGURED",
+      "test_status": "NOT_RUN_NO_MODEL_AUTH",
+      "diagnostics": [
+        "No order or ledger authority is exposed"
+      ]
+    },
+    {
+      "name": "Danelfin",
+      "official_url": "https://mcp.danelfin.com/docs/en",
+      "version": null,
+      "license": "Commercial service terms",
+      "interface": "Official remote MCP over HTTP",
+      "authentication": "DANELFIN_API_KEY environment variable",
+      "runtime_cost": "Quota and subscription dependent",
+      "data_limits": "Plan calls/rate limits; daily history since 2017 subject to API terms",
+      "capabilities": [
+        "AI_SCORE",
+        "RANKING",
+        "DAILY_HISTORY",
+        "SUBSCORES",
+        "FILTER"
+      ],
+      "status": "READY_UNCONFIGURED",
+      "connection_status": "NOT_CONFIGURED",
+      "test_status": "NOT_RUN_NO_CREDENTIAL",
+      "diagnostics": [
+        "Score is research evidence, never an unconditional return probability"
+      ]
+    },
+    {
+      "name": "AI Hedge Fund",
+      "official_url": "https://github.com/virattt/ai-hedge-fund",
+      "version": null,
+      "license": "Upstream repository terms; not connected",
+      "interface": "Repository / CLI",
+      "authentication": "Provider-specific",
+      "runtime_cost": "Model and data-provider dependent",
+      "data_limits": "No stable AlphaMosaic adapter verified",
+      "capabilities": [
+        "MULTI_AGENT_RESEARCH"
+      ],
+      "status": "EXPERIMENTAL",
+      "connection_status": "UNSUPPORTED",
+      "test_status": "NOT_RUN",
+      "diagnostics": [
+        "Manual import only until a stable official API is verified"
+      ]
+    },
+    {
+      "name": "FINVIZ",
+      "official_url": "https://finviz.com/",
+      "version": null,
+      "license": "Commercial website terms",
+      "interface": "No approved API connected",
+      "authentication": "Commercial account if licensed",
+      "runtime_cost": "Unknown",
+      "data_limits": "No scraping; no redistribution assumed",
+      "capabilities": [
+        "SCREENING"
+      ],
+      "status": "LICENSE_BLOCKED",
+      "connection_status": "UNSUPPORTED",
+      "test_status": "NOT_RUN",
+      "diagnostics": [
+        "Use legal file import when user supplies data"
+      ]
+    },
+    {
+      "name": "TradingView",
+      "official_url": "https://www.tradingview.com/",
+      "version": null,
+      "license": "Commercial service terms",
+      "interface": "No approved API connected",
+      "authentication": "Commercial account if licensed",
+      "runtime_cost": "Unknown",
+      "data_limits": "No scraping or redistribution assumed",
+      "capabilities": [
+        "CHARTS",
+        "ALERTS"
+      ],
+      "status": "LICENSE_BLOCKED",
+      "connection_status": "UNSUPPORTED",
+      "test_status": "NOT_RUN",
+      "diagnostics": [
+        "Manual export/import only"
+      ]
+    },
+    {
+      "name": "TIKR",
+      "official_url": "https://www.tikr.com/",
+      "version": null,
+      "license": "Commercial service terms",
+      "interface": "No approved API connected",
+      "authentication": "Commercial account if licensed",
+      "runtime_cost": "Unknown",
+      "data_limits": "No scraping or redistribution assumed",
+      "capabilities": [
+        "FUNDAMENTALS",
+        "ESTIMATES"
+      ],
+      "status": "LICENSE_BLOCKED",
+      "connection_status": "UNSUPPORTED",
+      "test_status": "NOT_RUN",
+      "diagnostics": [
+        "Manual export/import only"
+      ]
+    },
+    {
+      "name": "Seeking Alpha",
+      "official_url": "https://seekingalpha.com/",
+      "version": null,
+      "license": "Commercial service terms",
+      "interface": "No approved API connected",
+      "authentication": "Commercial account if licensed",
+      "runtime_cost": "Unknown",
+      "data_limits": "No scraping or redistribution assumed",
+      "capabilities": [
+        "NEWS",
+        "ESTIMATES",
+        "SENTIMENT"
+      ],
+      "status": "LICENSE_BLOCKED",
+      "connection_status": "UNSUPPORTED",
+      "test_status": "NOT_RUN",
+      "diagnostics": [
+        "Manual export/import only"
+      ]
+    }
+  ]
+}

@@ -1,5 +1,44 @@
 # AlphaMosaic
 
+Latest RAW weekly continuation adds explicit split-only derived signal prices, separate raw execution and dividend accounting, per-signal sealed CSV and readable terminal evidence. Default RAW-action refusal stays in force. Current source passed434 full tests, final independent12 checks, clean base-wheel/32-tool MCP and eight-page browser QA. All examples remain FIXTURE software evidence; real/PIT qualification and full platform acceptance are incomplete. See [current acceptance](docs/RAW_WEEKLY_ACCEPTANCE_20261026.md). Run `uv run python scripts/run_raw_weekly_cases.py --home runtime/my-weekly-research` to create a new unique suite home.
+
+Latest continuation: explicit interrupted-plan reconciliation preserves original outcomes, matches sealed artifacts without inventing process success, and never reruns missing trials. CLI, bounded MCP jobs and the terminal share this operation.397 full tests, genuine owned-parent termination, fresh base-wheel/32-tool MCP and actual browser actions passed locally; see [reconciliation verification](docs/RESEARCH_RECONCILIATION_ACCEPTANCE_20261026.md) for current source and separate publication gates. Ordinary dividends retain earned claims and spendable cash separately. Strict real-data acceptance and the full Renaissance scope remain incomplete.
+
+## Renaissance research milestone
+
+Continuation adds actual calendar-week strategies and52-period views, qualified FIFO trade
+statistics/additive asset accounting, and an offline planner→review→bounded execution→critic
+workflow with immutable plans, durable audit and per-worker deadlines. Run
+`uv run python scripts/run_extended_research.py --home runtime/extended-research` for four
+fixed daily/weekly cases and all six declared plan trials. These remain FIXTURE demonstrations.
+Use the AI Research page to freeze and inspect a plan before execution. Adaptive model planning,
+qualified real-market evidence and the remaining risk/report capabilities are still tracked
+in ROADMAP.md; the overall platform objective remains active.
+
+The daily research prototype now includes immutable local datasets, causal event/cash accounting,
+three explicit cost scenarios, fixed baseline strategies, independently tested analytics,
+chronological validation/holdout review, reproducible experiment exports and an optional local
+Streamlit/Plotly terminal. Evidence remains Exploratory. Strict real-data performance is blocked
+by incomplete adjustment/PIT/corporate-action/delisting evidence; synthetic cases are **FIXTURE**,
+not historical results for their familiar ticker labels. Adaptive model planning,
+qualified real-market evidence and advanced optimization remain roadmap items.
+
+```powershell
+uv sync --locked --all-extras --dev
+uv run python scripts/run_research_cases.py --home runtime/renaissance-demo
+$env:ALPHAMOSAIC_HOME = (Join-Path (Get-Location) 'runtime/renaissance-demo')
+uv run python -m streamlit run src/alphamosaic/ui/app.py --theme.base dark
+```
+
+Core offline research also works from a base wheel without optional extras or paid LLM access.
+The eight terminal pages cover overview, data, strategy setup, results, comparison, risk, critic
+and report downloads. Only local research jobs are run. See [reproduction](REPRODUCIBILITY.md),
+[accounting assumptions](BACKTEST_ASSUMPTIONS.md), [metric formulas](RISK_ANALYTICS.md),
+[tests](TESTING.md), [framework/license decisions](docs/OPEN_SOURCE_EVALUATION.md) and
+[measured delivery and remaining gaps](ALPHA_MOSAIC_DELIVERY_REPORT.md).
+
+![Local research terminal with explicitly synthetic evidence](docs/evidence/renaissance-20261024/01-research-overview.png)
+
 AlphaMosaic is an independent, evidence-first investment research platform. It discovers a
 bounded current US equity universe, computes deterministic factors, ranks opportunities and
 produces JSON/Markdown research bundles. It is research and paper evaluation only: there is no

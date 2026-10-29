@@ -1,0 +1,14 @@
+{
+  "status": "PASSED",
+  "viewer_source_hash": "0754fabeee4494cff23fbf0ec5ec325972b07138ce7fbfae27c5a8419e05f1f9",
+  "pages": [
+    "AI Research"
+  ],
+  "browser_errors": [],
+  "screenshots": 3,
+  "comparison_selection": [],
+  "result_selection": null,
+  "reconciliation_action_plan": null,
+  "recovered_artifact_plan": "a0eb11c2a57f4201bcaff39568a7523d",
+  "scope": "Focused recovery view and mobile degradation"
+}

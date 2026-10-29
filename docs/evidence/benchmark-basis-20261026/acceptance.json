@@ -1,0 +1,19 @@
+{
+  "status": "COMPONENT_TARGETED_AND_INDEPENDENT_PASSED",
+  "source_hash": "5f86be17f76e876e460af4775b1c6d69327fbc698480f5bbf670fb4630184608",
+  "source_python_files": 63,
+  "parent_targeted_tests": 42,
+  "independent_tests": 4,
+  "original_reproduced_failures": 3,
+  "failures_final": 0,
+  "ruff": "PASSED",
+  "pyright": "0 errors,0 warnings,0 informations; explicit interpreter used despite absent localvenv notice",
+  "acceptance": "FIXTURE",
+  "full_regression": "PENDING",
+  "wheel_and_terminal": "PENDING_CURRENT_SOURCE",
+  "published_main_integration": "NOT_DONE",
+  "cash_and_equal_weight_spec": "NOT_IMPLEMENTED_BY_THIS_FIX",
+  "real_data_qualification": "BLOCKED",
+  "full_goal": "ACTIVE_NOT_COMPLETE",
+  "initial_extra_agent_capacity_attempt": "Unfinished; resumed same reviewer subsequently completed independent4 without source changes"
+}

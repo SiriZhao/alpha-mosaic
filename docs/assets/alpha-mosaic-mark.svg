@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 240" role="img" aria-labelledby="title desc">
+  <title id="title">Alpha Mosaic geometric mark</title>
+  <desc id="desc">A grid of indigo and blue tiles representing evidence, factors, and research layers.</desc>
+  <rect width="960" height="240" rx="28" fill="#20242d"/>
+  <g transform="translate(44 44)">
+    <rect x="0" y="0" width="58" height="58" rx="10" fill="#f3f4f6"/>
+    <rect x="70" y="0" width="58" height="58" rx="10" fill="#8b83d6"/>
+    <rect x="140" y="0" width="58" height="58" rx="10" fill="#5f8fe8"/>
+    <rect x="210" y="0" width="58" height="58" rx="10" fill="#3b465e"/>
+    <rect x="280" y="0" width="58" height="58" rx="10" fill="#f3f4f6"/>
+    <rect x="0" y="70" width="58" height="58" rx="10" fill="#3b465e"/>
+    <rect x="70" y="70" width="58" height="58" rx="10" fill="#5f8fe8"/>
+    <rect x="140" y="70" width="58" height="58" rx="10" fill="#8b83d6"/>
+    <rect x="210" y="70" width="58" height="58" rx="10" fill="#f3f4f6"/>
+    <rect x="280" y="70" width="58" height="58" rx="10" fill="#3b465e"/>
+    <rect x="0" y="140" width="58" height="58" rx="10" fill="#5f8fe8"/>
+    <rect x="70" y="140" width="58" height="58" rx="10" fill="#3b465e"/>
+    <rect x="140" y="140" width="58" height="58" rx="10" fill="#f3f4f6"/>
+    <rect x="210" y="140" width="58" height="58" rx="10" fill="#8b83d6"/>
+    <rect x="280" y="140" width="58" height="58" rx="10" fill="#5f8fe8"/>
+  </g>
+  <text x="430" y="108" fill="#f3f4f6" font-family="Segoe UI, Arial, sans-serif" font-size="42" font-weight="700" letter-spacing="5">ALPHA MOSAIC</text>
+  <text x="434" y="148" fill="#b8c0d4" font-family="Segoe UI, Arial, sans-serif" font-size="17" letter-spacing="1.5">EVIDENCE · FACTORS · EVALUATION</text>
+</svg>

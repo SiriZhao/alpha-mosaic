@@ -48,6 +48,25 @@ def test_equal_weight_reference_uses_typed_points_and_preserves_legacy_ticker_se
     assert "benchmark_spec" not in legacy["config"]
 
 
+def test_experiment_comparison_keeps_typed_references_separate_from_legacy_and_each_other(tmp_path: Path) -> None:
+    service, manifest, sessions = _service_and_manifest(tmp_path)
+    cash = cash_zero_interest(sessions, initial_cash=100_000).model_dump(mode="json")
+    equal = equal_weight(("SPY", "QQQM"), sessions, initial_cash=100_000,
+        replay_config=ReplayConfig(initial_cash=100_000, fee_bps=0, slippage_bps=0,
+            spread_bps=0, max_volume_fraction=1)).model_dump(mode="json")
+    cash_a = service.research_experiment({"dataset_id": manifest["dataset_id"], "strategy": "buy_and_hold",
+        "symbols": ["SPY"], "benchmark_spec": cash})
+    cash_b = service.research_experiment({"dataset_id": manifest["dataset_id"], "strategy": "buy_and_hold",
+        "symbols": ["SPY"], "benchmark_spec": cash})
+    legacy = service.research_experiment({"dataset_id": manifest["dataset_id"], "strategy": "buy_and_hold",
+        "symbols": ["SPY"], "benchmark": "SPY"})
+    equal_item = service.research_experiment({"dataset_id": manifest["dataset_id"], "strategy": "buy_and_hold",
+        "symbols": ["SPY"], "benchmark_spec": equal})
+    assert service.research_comparison([cash_a["experiment_id"], cash_b["experiment_id"]])["status"] == "COMPARABLE"
+    assert service.research_comparison([cash_a["experiment_id"], legacy["experiment_id"]])["status"] == "INCOMPATIBLE"
+    assert service.research_comparison([cash_a["experiment_id"], equal_item["experiment_id"]])["status"] == "INCOMPATIBLE"
+
+
 def test_frozen_plan_retains_typed_cash_reference_through_worker_dispatch(tmp_path: Path) -> None:
     service, manifest, sessions = _service_and_manifest(tmp_path)
     spec = cash_zero_interest(sessions, initial_cash=100_000)

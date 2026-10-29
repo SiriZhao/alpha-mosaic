@@ -315,11 +315,21 @@ class ExperimentRunner:
 def compare_experiments(items: list[dict[str, Any]]) -> dict[str, Any]:
     if not items:
         raise ValueError("at least one experiment required")
+
+    def benchmark_signature(config: dict[str, Any]) -> str:
+        """Keep legacy and typed references in separate comparison cohorts."""
+        return json.dumps({
+            "legacy_ticker": config.get("benchmark"),
+            "typed_reference": config.get("benchmark_spec"),
+        }, sort_keys=True, separators=(",", ":"), allow_nan=False)
+
     def signature(item: dict[str, Any]) -> tuple[Any, ...]:
         c = item["config"]
         replay = ReplayConfig.model_validate(c["replay"])
         dates = [p["session"] for p in item.get("result", {}).get("equity", [])]
-        return item.get("dataset_hash"), item.get("return_basis"), item.get("acceptance"), item.get("reproducibility", {}).get("source_hash"), c["validation"], c["benchmark"], tuple(dates), dividend_accounting_signature(replay)
+        return (item.get("dataset_hash"), item.get("return_basis"), item.get("acceptance"),
+                item.get("reproducibility", {}).get("source_hash"), c["validation"],
+                benchmark_signature(c), tuple(dates), dividend_accounting_signature(replay))
     comparable = all(i["status"] == "COMPLETED" and i.get("return_basis") is not None and i.get("dataset_hash") and i.get("reproducibility", {}).get("source_hash") for i in items) and len({signature(i) for i in items}) == 1
     return {"status": "COMPARABLE" if comparable else "INCOMPATIBLE",
             "warnings": [] if comparable else ["Dataset, code, evidence, dates, basis, validation, benchmark or dividend accounting policy missing/differ; no pooled ranking"],

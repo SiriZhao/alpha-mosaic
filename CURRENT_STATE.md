@@ -1,5 +1,9 @@
 # Current state (2026-10-26)
 
+## Parameter robustness continuation — 2026-11-01
+
+The deterministic validation layer now records a predeclared momentum lookback grid (42/63/126 sessions) without selecting or promoting a best case. Each case rebuilds a validated DAILY ReplayConfig, records metrics, fills, turnover, costs, execution status and warnings, and the experiment overfitting record counts strategy, cost, parameter, ablation, reference and walk-forward trials separately. Grid size, integer lookbacks, weekly configurations and zero-trade/flat-NAV interpretation are fail-closed. Focused tests passed 2 cases; project Ruff and Pyright passed. Hosted CI is pending this source commit; real/PIT qualification remains blocked and the full goal is ACTIVE.
+
 ## Typed benchmark integration — 2026-10-27
 
 Full goal ACTIVE. BenchmarkSpecV1 is optional in ExperimentConfig and frozen research plans; legacy ticker configs serialize unchanged. ApplicationService persists cash/equal-weight references separately from benchmark_result, daily/weekly analytics distinguish model-assumption cash comparisons, and reports/terminal traces label typed references. Frozen cash plans/workers passed. Current source hash24a28b1f8cca6a09a0855409081fd1b719a52c5518fb28b8e5f18b68097a09c6 (65 Python files) passed447 full tests, 2 direct benchmark integration tests, 3 plan/worker integration tests, Ruff, Pyright and secret scan. Typed cash browser QA passed 12 captures with no browser errors. Second-model review was unavailable due capacity; real/PIT qualification remains blocked.

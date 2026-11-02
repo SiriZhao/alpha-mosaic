@@ -1,5 +1,6 @@
 """Predeclared folds, ablations and cost sensitivity, with no strategy promotion."""
 
+import math
 from datetime import date
 from typing import Any
 
@@ -154,6 +155,85 @@ def walk_forward(
     }
 
 
+def parameter_sensitivity(
+    data: ReplayDataset,
+    config: ReplayConfig,
+    strategy: str = "momentum",
+    lookbacks: tuple[int, ...] = (42, 63, 126),
+) -> dict[str, Any]:
+    """Run a fixed parameter grid without selecting a best result.
+
+    This is a robustness diagnostic. The grid is declared by the caller, each
+    case is an independent replay, and the output deliberately contains no
+    ranking or promotion decision.
+    """
+    validate_dataset(data)
+    if config.decision_frequency != "DAILY" or config.weekly_feature_policy != "LEGACY_REJECT_RAW_ACTIONS":
+        raise ValueError("parameter sensitivity requires the default DAILY feature policy")
+    if strategy.startswith("weekly_"):
+        raise ValueError("parameter sensitivity requires a registered daily strategy")
+    if not lookbacks or len(lookbacks) > 8 or len(set(lookbacks)) != len(lookbacks):
+        raise ValueError("parameter sensitivity grid must contain unique lookbacks")
+    if any(not isinstance(value, int) or isinstance(value, bool) for value in lookbacks):
+        raise ValueError("lookbacks must be integer session counts")
+    if any(value < 20 or value > 252 for value in lookbacks):
+        raise ValueError("lookbacks must be between 20 and 252 sessions")
+    engine = PaperReplayEngine()
+    registry = StrategyRegistry()
+    strategy_impl = registry.get(strategy)
+    cases: list[dict[str, Any]] = []
+    ordered_lookbacks = tuple(sorted(lookbacks))
+    for lookback in ordered_lookbacks:
+        case_config = ReplayConfig.model_validate({
+            **config.model_dump(), "lookback": lookback, "decision_frequency": "DAILY"
+        })
+        try:
+            replay = engine.run(data, strategy_impl, strategy, case_config)
+        except ValueError as exc:
+            cases.append({"lookback": lookback, "status": "FAILED", "error": str(exc)[:500]})
+            continue
+        returns = returns_of(replay)
+        flat_nav = bool(replay.equity) and all(
+            math.isclose(point.nav, replay.equity[0].nav, rel_tol=0.0, abs_tol=1e-12)
+            for point in replay.equity
+        )
+        execution_status = "NO_TRADES" if not replay.fills else "FLAT_NAV" if flat_nav else "FILLED"
+        warnings = []
+        if not replay.fills:
+            warnings.append("NO_TRADES_OR_FLAT_NAV: arithmetic result is not evidence of executable robustness")
+        elif flat_nav:
+            warnings.append("FLAT_NAV: no observed economic movement in this replay")
+        cases.append({
+            "lookback": lookback,
+            "status": "COMPUTED",
+            "metrics": QuantStatsAdapter().metrics(returns),
+            "observations": len(returns),
+            "fills": len(replay.fills),
+            "turnover": replay.turnover,
+            "fees_usd": replay.fees,
+            "slippage_cost_usd": replay.slippage_cost,
+            "execution_status": execution_status,
+            "warnings": warnings,
+        })
+    computed_cases = sum(case["status"] == "COMPUTED" for case in cases)
+    failed_cases = sum(case["status"] == "FAILED" for case in cases)
+    return {
+        "status": "COMPUTED" if computed_cases and not failed_cases else "PARTIAL" if computed_cases else "FAILED",
+        "strategy": strategy,
+        "grid": [{"lookback": value} for value in ordered_lookbacks],
+        "cases": cases,
+        "trial_count": len(cases),
+        "computed_cases": computed_cases,
+        "failed_cases": failed_cases,
+        "selection": "NONE",
+        "limitations": [
+            "Predeclared parameter cases are independent diagnostics; no case is promoted",
+            "Historical sensitivity does not establish prospective stability or return probability",
+            "The grid is not a substitute for a qualified point-in-time dataset",
+        ],
+    }
+
+
 def regime_analysis(result: ReplayResult, benchmark: list[HistoricalBar]) -> dict[str, Any]:
     if len(benchmark) < 61:
         return {"status": "BLOCKED", "reason": "MISSING_BENCHMARK_REGIME_HISTORY"}
@@ -229,6 +309,16 @@ def experiment(
     ablated = engine.run(data, registry.get("multi_factor", "trend"), "multi_factor", daily_config)
     summary = summarize(momentum, benchmarks, config.seed)
     equal_weight = engine.run(data, registry.get("buy_and_hold"), "buy_and_hold", daily_config)
+    parameter_grid = parameter_sensitivity(data, daily_config, "momentum")
+    walk_forward_result = walk_forward(data, daily_config)
+    trial_components = {
+        "strategy_cases": len(results),
+        "slippage_cases": len(sensitivity),
+        "parameter_cases": parameter_grid["trial_count"],
+        "ablation_cases": 1,
+        "reference_cases": 1,
+        "walk_forward_folds": len(walk_forward_result.get("folds", [])),
+    }
     return {
         "status": "COMPUTED",
         "alpha_status": "INSUFFICIENT_EVIDENCE_NO_DEMONSTRATED_ALPHA",
@@ -236,8 +326,9 @@ def experiment(
         "analytics": "QuantStats",
         "acceptance": momentum.acceptance,
         "strategies": results,
-        "walk_forward": walk_forward(data, daily_config),
+        "walk_forward": walk_forward_result,
         "slippage_sensitivity": sensitivity,
+        "parameter_sensitivity": parameter_grid,
         "ablation": {
             "removed_signal": "trend",
             "full": results["multi_factor"],
@@ -252,7 +343,8 @@ def experiment(
         else "CAUSAL_PRICE_CALCULATION_ONLY_REVISED_DATA_NOT_PIT",
         "overfitting": {
             "selection": "PREDECLARED_NO_OPTIMIZATION",
-            "trials_reported": len(results),
+            "trials_reported": sum(trial_components.values()),
+            "trial_components": trial_components,
             "correction": "NOT_ESTIMATED_NO_SIGNIFICANCE_CLAIM",
             "seed": config.seed,
         },

@@ -1,0 +1,127 @@
+{
+  "captured_at_utc": "2026-10-25T03:11:23.187603+00:00",
+  "scope": "SOFTWARE_AND_FIXTURE_ONLY",
+  "source_hash": "af12390cfe9579db641a354fee171afaa6d409c3c6bd56fa770a6f06ceca8f07",
+  "tests": {
+    "tests": 267,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "runtime_warnings": "TREATED_AS_ERRORS",
+  "fixture_suite": {
+    "status": "PASSED",
+    "evidence_class": "FIXTURE",
+    "market_performance_inference": "PROHIBITED",
+    "dataset_id": "7c075d0ebf8a28f8a9d24bbd164ed325e757c25299d4f7bcc7fa47438427129c",
+    "cases": [
+      {
+        "strategy": "mean_reversion",
+        "experiment_id": "fefa09a2bfb2450cb673a40e9842d04a",
+        "acceptance": "FIXTURE",
+        "decision_frequency": "DAILY",
+        "closed_fifo_matches": 18,
+        "weekly_observations": 53,
+        "accounting": "PASSED"
+      },
+      {
+        "strategy": "weekly_equal_weight",
+        "experiment_id": "aacaa9541bcf4de7a355a18e3b93ecc0",
+        "acceptance": "FIXTURE",
+        "decision_frequency": "WEEKLY",
+        "closed_fifo_matches": 66,
+        "weekly_observations": 53,
+        "accounting": "PASSED"
+      },
+      {
+        "strategy": "weekly_momentum",
+        "experiment_id": "69dd5b6b409a4f96b59d5e147b4f8488",
+        "acceptance": "FIXTURE",
+        "decision_frequency": "WEEKLY",
+        "closed_fifo_matches": 37,
+        "weekly_observations": 53,
+        "accounting": "PASSED"
+      },
+      {
+        "strategy": "weekly_trend",
+        "experiment_id": "2da66028a2f94c99a2e38a32323fb3a0",
+        "acceptance": "FIXTURE",
+        "decision_frequency": "WEEKLY",
+        "closed_fifo_matches": 31,
+        "weekly_observations": 53,
+        "accounting": "PASSED"
+      }
+    ],
+    "plan_id": "790fc02349b24b2ab592fc08d88d3c2d",
+    "plan_status": "COMPLETED",
+    "plan_attempts": 6,
+    "critics": 6,
+    "automatic_promotion": false
+  },
+  "frozen_plan": {
+    "plan_id": "790fc02349b24b2ab592fc08d88d3c2d",
+    "status": "COMPLETED",
+    "attempts": 6,
+    "critics": 6,
+    "automatic_promotion": false
+  },
+  "clean_base_wheel": {
+    "status": "PASSED",
+    "package_path": "runtime\\continuation-wheel-env\\Lib\\site-packages\\alphamosaic\\__init__.py",
+    "python": "3.12.14",
+    "optional": {
+      "openbb-core": "NOT_INSTALLED",
+      "quantstats": "NOT_INSTALLED",
+      "streamlit": "NOT_INSTALLED",
+      "plotly": "NOT_INSTALLED"
+    },
+    "experiment_id": "603926643a564a53bcc711866f930835",
+    "plan_id": "007ac533d9384830bdd86a19644e8b81",
+    "plan_status": "COMPLETED",
+    "fifo_reconciliation": "PASSED",
+    "weekly_analysis": "COMPLETE_WEEKS_AVAILABLE",
+    "acceptance": "FIXTURE",
+    "broker_enabled": false
+  },
+  "clean_wheel_mcp": {
+    "status": "PASSED",
+    "protocol_version": "2025-11-25",
+    "tool_count": 31,
+    "invocation": "get_system_status",
+    "ranking_run_id": null,
+    "broker_enabled": false,
+    "remote_chatgpt": "NOT_VERIFIED"
+  },
+  "browser": {
+    "status": "PASSED",
+    "pages": [
+      "Research Overview",
+      "Data Explorer",
+      "Strategy Lab",
+      "Backtest Results",
+      "Experiment Comparison",
+      "Risk Lab",
+      "AI Research",
+      "Reports"
+    ],
+    "browser_errors": [],
+    "screenshots": 9,
+    "scope": "Navigation, render, populated local fixture reports and mobile degradation; not every interactive action"
+  },
+  "artifacts": {
+    "alphamosaic-0.1.0-py3-none-any.whl": {
+      "bytes": 164818,
+      "sha256": "96d6239e1740fcc4d349c0720ab7a1297595867596fb9d324e3a41613d84da31"
+    },
+    "alphamosaic-0.1.0.tar.gz": {
+      "bytes": 704399,
+      "sha256": "d35b80d7d047c9d6f7101e1a73468d9d9b574d3f2a9e7aa02671069c5d46544c"
+    }
+  },
+  "package_python_matches_tested_source": true,
+  "sdist_runtime_excluded": true,
+  "real_data_acceptance": "BLOCKED_PIT_ACTION_ADJUSTMENT_UNIVERSE_DELISTING",
+  "remote_chatgpt": "NOT_VERIFIED",
+  "overall_goal": "ACTIVE_NOT_COMPLETE",
+  "hosted_ci": "CHECK_CURRENT_BRANCH_COMMIT_SEPARATELY"
+}

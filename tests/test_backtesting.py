@@ -1,6 +1,6 @@
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import exchange_calendars as xcals
 import pandas as pd
@@ -17,7 +17,12 @@ from alphamosaic.backtesting.strategies import StrategyRegistry
 from alphamosaic.core.contracts import CorporateAction, DataQuality, HistoricalBar, SecurityIdentity
 from alphamosaic.evaluation.quantstats_adapter import QuantStatsAdapter
 from alphamosaic.evaluation.registry import EvaluationEvidence, EvaluationRegistry
-from alphamosaic.evaluation.validation import experiment, summarize, walk_forward
+from alphamosaic.evaluation.validation import (
+    experiment,
+    parameter_sensitivity,
+    summarize,
+    walk_forward,
+)
 from alphamosaic.integrations.lean import LeanAdapter
 from alphamosaic.portfolio.forward import ForwardPaperStore
 
@@ -228,8 +233,31 @@ def test_walk_forward_and_ablation_and_ai_blocker():
     assert result["ablation"]["removed_signal"] == "trend"
     assert result["strategies"]["ai_rating"]["status"] == "BLOCKED"
     assert len(result["slippage_sensitivity"]) == 3
+    assert result["parameter_sensitivity"]["selection"] == "NONE"
+    assert [case["lookback"] for case in result["parameter_sensitivity"]["cases"]] == [42, 63, 126]
+    assert all(case["status"] == "COMPUTED" for case in result["parameter_sensitivity"]["cases"])
+    assert all(case["execution_status"] in {"FILLED", "FLAT_NAV", "NO_TRADES"} for case in result["parameter_sensitivity"]["cases"])
+    assert result["parameter_sensitivity"]["trial_count"] == 3
+    assert result["overfitting"]["trial_components"]["parameter_cases"] == 3
+    assert result["overfitting"]["trials_reported"] == sum(result["overfitting"]["trial_components"].values())
     assert result["alpha_status"] == "INSUFFICIENT_EVIDENCE_NO_DEMONSTRATED_ALPHA"
     assert walk_forward(dataset(90), ReplayConfig())["status"] == "BLOCKED"
+
+
+def test_parameter_sensitivity_rejects_undeclared_or_out_of_contract_grids():
+    with pytest.raises(ValueError, match="unique"):
+        parameter_sensitivity(dataset(90), ReplayConfig(), lookbacks=(42, 42))
+    with pytest.raises(ValueError, match="between 20 and 252"):
+        parameter_sensitivity(dataset(90), ReplayConfig(), lookbacks=(19,))
+    with pytest.raises(ValueError, match="integer"):
+        parameter_sensitivity(dataset(90), ReplayConfig(), lookbacks=cast(Any, (42.0,)))
+    with pytest.raises(ValueError, match="daily strategy"):
+        parameter_sensitivity(dataset(90), ReplayConfig(), strategy="weekly_momentum")
+    with pytest.raises(ValueError, match="default DAILY"):
+        parameter_sensitivity(dataset(90), ReplayConfig(decision_frequency="WEEKLY"))
+    no_trade = parameter_sensitivity(dataset(90, volume=0), ReplayConfig(), lookbacks=(42,))
+    assert no_trade["cases"][0]["execution_status"] == "NO_TRADES"
+    assert no_trade["cases"][0]["warnings"]
 
 
 def test_pit_signal_cutoff_and_expiry():

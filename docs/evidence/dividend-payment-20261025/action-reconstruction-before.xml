@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="3" time="5.119" timestamp="2026-10-25T21:38:15.412148+08:00" hostname="YOGA"><testcase classname="tests.test_dividend_contract_boundaries" name="test_independent_reconstruction_refuses_unqualified_action_evidence[MODEL_INFERENCE]" time="0.372"><failure message="AssertionError: assert 'VERIFIED' == 'BLOCKED'&#10;  &#10;  - BLOCKED&#10;  + VERIFIED">quality = &lt;DataQuality.MODEL_INFERENCE: 'MODEL_INFERENCE'&gt;
+
+    @pytest.mark.parametrize("quality", [DataQuality.MODEL_INFERENCE, DataQuality.MISSING, DataQuality.HISTORICAL])
+    def test_independent_reconstruction_refuses_unqualified_action_evidence(quality: DataQuality) -&gt; None:
+        data = fixture_data()
+        valid = replay(data)
+        altered = data.model_copy(update={"actions": [action.model_copy(update={"data_quality": quality}) for action in data.actions]})
+&gt;       assert analyze_trades(valid, altered)["status"] == "BLOCKED"
+E       AssertionError: assert 'VERIFIED' == 'BLOCKED'
+E         
+E         - BLOCKED
+E         + VERIFIED
+
+tests\test_dividend_contract_boundaries.py:93: AssertionError</failure></testcase><testcase classname="tests.test_dividend_contract_boundaries" name="test_independent_reconstruction_refuses_unqualified_action_evidence[MISSING]" time="0.008"><failure message="AssertionError: assert 'VERIFIED' == 'BLOCKED'&#10;  &#10;  - BLOCKED&#10;  + VERIFIED">quality = &lt;DataQuality.MISSING: 'MISSING'&gt;
+
+    @pytest.mark.parametrize("quality", [DataQuality.MODEL_INFERENCE, DataQuality.MISSING, DataQuality.HISTORICAL])
+    def test_independent_reconstruction_refuses_unqualified_action_evidence(quality: DataQuality) -&gt; None:
+        data = fixture_data()
+        valid = replay(data)
+        altered = data.model_copy(update={"actions": [action.model_copy(update={"data_quality": quality}) for action in data.actions]})
+&gt;       assert analyze_trades(valid, altered)["status"] == "BLOCKED"
+E       AssertionError: assert 'VERIFIED' == 'BLOCKED'
+E         
+E         - BLOCKED
+E         + VERIFIED
+
+tests\test_dividend_contract_boundaries.py:93: AssertionError</failure></testcase><testcase classname="tests.test_dividend_contract_boundaries" name="test_independent_reconstruction_refuses_unqualified_action_evidence[HISTORICAL]" time="0.005"><failure message="AssertionError: assert 'VERIFIED' == 'BLOCKED'&#10;  &#10;  - BLOCKED&#10;  + VERIFIED">quality = &lt;DataQuality.HISTORICAL: 'HISTORICAL'&gt;
+
+    @pytest.mark.parametrize("quality", [DataQuality.MODEL_INFERENCE, DataQuality.MISSING, DataQuality.HISTORICAL])
+    def test_independent_reconstruction_refuses_unqualified_action_evidence(quality: DataQuality) -&gt; None:
+        data = fixture_data()
+        valid = replay(data)
+        altered = data.model_copy(update={"actions": [action.model_copy(update={"data_quality": quality}) for action in data.actions]})
+&gt;       assert analyze_trades(valid, altered)["status"] == "BLOCKED"
+E       AssertionError: assert 'VERIFIED' == 'BLOCKED'
+E         
+E         - BLOCKED
+E         + VERIFIED
+
+tests\test_dividend_contract_boundaries.py:93: AssertionError</failure></testcase></testsuite></testsuites>

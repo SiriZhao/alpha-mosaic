@@ -1,0 +1,11 @@
+{
+  "source_hash": "0754fabeee4494cff23fbf0ec5ec325972b07138ce7fbfae27c5a8419e05f1f9",
+  "status": "PASSED",
+  "sessions": 100,
+  "assets": 3,
+  "data_quality": "FIXTURE",
+  "first_replay_seconds": 0.03582629999436904,
+  "fills": 12,
+  "exact_repeat": true,
+  "optimization": "BASELINE_ONLY_NO_SPEEDUP_CLAIM"
+}

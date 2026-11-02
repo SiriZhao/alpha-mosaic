@@ -1,0 +1,36 @@
+{
+  "scope": "COMMITTED_FIXTURE_REPRODUCTION",
+  "git_sha": "a583a1ef3721b05581e84b115f7cc127c176d3b3",
+  "source_hash": "af12390cfe9579db641a354fee171afaa6d409c3c6bd56fa770a6f06ceca8f07",
+  "all_runs_git_dirty": false,
+  "four_cases": [
+    {
+      "strategy": "mean_reversion",
+      "experiment_id": "28f05201690b49658fd736b115ebba21",
+      "result_hash": "6e67bdb843499b64a43f7e2e3ad202708abde7f223ae23ee955e6d1184b9a24b",
+      "analysis_hash": "4670f9d544b5022462f40c6a7f4f8fb8d39b03b34c81cbcba8d69e000a19479e"
+    },
+    {
+      "strategy": "weekly_equal_weight",
+      "experiment_id": "1ee753996e78479c9b0a2f2dcebc1af2",
+      "result_hash": "b8cacb6b37a0982e650d402aa9b18a4db6bbc4e77c21cbb257f61a6433346b30",
+      "analysis_hash": "1f4a0609551f298ff3edce2817a15afb3a55a84909690667a6990d690346a69d"
+    },
+    {
+      "strategy": "weekly_momentum",
+      "experiment_id": "38560b19be864d0993e4f320a1d920e7",
+      "result_hash": "64d663b3618f831d756c4555499396e7dd589e7f7b35832a1ab42d703abdbf30",
+      "analysis_hash": "64f5df8d0528f71a12cb850f04623acc82260955a58de575491a89f122f7144b"
+    },
+    {
+      "strategy": "weekly_trend",
+      "experiment_id": "8a43fd38d55749d6b53a2b88e7348132",
+      "result_hash": "deec250849ce08fde5019888f939cf691d245c7aeb4a259b06b9e30eafc8bc89",
+      "analysis_hash": "64e7d0c96406d4b885ade556a09cda83303c30f64dc12b8c83bd3d89261ffaf0"
+    }
+  ],
+  "frozen_plan_id": "1b8a17053908434d8e427fd9d703e537",
+  "frozen_trials": 6,
+  "all_result_and_analysis_equal": true,
+  "market_performance_inference": "PROHIBITED"
+}

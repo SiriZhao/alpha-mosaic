@@ -58,6 +58,72 @@ class ApplicationService:
         self.research_engine = ResearchEngine(self.provider, self.home)
         from alphamosaic.opportunity_pipeline import OpportunityDiscoveryPipeline
         self.opportunity_pipeline = OpportunityDiscoveryPipeline(self)
+        self._experiment_runner: Any = None
+        self._research_workflow: Any = None
+
+    def research_workflow(self) -> Any:
+        from alphamosaic.agents.workflow import ResearchWorkflow
+        with self.lock:
+            if self._research_workflow is None:
+                self._research_workflow = ResearchWorkflow(self.home)
+            return self._research_workflow
+
+    def plan_research(self, config: dict[str, Any]) -> dict[str, Any]:
+        from alphamosaic.agents.workflow import ResearchPlanRequest
+        return self.research_workflow().create(ResearchPlanRequest.model_validate(config))
+
+    def run_research_plan(self, plan_id: str) -> dict[str, Any]:
+        return self.research_workflow().run(plan_id)
+
+    def reconcile_research_plan(self, plan_id: str) -> dict[str, Any]:
+        """Review and terminalize an interrupted local plan without executing a trial."""
+        return self.research_workflow().reconcile(plan_id)
+
+    def research_plan(self, plan_id: str) -> dict[str, Any]:
+        return self.research_workflow().status(plan_id)
+
+    def research_plans(self) -> list[dict[str, Any]]:
+        return self.research_workflow().store.list()
+
+    def research_plan_report(self, plan_id: str) -> dict[str, Any]:
+        return self.research_workflow().report(plan_id)
+
+    def experiment_runner(self) -> Any:
+        """One bounded local research executor shared by every application surface."""
+        from alphamosaic.experiments.runner import ExperimentRunner
+        with self.lock:
+            if self._experiment_runner is None:
+                self._experiment_runner = ExperimentRunner(self.home)
+            return self._experiment_runner
+
+    def research_demo(self, sessions: int = 504, seed: int = 42) -> dict[str, Any]:
+        """Register deterministic synthetic evidence; never invoke a market API."""
+        from alphamosaic.data.datasets import synthetic_demo
+        if not 80 <= sessions <= 2000:
+            raise ValueError("demo sessions must be in 80..2000")
+        return self.experiment_runner().datasets.save(synthetic_demo(sessions, seed))
+
+    def research_datasets(self) -> list[dict[str, Any]]:
+        return self.experiment_runner().datasets.list()
+
+    def research_strategies(self) -> list[dict[str, Any]]:
+        return StrategyRegistry().list()
+
+    def research_experiment(self, config: dict[str, Any]) -> dict[str, Any]:
+        from alphamosaic.experiments.runner import ExperimentConfig
+        return self.experiment_runner().run(ExperimentConfig.model_validate(config))
+
+    def research_experiments(self) -> list[dict[str, Any]]:
+        return self.experiment_runner().store.list()
+
+    def research_result(self, experiment_id: str) -> dict[str, Any]:
+        return self.experiment_runner().store.load(experiment_id)
+
+    def research_comparison(self, experiment_ids: list[str]) -> dict[str, Any]:
+        from alphamosaic.experiments.runner import compare_experiments
+        if not 1 <= len(experiment_ids) <= 10:
+            raise ValueError("compare 1..10 experiments")
+        return compare_experiments([self.research_result(i) for i in experiment_ids])
 
     def status(self) -> dict[str, Any]:
         now = utc_now()

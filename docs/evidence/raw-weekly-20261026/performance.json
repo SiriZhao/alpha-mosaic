@@ -1,0 +1,1 @@
+{"status": "PASSED", "sessions": 100, "assets": 3, "data_quality": "FIXTURE", "first_replay_seconds": 0.045686099998420104, "fills": 12, "exact_repeat": true, "optimization": "BASELINE_ONLY_NO_SPEEDUP_CLAIM"}

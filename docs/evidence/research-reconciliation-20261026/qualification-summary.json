@@ -1,0 +1,31 @@
+{
+  "status": "VERIFIED_SOFTWARE_CHECKPOINT",
+  "full_goal": "ACTIVE_NOT_COMPLETE",
+  "published_commit": "a4c5f2e53575b6a86e862aa64251de2483b86ba0",
+  "local_source_hash": "0754fabeee4494cff23fbf0ec5ec325972b07138ce7fbfae27c5a8419e05f1f9",
+  "hosted_source_hash": "eb95dc08e3be43f543261860fe627a50737f01162511aebc23a54bb5f22d5713",
+  "tests_local": 397,
+  "tests_hosted": 397,
+  "independent_current_target_tests": 36,
+  "package_python_files": 60,
+  "base_wheel_mcp_tools": 32,
+  "full_browser_captures": 15,
+  "focused_browser_captures": 3,
+  "exact_same_environment_financial_reruns": 9,
+  "reconciliation_new_trials": 0,
+  "evidence": {
+    "initial_local": "acceptance.json",
+    "current_independent": "independent-review.json",
+    "hosted": "hosted-ci.json",
+    "clean_reproduction": "committed-reproduction.json",
+    "source_identity": "source-hash-provenance.json"
+  },
+  "notes": [
+    "Initial cap/ACL and prior failed semantic/PID/browser attempts remain immutable",
+    "Later qualified records supersede the initially unfinished independent/hosted gates without rewriting them",
+    "Windows and hosted LF identities are explicit and comparison gates stay strict"
+  ],
+  "real_data_acceptance": "BLOCKED",
+  "remote_chatgpt": "NOT_VERIFIED",
+  "cross_platform_exact_financial_reproduction": "NOT_CLAIMED"
+}

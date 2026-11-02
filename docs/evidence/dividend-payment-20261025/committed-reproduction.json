@@ -1,0 +1,147 @@
+{
+  "status": "PASSED",
+  "commit": "c63deb9c4d4f53399c4994d3e996c0e3bf3b56f1",
+  "source_hash": "0c934375a1f29c85cdd4740bafec9015916bc0a43aaf3c5178e77fb34cbdffb2",
+  "git_dirty": false,
+  "dataset_id": "fdee48d841419674715267b5f7f300aebca08ff9b8f3c74e6c38e89cf94cc6e2",
+  "scope": "FIXTURE_SOFTWARE_REPRODUCIBILITY_ONLY",
+  "market_performance_inference": "PROHIBITED",
+  "checks": [
+    {
+      "case": "realistic_full",
+      "before": "407ecffcb0384a3d995e888725022910",
+      "committed": "c894abd8a46f46ad82fb95581f79c81d",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_record_id": true,
+      "result_sha256": "ebbda55910e99d49ae21cb5f3a24799b693cec505a922a089ef3e3deb005a93e"
+    },
+    {
+      "case": "stress_full",
+      "before": "6fb0ce0686604165bc7fc4032a75b82a",
+      "committed": "19d67f2e0fe14e379a745bc60a696cbd",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_record_id": true,
+      "result_sha256": "aa3cdf0084cc5785dc2a40ded87e7a2dcfb5945ebda3dfd2bd710664f40956cd"
+    },
+    {
+      "case": "realistic_unpaid_cutoff",
+      "before": "93ef9ab1f883487ea97dd28e2f176797",
+      "committed": "733c36d98acc48e28a50a3869818ff5c",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_record_id": true,
+      "result_sha256": "fbf2a0e9a7421829a92e4f8a86c3bd25e91c8748214f386f043e948996373772"
+    },
+    {
+      "case": "legacy_diagnostic",
+      "before": "bc5d127ad7234ccc8a7c417c94ff18f2",
+      "committed": "77e91774d89b40d2acdab6a37a887bb7",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_record_id": true,
+      "result_sha256": "fadb016289ab510005de2f535244ab9abecf626c894239479ce93348c666a535"
+    },
+    {
+      "case": "frozen_trial_0",
+      "before": "712d617305964a94953a46bf903bb163",
+      "committed": "cf9d351cf90d47f989d530d277f1d8b3",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_record_id": true,
+      "result_sha256": "ebbda55910e99d49ae21cb5f3a24799b693cec505a922a089ef3e3deb005a93e"
+    },
+    {
+      "case": "frozen_trial_1",
+      "before": "9194b6e6da63422895dd3e99f7b8ce6c",
+      "committed": "1fec26c7026c4c42bf5712fd7524827f",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_record_id": true,
+      "result_sha256": "aa3cdf0084cc5785dc2a40ded87e7a2dcfb5945ebda3dfd2bd710664f40956cd"
+    },
+    {
+      "case": "frozen_trial_2",
+      "before": "c2b0dc31ab7c47d4883e49a4120198af",
+      "committed": "0bdb200f958d416d9f8ed806a570b466",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_record_id": true,
+      "result_sha256": "6c5f3e11b4ae2878585145a5d75d00585e522877ae5a62e5abdd9b8b0758c9cf"
+    },
+    {
+      "case": "frozen_trial_3",
+      "before": "9998ffd53fb446ac9f9b16c87bce495a",
+      "committed": "ab6b047c1e5f47d89dcb6080e0ef530b",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_record_id": true,
+      "result_sha256": "6a9f28f63a669ff4a05f38ccc050de827c237bd2e35e401bce7c804468c78dde"
+    }
+  ],
+  "expected_weekly_action_failure_retained": true,
+  "excluded_metadata": [
+    "experiment/plan/attempt identities",
+    "created_at",
+    "elapsed_seconds",
+    "Git commit/dirty identity"
+  ],
+  "initial_comparison_failure": "Critic Evidence.experiment_id correctly differed; ID linkage checked separately before exact remaining critic equality"
+}

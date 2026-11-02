@@ -1,0 +1,148 @@
+{
+  "status": "PASSED",
+  "commit": "f9dcfe33e7d9698e1f080a5d5e553567efe2f652",
+  "source_hash": "a26523a908f264868dee7eb4da6a3df92f4ab0b16a2bf65514c52d74b1b1c988",
+  "comparison_source_hash": "0c934375a1f29c85cdd4740bafec9015916bc0a43aaf3c5178e77fb34cbdffb2",
+  "comparison_purpose": "Dispatch-only source changes preserve exact earlier financial results and all recorded critics except separately checked identity",
+  "git_dirty": false,
+  "dataset_id": "fdee48d841419674715267b5f7f300aebca08ff9b8f3c74e6c38e89cf94cc6e2",
+  "scope": "FIXTURE_SOFTWARE_REPRODUCIBILITY_ONLY",
+  "market_performance_inference": "PROHIBITED",
+  "checks": [
+    {
+      "case": "realistic_full",
+      "before": "c894abd8a46f46ad82fb95581f79c81d",
+      "committed": "7897c5366a8a49db9dcf055e74c3366c",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_record_id": true,
+      "result_sha256": "ebbda55910e99d49ae21cb5f3a24799b693cec505a922a089ef3e3deb005a93e"
+    },
+    {
+      "case": "stress_full",
+      "before": "19d67f2e0fe14e379a745bc60a696cbd",
+      "committed": "060f62f9e7ec4fa2ad15afa2baba1d3b",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_record_id": true,
+      "result_sha256": "aa3cdf0084cc5785dc2a40ded87e7a2dcfb5945ebda3dfd2bd710664f40956cd"
+    },
+    {
+      "case": "realistic_unpaid_cutoff",
+      "before": "733c36d98acc48e28a50a3869818ff5c",
+      "committed": "23ef8996a412480ab5f9e94b456beb73",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_record_id": true,
+      "result_sha256": "fbf2a0e9a7421829a92e4f8a86c3bd25e91c8748214f386f043e948996373772"
+    },
+    {
+      "case": "legacy_diagnostic",
+      "before": "77e91774d89b40d2acdab6a37a887bb7",
+      "committed": "81addc458cb7424cb4ec6728796fa19e",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_record_id": true,
+      "result_sha256": "fadb016289ab510005de2f535244ab9abecf626c894239479ce93348c666a535"
+    },
+    {
+      "case": "frozen_trial_0",
+      "before": "cf9d351cf90d47f989d530d277f1d8b3",
+      "committed": "acb0900b155344979b8132b1c5f56738",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_record_id": true,
+      "result_sha256": "ebbda55910e99d49ae21cb5f3a24799b693cec505a922a089ef3e3deb005a93e"
+    },
+    {
+      "case": "frozen_trial_1",
+      "before": "1fec26c7026c4c42bf5712fd7524827f",
+      "committed": "346a3f634c734bdbba99847834f846a4",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_record_id": true,
+      "result_sha256": "aa3cdf0084cc5785dc2a40ded87e7a2dcfb5945ebda3dfd2bd710664f40956cd"
+    },
+    {
+      "case": "frozen_trial_2",
+      "before": "0bdb200f958d416d9f8ed806a570b466",
+      "committed": "cb86fcb00fa846c09b1ff31f8d102a86",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_record_id": true,
+      "result_sha256": "6c5f3e11b4ae2878585145a5d75d00585e522877ae5a62e5abdd9b8b0758c9cf"
+    },
+    {
+      "case": "frozen_trial_3",
+      "before": "ab6b047c1e5f47d89dcb6080e0ef530b",
+      "committed": "a76fbdad6ead4c0d8579d2d149954722",
+      "equal_fields": [
+        "result",
+        "benchmark_result",
+        "analysis",
+        "dataset_hash",
+        "return_basis",
+        "acceptance",
+        "warnings"
+      ],
+      "critic_equal_except_record_id": true,
+      "result_sha256": "6a9f28f63a669ff4a05f38ccc050de827c237bd2e35e401bce7c804468c78dde"
+    }
+  ],
+  "expected_weekly_action_failure_retained": true,
+  "excluded_metadata": [
+    "experiment/plan/attempt identities",
+    "created_at",
+    "elapsed_seconds",
+    "source/Git/dependency identity"
+  ]
+}

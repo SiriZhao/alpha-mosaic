@@ -1,0 +1,313 @@
+{
+  "scope": "RESEARCH_ONLY_INTERRUPTED_PLAN_RECONCILIATION",
+  "source_hash": "0754fabeee4494cff23fbf0ec5ec325972b07138ce7fbfae27c5a8419e05f1f9",
+  "full_tests": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "397",
+    "time": "174.769",
+    "timestamp": "2026-10-26T18:17:02.047834+08:00",
+    "hostname": "YOGA"
+  },
+  "ruff": "PASSED",
+  "pyright": "PASSED",
+  "lock": "140_UNCHANGED",
+  "secret_scan": "PASSED",
+  "core_recovery": {
+    "preserved_worktree_commit": "cf0ebcfb1b497b7997cdedf4f8cdb45485010a1e",
+    "integrated_commit": "1e80320732e4d0163865a6a4bcb1f339bfe37a80",
+    "original_source_hash": "ab6f100bd4868ece96edf9edfc5c84e10e01e9f0f065c7bc74454fd61f3e4335",
+    "original_qualified_tests": 27
+  },
+  "independent_review": {
+    "separate_read_only_design_and_partial_core_review": "COMPLETED_WITH_FINDINGS",
+    "final_frozen_subagent_test_run": "NOT_COMPLETED_USAGE_LIMIT",
+    "parent_semantic_counterexamples": 3,
+    "parent_counterexamples_failed_before_repair": 3,
+    "parent_completed_full_integration_and_genuine_process_test": true,
+    "paid_resources": "NONE"
+  },
+  "base_wheel": {
+    "status": "PASSED",
+    "package_path": "E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\reconciliation-final-wheel-env\\Lib\\site-packages\\alphamosaic\\__init__.py",
+    "python": "3.12.14",
+    "optional": {
+      "openbb-core": "NOT_INSTALLED",
+      "quantstats": "NOT_INSTALLED",
+      "streamlit": "NOT_INSTALLED",
+      "plotly": "NOT_INSTALLED"
+    },
+    "experiment_id": "2a95131003054f6789cfabbefe5c4a4d",
+    "plan_id": "a079498294ee4604b5f0100dbc7b7a59",
+    "plan_status": "COMPLETED",
+    "fifo_reconciliation": "PASSED",
+    "weekly_analysis": "COMPLETE_WEEKS_AVAILABLE",
+    "dividend_cases": 4,
+    "dividend_plan": {
+      "plan_id": "f72c517c35ae4909a0e09587aed7e9b3",
+      "status": "COMPLETED",
+      "trials": 4,
+      "critics": 4
+    },
+    "unsupported_weekly_action_status": "FAILED",
+    "reconciliation_cases": 3,
+    "reconciliation_new_experiments": 0,
+    "acceptance": "FIXTURE",
+    "broker_enabled": false
+  },
+  "base_wheel_mcp": {
+    "status": "PASSED",
+    "protocol_version": "2025-11-25",
+    "tool_count": 32,
+    "invocation": "get_system_status",
+    "ranking_run_id": null,
+    "broker_enabled": false,
+    "remote_chatgpt": "NOT_VERIFIED"
+  },
+  "package_and_installed_python_bytes_match": 60,
+  "sdist_runtime_excluded": true,
+  "artifacts": {
+    "alphamosaic-0.1.0-py3-none-any.whl": {
+      "sha256": "25d530974e0c68e1ebcda1c9cd9ffcca39aeb69f5f932ab1999614a297ac879f",
+      "bytes": 182577
+    },
+    "alphamosaic-0.1.0.tar.gz": {
+      "sha256": "94fd2a3863de44940a55753e4c4258309646aedf7842667a129f61f6776a07b8",
+      "bytes": 1917100
+    }
+  },
+  "browser": {
+    "status": "PASSED",
+    "viewer_source_hash": "0754fabeee4494cff23fbf0ec5ec325972b07138ce7fbfae27c5a8419e05f1f9",
+    "pages": [
+      "Research Overview",
+      "Data Explorer",
+      "Strategy Lab",
+      "Backtest Results",
+      "Experiment Comparison",
+      "Risk Lab",
+      "AI Research",
+      "Reports"
+    ],
+    "browser_errors": [],
+    "screenshots": 15,
+    "comparison_selection": [
+      "111a7856c4ce4538a2e09bbd0dd9f111",
+      "5dc51f5363cc41eb8e72315496175dd7"
+    ],
+    "result_selection": "cf51d8370074429092332845be3342ee",
+    "reconciliation_action_plan": "5b3bd7714283474988f92e68fafc73fb",
+    "recovered_artifact_plan": "a0eb11c2a57f4201bcaff39568a7523d",
+    "scope": "Navigation, render, populated local fixture reports, selected qualified comparison/result and explicit reconciliation action when requested, and mobile degradation; scrolled viewports where needed; not every interactive action"
+  },
+  "focused_view": {
+    "status": "PASSED",
+    "viewer_source_hash": "0754fabeee4494cff23fbf0ec5ec325972b07138ce7fbfae27c5a8419e05f1f9",
+    "pages": [
+      "AI Research"
+    ],
+    "browser_errors": [],
+    "screenshots": 3,
+    "comparison_selection": [],
+    "result_selection": null,
+    "reconciliation_action_plan": null,
+    "recovered_artifact_plan": "a0eb11c2a57f4201bcaff39568a7523d",
+    "scope": "Focused recovery view and mobile degradation"
+  },
+  "recovery_cases": {
+    "broker_enabled": false,
+    "browser_pending_plan": "838ab2c07ac64b24ad8ac13ad75dd0fe",
+    "cases": [
+      {
+        "case": "frozen_noop",
+        "plan_id": "e67492cc2ca549c297ab2b4d1dc6ef79",
+        "status": "FROZEN"
+      },
+      {
+        "artifact": {
+          "checksums_sha256": "b7fb0ae4dc35e1b9e2a23247762009e12e2445af2ded455009a9fdb36bb0f7af",
+          "config_sha256": "6bb5ed6a41cac60291374b4b873c788444a94183c7d0a848b3d0c6dfc2847bac",
+          "experiment_id": "b57f8fce2b5248a1a7088fa09e7d71a0",
+          "experiment_sha256": "603f63bf25735b67d8f94f1c977f5fb72639540d6e0d9fc515f7fcaa1ea82253"
+        },
+        "case": "sealed_artifact_parent_result_lost",
+        "classification": "RECOVERED_COMPLETED_ARTIFACT",
+        "exit_status": "NOT_OBSERVED",
+        "plan_id": "a0eb11c2a57f4201bcaff39568a7523d",
+        "status": "INTERRUPTED"
+      },
+      {
+        "case": "delayed_prestart_worker_refused",
+        "classification": "INTERRUPTED_UNRESOLVED",
+        "late_observations": 1,
+        "late_worker": "FAILED",
+        "plan_id": "ac958962d6bc4ef7823c0e5e6507a2e6",
+        "status": "INTERRUPTED"
+      }
+    ],
+    "dataset_id": "ec4373d4528ab64b3b75127f433570e9e2c8a73349910288d8122c0e99a2ecd1",
+    "market_performance_inference": "PROHIBITED",
+    "process_success_inferred": false,
+    "reconciliation_experiments_executed": 0,
+    "recovered_plan": "a0eb11c2a57f4201bcaff39568a7523d",
+    "scope": "FIXTURE_SOFTWARE_FAULT_INJECTION_ONLY",
+    "setup_experiments": 1,
+    "source_hash": "0754fabeee4494cff23fbf0ec5ec325972b07138ce7fbfae27c5a8419e05f1f9",
+    "status": "PASSED"
+  },
+  "payment_cases": {
+    "status": "PASSED",
+    "scope": "FIXTURE_ACCOUNTING_ONLY",
+    "market_performance_inference": "PROHIBITED",
+    "dataset_id": "fdee48d841419674715267b5f7f300aebca08ff9b8f3c74e6c38e89cf94cc6e2",
+    "cases": [
+      {
+        "case": "realistic_full",
+        "experiment_id": "111a7856c4ce4538a2e09bbd0dd9f111",
+        "status": "COMPLETED",
+        "error": null,
+        "acceptance": "FIXTURE",
+        "accounting": {
+          "status": "PASSED",
+          "initial_cash_usd": 100000.0,
+          "ending_cash_usd": 2999.547196700485,
+          "ending_nav_usd": 96883.14614481812,
+          "portfolio_pnl_usd": -3116.8538551818783,
+          "attributed_pnl_usd": -3116.8538551818783,
+          "allocated_commission_usd": 97.87058222107844,
+          "allocated_dividends_usd": 968.0,
+          "residual_usd": 0.0,
+          "fill_count_checked": 1,
+          "actions_checked": 2,
+          "equity_points_checked": 126,
+          "absolute_tolerance_usd": 1e-07,
+          "relative_tolerance": 1e-10,
+          "paid_dividends_usd": 968.0,
+          "outstanding_dividend_receivables_usd": 0.0,
+          "dividend_payments_checked": 1,
+          "dividend_entitlements_checked": 1
+        }
+      },
+      {
+        "case": "stress_full",
+        "experiment_id": "5dc51f5363cc41eb8e72315496175dd7",
+        "status": "COMPLETED",
+        "error": null,
+        "acceptance": "FIXTURE",
+        "accounting": {
+          "status": "PASSED",
+          "initial_cash_usd": 100000.0,
+          "ending_cash_usd": 5937.26706616726,
+          "ending_nav_usd": 96620.28877741726,
+          "portfolio_pnl_usd": -3379.711222582744,
+          "attributed_pnl_usd": -3379.711222582744,
+          "allocated_commission_usd": 236.90207714172755,
+          "allocated_dividends_usd": 935.0,
+          "residual_usd": 0.0,
+          "fill_count_checked": 1,
+          "actions_checked": 2,
+          "equity_points_checked": 126,
+          "absolute_tolerance_usd": 1e-07,
+          "relative_tolerance": 1e-10,
+          "paid_dividends_usd": 935.0,
+          "outstanding_dividend_receivables_usd": 0.0,
+          "dividend_payments_checked": 1,
+          "dividend_entitlements_checked": 1
+        }
+      },
+      {
+        "case": "realistic_unpaid_cutoff",
+        "experiment_id": "cf51d8370074429092332845be3342ee",
+        "status": "COMPLETED",
+        "error": null,
+        "acceptance": "FIXTURE",
+        "accounting": {
+          "status": "PASSED",
+          "initial_cash_usd": 100000.0,
+          "ending_cash_usd": 2031.547196700485,
+          "ending_nav_usd": 98139.41796784055,
+          "portfolio_pnl_usd": -1860.582032159451,
+          "attributed_pnl_usd": -1860.582032159451,
+          "allocated_commission_usd": 97.87058222107844,
+          "allocated_dividends_usd": 968.0,
+          "residual_usd": 0.0,
+          "fill_count_checked": 1,
+          "actions_checked": 2,
+          "equity_points_checked": 27,
+          "absolute_tolerance_usd": 1e-07,
+          "relative_tolerance": 1e-10,
+          "paid_dividends_usd": 0.0,
+          "outstanding_dividend_receivables_usd": 968.0,
+          "dividend_payments_checked": 0,
+          "dividend_entitlements_checked": 1
+        }
+      },
+      {
+        "case": "legacy_diagnostic",
+        "experiment_id": "f966f04e460e42ac960629af8dedab3f",
+        "status": "COMPLETED",
+        "error": null,
+        "acceptance": "FIXTURE",
+        "accounting": {
+          "status": "PASSED",
+          "initial_cash_usd": 100000.0,
+          "ending_cash_usd": 2999.547196700485,
+          "ending_nav_usd": 96883.14614481812,
+          "portfolio_pnl_usd": -3116.8538551818783,
+          "attributed_pnl_usd": -3116.8538551818783,
+          "allocated_commission_usd": 97.87058222107844,
+          "allocated_dividends_usd": 968.0,
+          "residual_usd": 0.0,
+          "fill_count_checked": 1,
+          "actions_checked": 2,
+          "equity_points_checked": 126,
+          "absolute_tolerance_usd": 1e-07,
+          "relative_tolerance": 1e-10
+        }
+      }
+    ],
+    "cost_comparison": "COMPARABLE",
+    "legacy_comparison": "INCOMPATIBLE",
+    "frozen_plan": {
+      "plan_id": "386469c9fb6646c59b3c6902cd7cea6c",
+      "status": "COMPLETED",
+      "trials": 4,
+      "critics": 4
+    },
+    "weekly_action_boundary": {
+      "experiment_id": "a5903561c839447a9071490890c24969",
+      "status": "FAILED",
+      "error": {
+        "type": "ValueError",
+        "message": "weekly RAW corporate-action research requires a reviewed adjustment model"
+      }
+    }
+  },
+  "browser_previous_failure": {
+    "kind": "Refresh button replaced during Streamlit rerender",
+    "original_tool_trace_excerpt": "Locator.click: Timeout 30000ms exceeded; html intercepted pointer events, then element detached from DOM",
+    "retained_runtime_directory": "runtime/reconciliation-browser-20261026-002",
+    "authoritative_plan_status_after_failure": "INTERRUPTED",
+    "accepted_as_browser_success": false
+  },
+  "real_process_test": {
+    "terminated_only_owned_python_parent": true,
+    "native_windows_lineage_and_image_verified": true,
+    "original_artifact_unchanged": true,
+    "recovered_original_exit_status": "NOT_OBSERVED",
+    "initial_scaffold_failure": "Windows venv redirector PID differs from actual Python parent; repaired native identity proof, no assertion weakened"
+  },
+  "remaining_limits": [
+    "single-user local integrity, not hostile filesystem authentication",
+    "linear complete-store candidate scan",
+    "unsealed or ambiguous artifacts remain unresolved and block new planned dispatch",
+    "response snapshots bounded to64KiB and cannot prove writer exit",
+    "no automatic retry, unattempted execution, quarantine or evidence promotion"
+  ],
+  "full_goal": "ACTIVE_NOT_COMPLETE",
+  "real_data_acceptance": "BLOCKED",
+  "remote_chatgpt": "NOT_VERIFIED",
+  "hosted_ci": "VERIFY_PUBLISHED_COMPOSITE_COMMIT_SEPARATELY"
+}

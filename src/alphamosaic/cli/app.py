@@ -25,6 +25,65 @@ def doctor() -> None:
     output(ApplicationService().status())
 
 
+@app.command("research-demo")
+def research_demo(sessions: int = typer.Option(504, min=80, max=2000), seed: int = 42) -> None:
+    """Register clearly labelled synthetic data without network access."""
+    output(ApplicationService().research_demo(sessions, seed))
+
+
+@app.command("experiment")
+def run_experiment(config: Path = typer.Argument(..., exists=True, dir_okay=False)) -> None:
+    """Run a bounded local experiment from a versioned JSON configuration."""
+    result = ApplicationService().research_experiment(json.loads(config.read_text(encoding="utf-8")))
+    output({k: result.get(k) for k in ("experiment_id", "status", "acceptance", "analysis", "error")})
+    if result["status"] != "COMPLETED":
+        raise typer.Exit(1)
+
+
+@app.command("experiments")
+def research_experiments() -> None:
+    """List successful, interrupted and failed local experiments."""
+    output(ApplicationService().research_experiments())
+
+
+@app.command("plan-research")
+def plan_research(config: Path = typer.Argument(..., exists=True, dir_okay=False)) -> None:
+    """Freeze an explicit bounded experiment grid before inspecting its results."""
+    output(ApplicationService().plan_research(json.loads(config.read_text(encoding="utf-8"))))
+
+
+@app.command("run-research-plan")
+def run_research_plan(plan_id: str) -> None:
+    """Execute a frozen local plan with per-worker deadlines and a durable audit."""
+    service = ApplicationService()
+    result = service.run_research_plan(plan_id)
+    output(service.research_plan_report(plan_id))
+    if result["status"] != "COMPLETED":
+        raise typer.Exit(1)
+
+
+@app.command("research-plans")
+def research_plans() -> None:
+    """List locally frozen research plans without executing them."""
+    output(ApplicationService().research_plans())
+
+
+@app.command("reconcile-research-plan")
+def reconcile_research_plan(plan_id: str) -> None:
+    """Inspect and close interrupted saved attempts; never execute or retry trials."""
+    service = ApplicationService()
+    try:
+        state = service.reconcile_research_plan(plan_id)
+    except (ValueError, OSError) as exc:
+        output({"status": "RECONCILIATION_BLOCKED", "reason": str(exc)})
+        raise typer.Exit(1) from exc
+    try:
+        output(service.research_plan_report(plan_id))
+    except (ValueError, OSError) as exc:
+        output({**state, "report_status": "BLOCKED", "report_error": str(exc)})
+        raise typer.Exit(1) from exc
+
+
 @app.command()
 def providers() -> None:
     """Installed provider capabilities and availability boundaries."""

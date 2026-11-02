@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="3.142" timestamp="2026-10-25T21:07:25.099397+08:00" hostname="YOGA"><testcase classname="tests.test_dividend_contract_boundaries" name="test_legacy_cash_credit_cannot_qualify_as_a_strict_real_dividend_replay" time="0.132"><failure message="Failed: DID NOT RAISE ValueError">def test_legacy_cash_credit_cannot_qualify_as_a_strict_real_dividend_replay() -&gt; None:
+        # Schema-boundary counterexample only: these are synthetic test values, not
+        # acquired historical observations or an accepted real-data experiment.
+        fixture = fixture_data()
+        data = fixture.model_copy(update={
+            "bars": {symbol: [bar.model_copy(update={"data_quality": DataQuality.HISTORICAL}) for bar in bars]
+                     for symbol, bars in fixture.bars.items()},
+            "actions": [action.model_copy(update={"data_quality": DataQuality.HISTORICAL}) for action in fixture.actions],
+        })
+&gt;       with pytest.raises(ValueError, match="legacy.*strict real"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_dividend_contract_boundaries.py:71: Failed</failure></testcase></testsuite></testsuites>

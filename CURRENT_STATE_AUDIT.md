@@ -1,0 +1,52 @@
+# Renaissance checkpoint audit — 2026-10-24
+
+Current RAW weekly addendum (2026-10-26): explicit split-only derived features are integrated without weakening the old default guard, raw fills/marks, separate dividend accounting or observed/PIT contracts. Source1824b28cee25aaa1a585553b3f6c030eaab244d579c27346b35a771da102afee passed434 full tests, final independent12, source-identical62-file base wheel,32MCP and14browser captures. Schema4 exports are integrity-required; legacy3 reading is byte-preserved. Initial UI-selector/import/path/pipe failures and predecessor evidence remain separate. Real-data qualification and exceptional action economics remain blocked/incomplete. Current hosted publication is a distinct gate; earlier audits below retain their named scope.
+
+Current reconciliation addendum (2026-10-26): core/shared CLI/MCP/terminal reconciliation is implemented and locally verified on source0754fabeee4494cff23fbf0ec5ec325972b07138ce7fbfae27c5a8419e05f1f9:397 tests, fresh60-file package/32-MCP, real owned-parent interruption and15+3 actual browser captures. Medium semantic-proof contradictions in self-consistent audit chains were reproduced and repaired. Original outcomes/files remain immutable, unknown process exit is not promoted to success, and unresolved candidates stay explicit. No hostile-writer authentication or automatic quarantine is claimed. Qualified compositea4c5f2e passed CI40312008132/all397 tests and quality gates; independent current-source review subsequently passed36 targets after verified reset, while original cap/ACL failures remain separate. Earlier missing-reconciliation statements below are historical. See docs/RESEARCH_RECONCILIATION_ACCEPTANCE_20261026.md.
+
+Dispatch safety addendum (2026-10-25): High-severity reproduced authorization/idempotence gaps allowed changed, unknown, terminal or duplicate planned workers to create experiments; independent review added removed-context and invisible-partial-directory counterexamples. All six are repaired. Atomic global-lease dispatch qualification now checks frozen call/config/request/source/manifest and refuses unknown/unsealed artifacts or original-path redirection. Source a26523a908f264868dee7eb4da6a3df92f4ab0b16a2bf65514c52d74b1b1c988 passed361 full tests plus independent14-case review. Explicit interrupted-plan reconciliation remains Missing; late response writes cannot certify process exit status. See docs/RESEARCH_DISPATCH_ACCEPTANCE_20261025.md.
+
+Latest payment/source-evidence addendum (2026-10-25): ordinary ex-date entitlement, receivable and conservative pay-date cash transfer are implemented; complete source-qualified regression346 passed. High-severity reproduced gaps allowed model/missing or mixed corporate-action values and unqualified/PIT-asserted feature values into research; replay, kernel and independent action reconstruction now refuse them. Daily/weekly benchmark model mismatch and legacy strict-real cash entry are blocked. New/old artifact migration is tested without overwrites. Source0c934375a1f29c85cdd4740bafec9015916bc0a43aaf3c5178e77fb34cbdffb2, base-wheel/worker/MCP/browser and negative evidence are in `docs/evidence/dividend-payment-20261025/`. Real source/PIT authenticity and the remaining full-scope requirements are still unverified/incomplete; earlier audit entries below apply to their named checkpoint.
+
+Latest risk follow-up (2026-10-25): independent review reproduced omitted cash-only exposure dates and gaps in immutable legacy artifacts. New analysis preserves/qualifies every session; display-only legacy alignment keeps unknown values explicit. Full local suite271 passed, with actual compatible/incompatible/corrupt/legacy terminal actions. Risk charts, full-config comparison and exportable provenance are implemented. The dividend-payment model remains design-only. See `docs/TERMINAL_RISK_ACCEPTANCE_20261025.md`; the older audit categories below apply to their named recovery checkpoint.
+
+Current continuation addendum (2026-10-25): the recovered-baseline findings below are historical. Weekly strategies/annualization, reconciled FIFO statistics and the bounded frozen-plan workflow are now implemented and verified in a583a1e. Current local and hosted suites both passed267 tests; hosted CI40157996079 and exact clean-commit reproduction are recorded in `docs/evidence/continuation-20261025/`. Full platform acceptance still requires the real-data, risk/portfolio/statistical/report/recovery/model work listed in `docs/CONTINUATION_ACCEPTANCE_20261025.md`. Do not treat the old missing-weekly or pending-CI entries below as current findings.
+
+Scope: source inspection and execution in `runtime/renaissance-20261024`, starting at `ccd369e`. The root checkout remains on `codex/project-audit-20261010` with unrelated dirty work. Existing worktrees and local research data were preserved. Earlier acceptance notes are history, not acceptance of this tree.
+
+## Implemented and verified at the recovered baseline
+
+- Python 3.12 src-layout application; one ApplicationService behind CLI and MCP. Explicit source path produced **72 passing baseline tests**. A borrowed interpreter without PYTHONPATH initially imported the old root package; those collection errors were environment failures, not passing acceptance.
+- Replay engine, source contracts, fixed strategies, reconstructed research provider, forward/evaluation stores, authenticated optional HTTP MCP, unique report directories. Source code and executable tests, rather than filenames, establish these capabilities.
+- No broker order connector or agent-accessible arbitrary shell/file tool was found. Subprocess boundaries are fixed provider workers, Git provenance queries, optional research workers and an operator-only LEAN backtest boundary. LEAN is not installed/certified and is not exposed as an arbitrary-path MCP tool.
+
+## Partially implemented
+
+- Existing replay had next-open execution and raw corporate actions, but lacked complete event/cash audit trails, configurable spread/delay/lot and robust execution constraints. This milestone extends it rather than replacing it.
+- Older summaries call QuantStats an independent analytics path; it receives the same replay returns and is **not independent execution validation**.
+- Existing AI integrations require optional authorization. Renaissance adds a deterministic critic and ModelAdapter protocol, not a complete autonomous planner/LLM agent.
+
+## Broken issues reproduced and repaired
+
+- High: nested model_copy could bypass validation; replay now revalidates the complete contract.
+- High: opening gaps could violate buy-side weight constraints; opening-value/cost/cash constraints now gate buys. Subsequent market drift is diagnosed, not disguised as continuous compliance.
+- High: overlapping delayed sells could exceed holdings; reserved sells now prevent overselling.
+- High: pending order quantities after a split lacked an immutable revision trail; append-only order adjustments now link the original order, split and fill.
+- Medium: experiment integrity could accept an empty checksum map and hide interrupted runs as corruption. Required artifacts, identity checks and explicit incomplete RUNNING records now fail closed.
+- Medium: unknown or incompatible benchmark bases could be drawn as comparable. Reports, comparison and UI now enforce explicit compatibility.
+- Medium: zero-variance QuantStats Sharpe emitted invalid division; explicit undefined-ratio handling is tested.
+- Medium: Danelfin timeout cancellation leaked MCP transport resources. Independent tracemalloc located the allocation; same-task lifecycle cleanup and cancellation regression tests repair it.
+- Low: terminal dark background initially retained light-theme text, and screenshots could capture loading placeholders. Theme configuration and browser completion checks correct this.
+
+## Unverified / missing / unsafe conditions
+
+- **High — Blocked:** strict real historical performance. One network capture returned SPY/QQQM 706 rows each with UNKNOWN adjustment; TLT EMPTY. No three-asset dataset was published. PIT, complete corporate actions, historical universe and delisting coverage are unverified.
+- **High — Forbidden:** interpreting FIXTURE case returns as market evidence, causal factor attribution, future-return probability or demonstrated alpha.
+- **Medium — Missing:** weekly aggregation, closed-lot win/profit/holding statistics, sector constraints, full covariance risk budgeting, constrained optimization, genuine factor-return attribution, delisting economics and dividend payment-date accounting.
+- **Medium — Planned:** full LLM planning orchestration, durable global agent quotas, advanced multiple-testing statistics, paper candidate promotion and production deployment. No automatic strategy promotion is implemented.
+- **Medium — Unverified:** remote ChatGPT calls and this milestone's hosted CI until an actual run is observed. Local MCP success is a separate gate.
+- **Low — Technical debt:** exchange-calendars emits NumPy timedelta deprecation warnings. No warning suppression or dependency source patch is used.
+
+## Security and publishing
+
+GitHub connector identity and ADMIN/push ownership were verified for SiriZhao/alpha-mosaic. The existing repository is **public**; visibility was not changed and no repository was created. GitHub CLI token is invalid. Publishing status and actual final checks are recorded in ALPHA_MOSAIC_DELIVERY_REPORT.md. Runtime provider payloads and private/local artifacts remain ignored; only synthetic screenshots and software evidence are eligible for review.

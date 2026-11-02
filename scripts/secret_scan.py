@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import re
 import subprocess
 from pathlib import Path
@@ -13,15 +14,16 @@ PATTERNS = (
 )
 
 
-def main() -> int:
-    names = subprocess.check_output(["git", "ls-files", "-z"], text=False).decode().split("\0")
+def main(staged: bool = False) -> int:
+    command = ["git", "diff", "--cached", "--name-only", "--diff-filter=ACMR", "-z"] if staged else ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"]
+    names = subprocess.check_output(command, text=False).decode().split("\0")
     findings: list[str] = []
     for name in filter(None, names):
         path = Path(name)
         if path.suffix.lower() in {".png", ".jpg", ".jpeg", ".gif", ".sqlite", ".db"}:
             continue
         try:
-            text = path.read_text(encoding="utf-8")
+            text = subprocess.check_output(["git", "show", ":" + name]).decode("utf-8") if staged else path.read_text(encoding="utf-8")
         except (OSError, UnicodeDecodeError):
             continue
         for line_no, line in enumerate(text.splitlines(), 1):
@@ -30,9 +32,11 @@ def main() -> int:
     if findings:
         print("Potential credentials found:\n" + "\n".join(findings))
         return 1
-    print("No credential patterns found in tracked text files")
+    print("No credential patterns found in " + ("staged blobs" if staged else "tracked and nonignored text files"))
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--staged", action="store_true")
+    raise SystemExit(main(parser.parse_args().staged))

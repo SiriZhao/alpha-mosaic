@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="10" skipped="0" tests="11" time="4.438" timestamp="2026-10-25T21:44:38.729643+08:00" hostname="YOGA"><testcase classname="tests.test_signal_evidence" name="test_unobserved_numeric_signals_cannot_enter_a_replay[MODEL_INFERENCE]" time="0.270"><failure message="Failed: DID NOT RAISE ValueError">quality = 'MODEL_INFERENCE'
+
+    @pytest.mark.parametrize("quality", ["MODEL_INFERENCE", "MISSING", "UNKNOWN"])
+    def test_unobserved_numeric_signals_cannot_enter_a_replay(quality: str) -&gt; None:
+        data = synthetic_demo(30)
+        data = data.model_copy(update={"signals": [signal(data, data_quality=quality)]})
+&gt;       with pytest.raises(ValueError, match="signal evidence"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_signal_evidence.py:22: Failed</failure></testcase><testcase classname="tests.test_signal_evidence" name="test_unobserved_numeric_signals_cannot_enter_a_replay[MISSING]" time="0.017"><failure message="Failed: DID NOT RAISE ValueError">quality = 'MISSING'
+
+    @pytest.mark.parametrize("quality", ["MODEL_INFERENCE", "MISSING", "UNKNOWN"])
+    def test_unobserved_numeric_signals_cannot_enter_a_replay(quality: str) -&gt; None:
+        data = synthetic_demo(30)
+        data = data.model_copy(update={"signals": [signal(data, data_quality=quality)]})
+&gt;       with pytest.raises(ValueError, match="signal evidence"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_signal_evidence.py:22: Failed</failure></testcase><testcase classname="tests.test_signal_evidence" name="test_unobserved_numeric_signals_cannot_enter_a_replay[UNKNOWN]" time="0.032"><failure message="Failed: DID NOT RAISE ValueError">quality = 'UNKNOWN'
+
+    @pytest.mark.parametrize("quality", ["MODEL_INFERENCE", "MISSING", "UNKNOWN"])
+    def test_unobserved_numeric_signals_cannot_enter_a_replay(quality: str) -&gt; None:
+        data = synthetic_demo(30)
+        data = data.model_copy(update={"signals": [signal(data, data_quality=quality)]})
+&gt;       with pytest.raises(ValueError, match="signal evidence"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_signal_evidence.py:22: Failed</failure></testcase><testcase classname="tests.test_signal_evidence" name="test_strategy_kernel_cannot_promote_unobserved_values_by_a_pit_flag_alone[MODEL_INFERENCE]" time="0.006"><failure message="AssertionError: assert {'SPY': 1.0} == {}&#10;  &#10;  Left contains 1 more item:&#10;  {'SPY': 1.0}&#10;  Use -v to get more diff">quality = 'MODEL_INFERENCE'
+
+    @pytest.mark.parametrize("quality", ["MODEL_INFERENCE", "MISSING", "UNKNOWN"])
+    def test_strategy_kernel_cannot_promote_unobserved_values_by_a_pit_flag_alone(quality: str) -&gt; None:
+        data = synthetic_demo(30)
+        history = {symbol: bars[:1] for symbol, bars in data.bars.items()}
+        target = StrategyRegistry().get("quality").allocation(history, [signal(data, data_quality=quality)],
+            data.bars["SPY"][0].known_at, payment_replay_config())
+&gt;       assert target.weights == {}
+E       AssertionError: assert {'SPY': 1.0} == {}
+E         
+E         Left contains 1 more item:
+E         {'SPY': 1.0}
+E         Use -v to get more diff
+
+tests\test_signal_evidence.py:32: AssertionError</failure></testcase><testcase classname="tests.test_signal_evidence" name="test_strategy_kernel_cannot_promote_unobserved_values_by_a_pit_flag_alone[MISSING]" time="0.006"><failure message="AssertionError: assert {'SPY': 1.0} == {}&#10;  &#10;  Left contains 1 more item:&#10;  {'SPY': 1.0}&#10;  Use -v to get more diff">quality = 'MISSING'
+
+    @pytest.mark.parametrize("quality", ["MODEL_INFERENCE", "MISSING", "UNKNOWN"])
+    def test_strategy_kernel_cannot_promote_unobserved_values_by_a_pit_flag_alone(quality: str) -&gt; None:
+        data = synthetic_demo(30)
+        history = {symbol: bars[:1] for symbol, bars in data.bars.items()}
+        target = StrategyRegistry().get("quality").allocation(history, [signal(data, data_quality=quality)],
+            data.bars["SPY"][0].known_at, payment_replay_config())
+&gt;       assert target.weights == {}
+E       AssertionError: assert {'SPY': 1.0} == {}
+E         
+E         Left contains 1 more item:
+E         {'SPY': 1.0}
+E         Use -v to get more diff
+
+tests\test_signal_evidence.py:32: AssertionError</failure></testcase><testcase classname="tests.test_signal_evidence" name="test_strategy_kernel_cannot_promote_unobserved_values_by_a_pit_flag_alone[UNKNOWN]" time="0.009"><failure message="AssertionError: assert {'SPY': 1.0} == {}&#10;  &#10;  Left contains 1 more item:&#10;  {'SPY': 1.0}&#10;  Use -v to get more diff">quality = 'UNKNOWN'
+
+    @pytest.mark.parametrize("quality", ["MODEL_INFERENCE", "MISSING", "UNKNOWN"])
+    def test_strategy_kernel_cannot_promote_unobserved_values_by_a_pit_flag_alone(quality: str) -&gt; None:
+        data = synthetic_demo(30)
+        history = {symbol: bars[:1] for symbol, bars in data.bars.items()}
+        target = StrategyRegistry().get("quality").allocation(history, [signal(data, data_quality=quality)],
+            data.bars["SPY"][0].known_at, payment_replay_config())
+&gt;       assert target.weights == {}
+E       AssertionError: assert {'SPY': 1.0} == {}
+E         
+E         Left contains 1 more item:
+E         {'SPY': 1.0}
+E         Use -v to get more diff
+
+tests\test_signal_evidence.py:32: AssertionError</failure></testcase><testcase classname="tests.test_signal_evidence" name="test_strict_signal_requires_verified_availability" time="0.014"><failure message="Failed: DID NOT RAISE ValueError">def test_strict_signal_requires_verified_availability() -&gt; None:
+        data = synthetic_demo(30)
+        data = data.model_copy(update={"signals": [signal(data, pit_verified=False)]})
+&gt;       with pytest.raises(ValueError, match="signal.*PIT"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_signal_evidence.py:38: Failed</failure></testcase><testcase classname="tests.test_signal_evidence" name="test_observed_signal_cannot_be_mixed_into_a_fixture_price_dataset" time="0.015"><failure message="Failed: DID NOT RAISE ValueError">def test_observed_signal_cannot_be_mixed_into_a_fixture_price_dataset() -&gt; None:
+        data = synthetic_demo(30)
+        data = data.model_copy(update={"signals": [signal(data, data_quality="HISTORICAL")]})
+&gt;       with pytest.raises(ValueError, match="fixture and observed signal"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_signal_evidence.py:45: Failed</failure></testcase><testcase classname="tests.test_signal_evidence" name="test_empty_source_identity_does_not_qualify_an_observation[changes0]" time="0.051"><failure message="Failed: DID NOT RAISE ValueError">changes = {'source': ''}
+
+    @pytest.mark.parametrize("changes", [{"source": ""}, {"evidence_id": "   "}])
+    def test_empty_source_identity_does_not_qualify_an_observation(changes) -&gt; None:
+        data = synthetic_demo(30)
+        data = data.model_copy(update={"signals": [signal(data, **changes)]})
+&gt;       with pytest.raises(ValueError, match="signal.*source"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_signal_evidence.py:53: Failed</failure></testcase><testcase classname="tests.test_signal_evidence" name="test_empty_source_identity_does_not_qualify_an_observation[changes1]" time="0.013"><failure message="Failed: DID NOT RAISE ValueError">changes = {'evidence_id': '   '}
+
+    @pytest.mark.parametrize("changes", [{"source": ""}, {"evidence_id": "   "}])
+    def test_empty_source_identity_does_not_qualify_an_observation(changes) -&gt; None:
+        data = synthetic_demo(30)
+        data = data.model_copy(update={"signals": [signal(data, **changes)]})
+&gt;       with pytest.raises(ValueError, match="signal.*source"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_signal_evidence.py:53: Failed</failure></testcase><testcase classname="tests.test_signal_evidence" name="test_explicit_observed_fixture_signal_still_drives_its_predeclared_baseline" time="0.011" /></testsuite></testsuites>

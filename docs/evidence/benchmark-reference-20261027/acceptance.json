@@ -1,0 +1,32 @@
+{
+  "status": "LOCAL_BENCHMARK_SOFTWARE_ACCEPTANCE",
+  "full_goal": "ACTIVE_NOT_COMPLETE",
+  "source_hash": "b617f682003bebb246ef55e1de57a4cad2534d730d453922e0493e6979af13bc",
+  "python_files": 65,
+  "full_tests": 444,
+  "full_failures": 0,
+  "full_errors": 0,
+  "full_skipped": 0,
+  "focused_benchmark_tests": 7,
+  "focused_failures": 0,
+  "focused_errors": 0,
+  "focused_skipped": 0,
+  "independent_hand_oracle": "PASSED",
+  "independent_model_review": "NOT_COMPLETED_MODEL_CAPACITY",
+  "features": [
+    "typed BenchmarkSpecV1",
+    "CASH_ZERO_INTEREST MODEL_ASSUMPTION with no market bars",
+    "explicit EQUAL_WEIGHT universe and weights",
+    "legacy scheduler parity plus first eligible open phase",
+    "exact selected-asset return basis fix from9e3d80f"
+  ],
+  "limitations": [
+    "BenchmarkSpec is not yet wired into ExperimentConfig/plan/workflow/UI/report comparison",
+    "No real-data or PIT qualification",
+    "No independent second-model review completed for this core",
+    "Cash is zero-interest model assumption, not a sourced risk-free series"
+  ],
+  "warnings": "Four exchange-calendar deprecation warnings retained",
+  "broker_enabled": false,
+  "real_data_qualification": "BLOCKED"
+}

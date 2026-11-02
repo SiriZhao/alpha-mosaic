@@ -1,0 +1,895 @@
+{
+  "scope": "cProfile under concurrent local full tests/build; instrumented observation, no speedup or standalone latency claim",
+  "source_hash": "756370171205042427e4a3973a7eb9e1df83c889c9bcc08ecbaed09548bb3fa2",
+  "top_cumulative": [
+    {
+      "cumulative_seconds": 17.956207900000003,
+      "function": "<built-in method builtins.exec>",
+      "line": 0,
+      "path": "~",
+      "primitive_calls": 1,
+      "self_seconds": 0.06272960000000001,
+      "total_calls": 2047
+    },
+    {
+      "cumulative_seconds": 17.956129,
+      "function": "<module>",
+      "line": 1,
+      "path": "scripts/run_raw_weekly_cases.py",
+      "primitive_calls": 1,
+      "self_seconds": 0.0008726000000000001,
+      "total_calls": 1
+    },
+    {
+      "cumulative_seconds": 11.7263301,
+      "function": "run",
+      "line": 221,
+      "path": "scripts/run_raw_weekly_cases.py",
+      "primitive_calls": 1,
+      "self_seconds": 0.0021651,
+      "total_calls": 1
+    },
+    {
+      "cumulative_seconds": 10.8706435,
+      "function": "research_experiment",
+      "line": 112,
+      "path": "<checkout>\\src\\alphamosaic\\core\\service.py",
+      "primitive_calls": 8,
+      "self_seconds": 0.0001473,
+      "total_calls": 8
+    },
+    {
+      "cumulative_seconds": 10.870041500000001,
+      "function": "run",
+      "line": 188,
+      "path": "<checkout>\\src\\alphamosaic\\experiments\\runner.py",
+      "primitive_calls": 8,
+      "self_seconds": 0.002934,
+      "total_calls": 8
+    },
+    {
+      "cumulative_seconds": 10.839836100000001,
+      "function": "_run",
+      "line": 203,
+      "path": "<checkout>\\src\\alphamosaic\\experiments\\runner.py",
+      "primitive_calls": 8,
+      "self_seconds": 0.0125771,
+      "total_calls": 8
+    },
+    {
+      "cumulative_seconds": 7.1965854,
+      "function": "_find_and_load",
+      "line": 1349,
+      "path": "<frozen importlib._bootstrap>",
+      "primitive_calls": 798,
+      "self_seconds": 0.019295700000000002,
+      "total_calls": 2247
+    },
+    {
+      "cumulative_seconds": 7.1834882,
+      "function": "_find_and_load_unlocked",
+      "line": 1304,
+      "path": "<frozen importlib._bootstrap>",
+      "primitive_calls": 200,
+      "self_seconds": 0.0101442,
+      "total_calls": 1541
+    },
+    {
+      "cumulative_seconds": 6.994938100000001,
+      "function": "_load_unlocked",
+      "line": 911,
+      "path": "<frozen importlib._bootstrap>",
+      "primitive_calls": 204,
+      "self_seconds": 0.0082883,
+      "total_calls": 1511
+    },
+    {
+      "cumulative_seconds": 6.9837337,
+      "function": "exec_module",
+      "line": 993,
+      "path": "<frozen importlib._bootstrap_external>",
+      "primitive_calls": 202,
+      "self_seconds": 0.0083653,
+      "total_calls": 1398
+    },
+    {
+      "cumulative_seconds": 6.6263597,
+      "function": "_call_with_frames_removed",
+      "line": 480,
+      "path": "<frozen importlib._bootstrap>",
+      "primitive_calls": 407,
+      "self_seconds": 0.0119559,
+      "total_calls": 3513
+    },
+    {
+      "cumulative_seconds": 4.8273923000000005,
+      "function": "<built-in method _io.open>",
+      "line": 0,
+      "path": "~",
+      "primitive_calls": 2984,
+      "self_seconds": 4.769129,
+      "total_calls": 2984
+    },
+    {
+      "cumulative_seconds": 4.8171852,
+      "function": "open",
+      "line": 1005,
+      "path": "C:\\Users\\YOGA Pro16\\AppData\\Roaming\\uv\\python\\cpython-3.12-windows-x86_64-none\\Lib\\pathlib.py",
+      "primitive_calls": 2945,
+      "self_seconds": 0.0033215000000000002,
+      "total_calls": 2945
+    },
+    {
+      "cumulative_seconds": 4.3453241,
+      "function": "read_bytes",
+      "line": 1015,
+      "path": "C:\\Users\\YOGA Pro16\\AppData\\Roaming\\uv\\python\\cpython-3.12-windows-x86_64-none\\Lib\\pathlib.py",
+      "primitive_calls": 1431,
+      "self_seconds": 0.004314500000000001,
+      "total_calls": 1431
+    },
+    {
+      "cumulative_seconds": 3.9042893000000003,
+      "function": "code_manifest",
+      "line": 93,
+      "path": "<checkout>\\src\\alphamosaic\\experiments\\runner.py",
+      "primitive_calls": 8,
+      "self_seconds": 0.0127037,
+      "total_calls": 8
+    },
+    {
+      "cumulative_seconds": 3.7000437,
+      "function": "<built-in method builtins.__import__>",
+      "line": 0,
+      "path": "~",
+      "primitive_calls": 110,
+      "self_seconds": 0.0013042000000000002,
+      "total_calls": 606
+    },
+    {
+      "cumulative_seconds": 3.6852762,
+      "function": "get_code",
+      "line": 1066,
+      "path": "<frozen importlib._bootstrap_external>",
+      "primitive_calls": 1398,
+      "self_seconds": 0.024226,
+      "total_calls": 1398
+    },
+    {
+      "cumulative_seconds": 3.4062039000000004,
+      "function": "<module>",
+      "line": 1,
+      "path": "<checkout>\\src\\alphamosaic\\core\\service.py",
+      "primitive_calls": 1,
+      "self_seconds": 0.00014460000000000002,
+      "total_calls": 1
+    },
+    {
+      "cumulative_seconds": 3.1467449000000003,
+      "function": "<module>",
+      "line": 1,
+      "path": "<checkout>\\src\\alphamosaic\\research_engine.py",
+      "primitive_calls": 1,
+      "self_seconds": 3.88e-05,
+      "total_calls": 1
+    },
+    {
+      "cumulative_seconds": 3.1349915000000004,
+      "function": "<module>",
+      "line": 1,
+      "path": "<checkout>\\src\\alphamosaic\\integrations\\danelfin.py",
+      "primitive_calls": 1,
+      "self_seconds": 5.28e-05,
+      "total_calls": 1
+    }
+  ],
+  "total_calls": 7708317,
+  "total_seconds": 17.941853899999963,
+  "research_functions": [
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 188,
+      "function": "run",
+      "calls": 8,
+      "self_seconds": 0.002934,
+      "cumulative_seconds": 10.870041500000001
+    },
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 203,
+      "function": "_run",
+      "calls": 8,
+      "self_seconds": 0.0125771,
+      "cumulative_seconds": 10.839836100000001
+    },
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 93,
+      "function": "code_manifest",
+      "calls": 8,
+      "self_seconds": 0.0127037,
+      "cumulative_seconds": 3.9042893000000003
+    },
+    {
+      "module": "\\reporting\\research.py",
+      "line": 43,
+      "function": "write_report",
+      "calls": 7,
+      "self_seconds": 0.0488612,
+      "cumulative_seconds": 1.6449583
+    },
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 87,
+      "function": "source_manifest",
+      "calls": 17,
+      "self_seconds": 0.0063392000000000006,
+      "cumulative_seconds": 0.690141
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 224,
+      "function": "run",
+      "calls": 15,
+      "self_seconds": 0.019378000000000003,
+      "cumulative_seconds": 0.5458831000000001
+    },
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 132,
+      "function": "load",
+      "calls": 11,
+      "self_seconds": 0.0055126,
+      "cumulative_seconds": 0.36610810000000005
+    },
+    {
+      "module": "\\data\\weekly_features.py",
+      "line": 33,
+      "function": "derive_raw_weekly_closes",
+      "calls": 45,
+      "self_seconds": 0.0052673,
+      "cumulative_seconds": 0.24076930000000002
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 29,
+      "function": "validate_dataset",
+      "calls": 25,
+      "self_seconds": 0.009103,
+      "cumulative_seconds": 0.140271
+    },
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 172,
+      "function": "_csv",
+      "calls": 112,
+      "self_seconds": 0.0045052,
+      "cumulative_seconds": 0.10155120000000001
+    },
+    {
+      "module": "\\core\\weekly_features.py",
+      "line": 44,
+      "function": "chronology",
+      "calls": 804,
+      "self_seconds": 0.0013264000000000001,
+      "cumulative_seconds": 0.040956200000000005
+    },
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 41,
+      "function": "digest",
+      "calls": 1426,
+      "self_seconds": 0.0021552000000000003,
+      "cumulative_seconds": 0.040634
+    },
+    {
+      "module": "\\backtesting\\weekly_strategy.py",
+      "line": 56,
+      "function": "allocation_features",
+      "calls": 45,
+      "self_seconds": 0.0006886,
+      "cumulative_seconds": 0.024149300000000002
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 1,
+      "function": "<module>",
+      "calls": 1,
+      "self_seconds": 2.93e-05,
+      "cumulative_seconds": 0.021663500000000002
+    },
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 124,
+      "function": "path",
+      "calls": 19,
+      "self_seconds": 0.00032960000000000004,
+      "cumulative_seconds": 0.0209728
+    },
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 1,
+      "function": "<module>",
+      "calls": 1,
+      "self_seconds": 8.09e-05,
+      "cumulative_seconds": 0.020433800000000002
+    },
+    {
+      "module": "\\core\\weekly_features.py",
+      "line": 50,
+      "function": "<genexpr>",
+      "calls": 241020,
+      "self_seconds": 0.019142700000000002,
+      "cumulative_seconds": 0.019142700000000002
+    },
+    {
+      "module": "\\backtesting\\weekly_strategy.py",
+      "line": 1,
+      "function": "<module>",
+      "calls": 1,
+      "self_seconds": 2.6200000000000003e-05,
+      "cumulative_seconds": 0.0172099
+    },
+    {
+      "module": "\\data\\weekly_features.py",
+      "line": 16,
+      "function": "_row_fingerprint",
+      "calls": 794,
+      "self_seconds": 0.0021714,
+      "cumulative_seconds": 0.017143600000000002
+    },
+    {
+      "module": "\\backtesting\\weekly_strategy.py",
+      "line": 69,
+      "function": "_allocate_weekly",
+      "calls": 45,
+      "self_seconds": 0.0011952,
+      "cumulative_seconds": 0.0118267
+    },
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 37,
+      "function": "canonical",
+      "calls": 52,
+      "self_seconds": 0.00029850000000000005,
+      "cumulative_seconds": 0.011474000000000002
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 292,
+      "function": "event",
+      "calls": 1112,
+      "self_seconds": 0.0040207,
+      "cumulative_seconds": 0.0098464
+    },
+    {
+      "module": "\\core\\weekly_features.py",
+      "line": 1,
+      "function": "<module>",
+      "calls": 1,
+      "self_seconds": 1.87e-05,
+      "cumulative_seconds": 0.0071898000000000005
+    },
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 181,
+      "function": "__init__",
+      "calls": 1,
+      "self_seconds": 3.99e-05,
+      "cumulative_seconds": 0.005073800000000001
+    },
+    {
+      "module": "\\data\\weekly_features.py",
+      "line": 25,
+      "function": "_split_dependency",
+      "calls": 50,
+      "self_seconds": 0.0005942,
+      "cumulative_seconds": 0.0032453
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 196,
+      "function": "_validate_payment_terms",
+      "calls": 15,
+      "self_seconds": 0.0001639,
+      "cumulative_seconds": 0.001672
+    },
+    {
+      "module": "\\reporting\\research.py",
+      "line": 94,
+      "function": "<genexpr>",
+      "calls": 126,
+      "self_seconds": 0.0003303,
+      "cumulative_seconds": 0.0014500000000000001
+    },
+    {
+      "module": "\\core\\weekly_features.py",
+      "line": 37,
+      "function": "aware",
+      "calls": 576,
+      "self_seconds": 0.0006655000000000001,
+      "cumulative_seconds": 0.0012312
+    },
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 120,
+      "function": "__init__",
+      "calls": 1,
+      "self_seconds": 4.2000000000000004e-06,
+      "cumulative_seconds": 0.0010170000000000001
+    },
+    {
+      "module": "\\core\\weekly_features.py",
+      "line": 18,
+      "function": "DerivedWeeklyClose",
+      "calls": 1,
+      "self_seconds": 7.43e-05,
+      "cumulative_seconds": 0.0008828000000000001
+    },
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 173,
+      "function": "<genexpr>",
+      "calls": 9715,
+      "self_seconds": 0.0007865000000000001,
+      "cumulative_seconds": 0.0007865000000000001
+    },
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 76,
+      "function": "subset",
+      "calls": 15,
+      "self_seconds": 0.00017020000000000002,
+      "cumulative_seconds": 0.0005889000000000001
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 392,
+      "function": "<genexpr>",
+      "calls": 960,
+      "self_seconds": 0.00039840000000000003,
+      "cumulative_seconds": 0.00039840000000000003
+    },
+    {
+      "module": "\\backtesting\\weekly_strategy.py",
+      "line": 64,
+      "function": "<genexpr>",
+      "calls": 219,
+      "self_seconds": 0.0003259,
+      "cumulative_seconds": 0.0003259
+    },
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 284,
+      "function": "compare_experiments",
+      "calls": 1,
+      "self_seconds": 2.58e-05,
+      "cumulative_seconds": 0.00026940000000000004
+    },
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 51,
+      "function": "ExperimentConfig",
+      "calls": 1,
+      "self_seconds": 2.54e-05,
+      "cumulative_seconds": 0.00026470000000000004
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 92,
+      "function": "<genexpr>",
+      "calls": 950,
+      "self_seconds": 0.0002432,
+      "cumulative_seconds": 0.0002432
+    },
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 287,
+      "function": "signature",
+      "calls": 3,
+      "self_seconds": 4.11e-05,
+      "cumulative_seconds": 0.0002143
+    },
+    {
+      "module": "\\core\\weekly_features.py",
+      "line": 48,
+      "function": "<genexpr>",
+      "calls": 1128,
+      "self_seconds": 0.0002109,
+      "cumulative_seconds": 0.0002109
+    },
+    {
+      "module": "\\core\\weekly_features.py",
+      "line": 11,
+      "function": "AppliedFeatureSplit",
+      "calls": 1,
+      "self_seconds": 2.43e-05,
+      "cumulative_seconds": 0.0001988
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 617,
+      "function": "<genexpr>",
+      "calls": 532,
+      "self_seconds": 0.00019480000000000002,
+      "cumulative_seconds": 0.00019480000000000002
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 523,
+      "function": "<genexpr>",
+      "calls": 830,
+      "self_seconds": 0.00019050000000000002,
+      "cumulative_seconds": 0.00019050000000000002
+    },
+    {
+      "module": "\\backtesting\\weekly_strategy.py",
+      "line": 86,
+      "function": "<genexpr>",
+      "calls": 174,
+      "self_seconds": 0.0001773,
+      "cumulative_seconds": 0.0001773
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 149,
+      "function": "<genexpr>",
+      "calls": 950,
+      "self_seconds": 0.00017700000000000002,
+      "cumulative_seconds": 0.00017700000000000002
+    },
+    {
+      "module": "\\agents\\research.py",
+      "line": 10,
+      "function": "critique",
+      "calls": 7,
+      "self_seconds": 8.75e-05,
+      "cumulative_seconds": 0.0001765
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 519,
+      "function": "<genexpr>",
+      "calls": 960,
+      "self_seconds": 0.0001588,
+      "cumulative_seconds": 0.0001588
+    },
+    {
+      "module": "\\backtesting\\weekly_strategy.py",
+      "line": 83,
+      "function": "<genexpr>",
+      "calls": 219,
+      "self_seconds": 8.42e-05,
+      "cumulative_seconds": 0.000155
+    },
+    {
+      "module": "\\reporting\\research.py",
+      "line": 27,
+      "function": "weekly_feature_evidence",
+      "calls": 7,
+      "self_seconds": 6.71e-05,
+      "cumulative_seconds": 0.0001428
+    },
+    {
+      "module": "\\agents\\research.py",
+      "line": 1,
+      "function": "<module>",
+      "calls": 1,
+      "self_seconds": 1.08e-05,
+      "cumulative_seconds": 0.00013450000000000002
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 157,
+      "function": "<genexpr>",
+      "calls": 950,
+      "self_seconds": 8.54e-05,
+      "cumulative_seconds": 8.54e-05
+    },
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 45,
+      "function": "ResearchExecutionContext",
+      "calls": 1,
+      "self_seconds": 9.5e-06,
+      "cumulative_seconds": 8.19e-05
+    },
+    {
+      "module": "\\reporting\\research.py",
+      "line": 67,
+      "function": "<genexpr>",
+      "calls": 126,
+      "self_seconds": 7.87e-05,
+      "cumulative_seconds": 7.87e-05
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 518,
+      "function": "<genexpr>",
+      "calls": 188,
+      "self_seconds": 5.6200000000000004e-05,
+      "cumulative_seconds": 5.6200000000000004e-05
+    },
+    {
+      "module": "\\reporting\\research.py",
+      "line": 9,
+      "function": "dividend_accounting_evidence",
+      "calls": 7,
+      "self_seconds": 3.0600000000000005e-05,
+      "cumulative_seconds": 5.380000000000001e-05
+    },
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 63,
+      "function": "dates",
+      "calls": 16,
+      "self_seconds": 3.9500000000000005e-05,
+      "cumulative_seconds": 5.2300000000000004e-05
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 592,
+      "function": "<genexpr>",
+      "calls": 104,
+      "self_seconds": 5.19e-05,
+      "cumulative_seconds": 5.19e-05
+    },
+    {
+      "module": "\\data\\weekly_features.py",
+      "line": 48,
+      "function": "<genexpr>",
+      "calls": 219,
+      "self_seconds": 4.4500000000000004e-05,
+      "cumulative_seconds": 4.4500000000000004e-05
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 178,
+      "function": "_causal_history",
+      "calls": 7,
+      "self_seconds": 3.8e-05,
+      "cumulative_seconds": 4.3100000000000004e-05
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 247,
+      "function": "<genexpr>",
+      "calls": 45,
+      "self_seconds": 3.9500000000000005e-05,
+      "cumulative_seconds": 3.9500000000000005e-05
+    },
+    {
+      "module": "\\reporting\\research.py",
+      "line": 85,
+      "function": "<genexpr>",
+      "calls": 28,
+      "self_seconds": 3.91e-05,
+      "cumulative_seconds": 3.91e-05
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 329,
+      "function": "<lambda>",
+      "calls": 40,
+      "self_seconds": 3.2200000000000003e-05,
+      "cumulative_seconds": 3.2200000000000003e-05
+    },
+    {
+      "module": "\\backtesting\\weekly_strategy.py",
+      "line": 85,
+      "function": "<genexpr>",
+      "calls": 219,
+      "self_seconds": 2.7300000000000003e-05,
+      "cumulative_seconds": 2.7300000000000003e-05
+    },
+    {
+      "module": "\\reporting\\research.py",
+      "line": 34,
+      "function": "<genexpr>",
+      "calls": 52,
+      "self_seconds": 1.9600000000000002e-05,
+      "cumulative_seconds": 2.4500000000000003e-05
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 30,
+      "function": "<genexpr>",
+      "calls": 50,
+      "self_seconds": 1.72e-05,
+      "cumulative_seconds": 2.2800000000000002e-05
+    },
+    {
+      "module": "\\reporting\\research.py",
+      "line": 1,
+      "function": "<module>",
+      "calls": 1,
+      "self_seconds": 2.16e-05,
+      "cumulative_seconds": 2.16e-05
+    },
+    {
+      "module": "\\data\\weekly_features.py",
+      "line": 1,
+      "function": "<module>",
+      "calls": 1,
+      "self_seconds": 2.15e-05,
+      "cumulative_seconds": 2.15e-05
+    },
+    {
+      "module": "\\agents\\research.py",
+      "line": 16,
+      "function": "<genexpr>",
+      "calls": 24,
+      "self_seconds": 1.54e-05,
+      "cumulative_seconds": 1.94e-05
+    },
+    {
+      "module": "\\data\\weekly_features.py",
+      "line": 83,
+      "function": "<lambda>",
+      "calls": 74,
+      "self_seconds": 1.9200000000000003e-05,
+      "cumulative_seconds": 1.9200000000000003e-05
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 634,
+      "function": "<genexpr>",
+      "calls": 38,
+      "self_seconds": 1.76e-05,
+      "cumulative_seconds": 1.76e-05
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 159,
+      "function": "<genexpr>",
+      "calls": 50,
+      "self_seconds": 1.4000000000000001e-05,
+      "cumulative_seconds": 1.4000000000000001e-05
+    },
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 292,
+      "function": "<genexpr>",
+      "calls": 4,
+      "self_seconds": 7.9e-06,
+      "cumulative_seconds": 1.2600000000000001e-05
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 397,
+      "function": "<lambda>",
+      "calls": 24,
+      "self_seconds": 1.0500000000000001e-05,
+      "cumulative_seconds": 1.0500000000000001e-05
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 438,
+      "function": "<genexpr>",
+      "calls": 38,
+      "self_seconds": 8.7e-06,
+      "cumulative_seconds": 8.7e-06
+    },
+    {
+      "module": "\\backtesting\\weekly_strategy.py",
+      "line": 31,
+      "function": "__init__",
+      "calls": 8,
+      "self_seconds": 8.400000000000001e-06,
+      "cumulative_seconds": 8.400000000000001e-06
+    },
+    {
+      "module": "\\backtesting\\weekly_strategy.py",
+      "line": 117,
+      "function": "<lambda>",
+      "calls": 25,
+      "self_seconds": 7.7e-06,
+      "cumulative_seconds": 7.7e-06
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 635,
+      "function": "<genexpr>",
+      "calls": 38,
+      "self_seconds": 7.2000000000000005e-06,
+      "cumulative_seconds": 7.2000000000000005e-06
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 458,
+      "function": "<genexpr>",
+      "calls": 38,
+      "self_seconds": 6.8e-06,
+      "cumulative_seconds": 6.8e-06
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 107,
+      "function": "<genexpr>",
+      "calls": 25,
+      "self_seconds": 5.8e-06,
+      "cumulative_seconds": 5.8e-06
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 636,
+      "function": "<genexpr>",
+      "calls": 38,
+      "self_seconds": 5.7000000000000005e-06,
+      "cumulative_seconds": 5.7000000000000005e-06
+    },
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 119,
+      "function": "ExperimentStore",
+      "calls": 1,
+      "self_seconds": 5.500000000000001e-06,
+      "cumulative_seconds": 5.500000000000001e-06
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 109,
+      "function": "<genexpr>",
+      "calls": 25,
+      "self_seconds": 4.000000000000001e-06,
+      "cumulative_seconds": 4.000000000000001e-06
+    },
+    {
+      "module": "\\agents\\research.py",
+      "line": 6,
+      "function": "ModelAdapter",
+      "calls": 1,
+      "self_seconds": 3.7e-06,
+      "cumulative_seconds": 3.7e-06
+    },
+    {
+      "module": "\\backtesting\\weekly_strategy.py",
+      "line": 21,
+      "function": "WeeklyBaselineStrategy",
+      "calls": 1,
+      "self_seconds": 3.3e-06,
+      "cumulative_seconds": 3.3e-06
+    },
+    {
+      "module": "\\backtesting\\weekly_strategy.py",
+      "line": 105,
+      "function": "<genexpr>",
+      "calls": 15,
+      "self_seconds": 2.9e-06,
+      "cumulative_seconds": 2.9e-06
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 221,
+      "function": "PaperReplayEngine",
+      "calls": 1,
+      "self_seconds": 2.4000000000000003e-06,
+      "cumulative_seconds": 2.4000000000000003e-06
+    },
+    {
+      "module": "\\experiments\\runner.py",
+      "line": 180,
+      "function": "ExperimentRunner",
+      "calls": 1,
+      "self_seconds": 2.4000000000000003e-06,
+      "cumulative_seconds": 2.4000000000000003e-06
+    },
+    {
+      "module": "\\backtesting\\weekly_strategy.py",
+      "line": 106,
+      "function": "<genexpr>",
+      "calls": 20,
+      "self_seconds": 2.2e-06,
+      "cumulative_seconds": 2.2e-06
+    },
+    {
+      "module": "\\backtesting\\replay.py",
+      "line": 265,
+      "function": "<genexpr>",
+      "calls": 2,
+      "self_seconds": 1.1e-06,
+      "cumulative_seconds": 1.1e-06
+    }
+  ],
+  "decision": "No optimization introduced: small fixture dominated by provenance/report/import overhead; larger-history scaling remains unmeasured."
+}

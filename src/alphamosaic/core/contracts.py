@@ -130,6 +130,20 @@ class CorporateAction(Evidence):
     effective_date: date
     ratio: float | None = Field(default=None, gt=0)
     cash_amount: float | None = Field(default=None, ge=0)
+    effective_date_role: Literal["EX_DATE"] | None = None
+    dividend_type: Literal["ORDINARY_CASH", "SPECIAL_CASH", "DUE_BILL", "UNKNOWN"] | None = None
+    payment_date: date | None = None
+    cash_amount_basis: Literal["EX_DATE_SHARES"] | None = None
+    source_action_id: str | None = Field(default=None, pattern=r"^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$")
+
+    @model_validator(mode="after")
+    def dividend_terms(self) -> Self:
+        if self.action != "DIVIDEND" and any(value is not None for value in (
+            self.effective_date_role, self.dividend_type, self.payment_date,
+            self.cash_amount_basis,
+        )):
+            raise ValueError("dividend terms cannot describe a different corporate action")
+        return self
 
 
 class FinancialField(Contract):

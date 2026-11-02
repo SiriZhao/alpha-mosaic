@@ -1,0 +1,2 @@
+entitlement_id,action_reference,source_action_id,symbol,ex_date,payment_date,accrued_at,entitled_quantity,cash_per_share,amount,available_at,schedule_status
+dividend-entitlement-000000,0:SPY:DIVIDEND:2016-02-02,fixture-SPY-ordinary-dividend-v1,SPY,2016-02-02,2016-02-17,2016-02-02T14:30:00Z,968.0,1.0,968.0,,AFTER_EVALUATION_END

@@ -1,0 +1,16 @@
+{
+  "scope": "DOCUMENTED_RELEASE_BUILD",
+  "source_hash": "7ca17f91dbee927d7c9c788879ccfe6f1e878338954dc618b1f867393ffc9c15",
+  "python_bytes_equal_clean_wheel_tested_source": true,
+  "runtime_excluded": true,
+  "artifacts": {
+    "alphamosaic-0.1.0-py3-none-any.whl": {
+      "bytes": 169190,
+      "sha256": "bf1452b4d122152c08b117cbc808325dcdfea24ea295dc4c4bdd38731dc314a1"
+    },
+    "alphamosaic-0.1.0.tar.gz": {
+      "bytes": 1451764,
+      "sha256": "c0e1ff7f273e5433c6acf720f735537d45b2cbaae09df9b7878bbf4002db16f4"
+    }
+  }
+}

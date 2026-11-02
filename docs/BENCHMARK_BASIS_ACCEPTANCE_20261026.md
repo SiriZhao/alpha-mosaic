@@ -1,0 +1,9 @@
+# Per-selection return-basis evidence
+
+This isolated component fixes a Medium functional/evidence-propagation defect. The runner derived both strategy and benchmark conventions from all assets in the dataset. An unused split-adjusted asset could therefore turn otherwise matching RAW portfolios into unknown-basis comparisons. Disjoint portfolio/benchmark conventions were not separately persisted. No financial prices or returns were fabricated by this defect; the prior comparison gate blocked unknown bases.
+
+The shared `data.basis.market_return_basis` now describes only the actual input basket. Strategy and benchmark subsets are resolved independently; mixed/unknown/empty conventions remain null. New artifacts persist `benchmark_return_basis`, and reports expose it separately. RAW versus split-adjusted PRICE remains incompatible at both daily and weekly frequency; regression/relative outputs remain unavailable. Legacy artifacts lacking this field are loaded unchanged, and regenerated reports say NOT_RECORDED rather than inferring missing evidence.
+
+Source `5f86be17f76e876e460af4775b1c6d69327fbc698480f5bbf670fb4630184608` (63Python files) passed42 targeted experiment/weekly tests, Ruff and Pyright. Four independently authored/executed service/legacy/report oracles passed with identical before/after source manifests. The three original failures are archived, not deleted or weakened. Evidence is in [the component bundle](evidence/benchmark-basis-20261026/acceptance.json).
+
+This is FIXTURE software qualification. Full regression, wheel/UI/current CI and integration into the published branch remain separate gates. Explicit cash/equal-weight BenchmarkSpec and first-eligible-open scheduling are concurrent isolated work, not implemented by this fix. Full Renaissance scope remains ACTIVE; real licensed/PIT/action/universe/delisting qualification remains blocked.

@@ -1,0 +1,806 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="35" failures="0" skipped="0" tests="35" time="4.759" timestamp="2026-10-26T18:48:03.076959+08:00" hostname="YOGA"><testcase classname="tests.test_research_reconciliation" name="test_missing_artifact_is_unresolved_not_failed_or_successful_and_never_reruns" time="0.005"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_missing_artifact_is_unresolved_not_failed_or_successful_and_never_reruns&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_completed_artifact_is_recovered_without_inventing_original_worker_exit" time="0.003"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_completed_artifact_is_recovered_without_inventing_original_worker_exit&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_new_reconciler_source_can_review_frozen_old_artifacts_without_reexecution" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_new_reconciler_source_can_review_frozen_old_artifacts_without_reexecution&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_missing_response_does_not_invalidate_sealed_artifact_or_prove_exit" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_missing_response_does_not_invalidate_sealed_artifact_or_prove_exit&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_delayed_prestart_child_cannot_cross_completed_reconciliation_fence" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_delayed_prestart_child_cannot_cross_completed_reconciliation_fence&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_reconciliation_refuses_real_os_lease_without_fencing_or_guessing_liveness[plan]" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_reconciliation_refuses_real_os_lease_without_fencing_or_guessing_liveness[plan]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_reconciliation_refuses_real_os_lease_without_fencing_or_guessing_liveness[global]" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_reconciliation_refuses_real_os_lease_without_fencing_or_guessing_liveness[global]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_recorded_unsuccessful_outcome_is_never_upgraded_by_a_complete_late_artifact[TIMED_OUT]" time="0.002"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_recorded_unsuccessful_outcome_is_never_upgraded_by_a_complete_late_artifact[TIMED_OUT]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_recorded_unsuccessful_outcome_is_never_upgraded_by_a_complete_late_artifact[FAILED]" time="0.002"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_recorded_unsuccessful_outcome_is_never_upgraded_by_a_complete_late_artifact[FAILED]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_recorded_unsuccessful_outcome_is_never_upgraded_by_a_complete_late_artifact[BUSY]" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_recorded_unsuccessful_outcome_is_never_upgraded_by_a_complete_late_artifact[BUSY]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_candidate_qualification_fails_closed_without_changing_original_artifacts[source]" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_candidate_qualification_fails_closed_without_changing_original_artifacts[source]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_candidate_qualification_fails_closed_without_changing_original_artifacts[manifest]" time="0.002"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_candidate_qualification_fails_closed_without_changing_original_artifacts[manifest]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_candidate_qualification_fails_closed_without_changing_original_artifacts[config]" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_candidate_qualification_fails_closed_without_changing_original_artifacts[config]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_candidate_qualification_fails_closed_without_changing_original_artifacts[context]" time="0.002"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_candidate_qualification_fails_closed_without_changing_original_artifacts[context]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_candidate_qualification_fails_closed_without_changing_original_artifacts[duplicate]" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_candidate_qualification_fails_closed_without_changing_original_artifacts[duplicate]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_candidate_qualification_fails_closed_without_changing_original_artifacts[checksum]" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_candidate_qualification_fails_closed_without_changing_original_artifacts[checksum]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_candidate_qualification_fails_closed_without_changing_original_artifacts[missing_checksum]" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_candidate_qualification_fails_closed_without_changing_original_artifacts[missing_checksum]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_candidate_qualification_fails_closed_without_changing_original_artifacts[unknown_directory]" time="0.002"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_candidate_qualification_fails_closed_without_changing_original_artifacts[unknown_directory]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_candidate_qualification_fails_closed_without_changing_original_artifacts[running]" time="0.002"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_candidate_qualification_fails_closed_without_changing_original_artifacts[running]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_candidate_qualification_fails_closed_without_changing_original_artifacts[forged_response]" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_candidate_qualification_fails_closed_without_changing_original_artifacts[forged_response]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_candidate_qualification_fails_closed_without_changing_original_artifacts[request]" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_candidate_qualification_fails_closed_without_changing_original_artifacts[request]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_reconciliation_crash_after_fence_or_record_resumes_append_only[RECONCILIATION_STARTED]" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_reconciliation_crash_after_fence_or_record_resumes_append_only[RECONCILIATION_STARTED]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_reconciliation_crash_after_fence_or_record_resumes_append_only[RECOVERED_ATTEMPT]" time="0.002"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_reconciliation_crash_after_fence_or_record_resumes_append_only[RECOVERED_ATTEMPT]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_audit_cannot_dispatch_or_reclassify_after_reconciliation" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_audit_cannot_dispatch_or_reclassify_after_reconciliation&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_missing_recovered_proof_is_rejected_even_with_a_valid_event_hash_chain" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_missing_recovered_proof_is_rejected_even_with_a_valid_event_hash_chain&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_research_reconciliation" name="test_frozen_and_finished_plans_are_noops" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_frozen_and_finished_plans_are_noops&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_reconciliation_evidence_boundaries" name="test_recovered_artifact_cannot_have_a_contradictory_response_in_a_valid_hash_chain[failed_response]" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_recovered_artifact_cannot_have_a_contradictory_response_in_a_valid_hash_chain[failed_response]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_reconciliation_evidence_boundaries" name="test_recovered_artifact_cannot_have_a_contradictory_response_in_a_valid_hash_chain[wrong_experiment]" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_recovered_artifact_cannot_have_a_contradictory_response_in_a_valid_hash_chain[wrong_experiment]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_reconciliation_evidence_boundaries" name="test_reconciliation_fence_requires_a_named_source_fingerprint" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_reconciliation_fence_requires_a_named_source_fingerprint&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_reconciliation_process" name="test_terminated_parent_preserves_sealed_child_artifact_and_reconciles_without_retry" time="0.002"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_terminated_parent_preserves_sealed_child_artifact_and_reconciles_without_retry&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_reconciliation_surfaces" name="test_cli_reconciles_without_running_trials_and_repeated_output_is_stable" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_cli_reconciles_without_running_trials_and_repeated_output_is_stable&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_reconciliation_surfaces" name="test_cli_report_failure_does_not_claim_committed_reconciliation_was_blocked" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_cli_report_failure_does_not_claim_committed_reconciliation_was_blocked&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_reconciliation_surfaces" name="test_mcp_reconciliation_is_an_explicit_bounded_local_job" time="0.002"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_mcp_reconciliation_is_an_explicit_bounded_local_job&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_reconciliation_surfaces" name="test_terminal_reconciles_in_background_and_keeps_the_saved_audit" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_terminal_reconciles_in_background_and_keeps_the_saved_audit&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase><testcase classname="tests.test_reconciliation_surfaces" name="test_terminal_corrupt_original_report_keeps_audit_visible" time="0.001"><error message="failed on setup with &quot;PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_terminal_corrupt_original_report_keeps_audit_visible&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] 拒绝访问。: 'E:\\CSDIY\\Vibe Coding Project\\AlphaMosaic\\runtime\\renaissance-20261024\\runtime\\independent-final-reconciliation-001'
+
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError</error></testcase></testsuite></testsuites>

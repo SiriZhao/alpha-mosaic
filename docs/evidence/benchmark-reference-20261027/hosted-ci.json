@@ -1,0 +1,38 @@
+{
+  "status": "PASSED",
+  "provider": "GitHub Actions",
+  "run_id": 40508524040,
+  "run_number": 52,
+  "workflow": "CI",
+  "head_branch": "codex/renaissance-20261024",
+  "head_sha": "985ec75e3020245938a8760088fb441c9085957f",
+  "pull_request": 4,
+  "run_url": "https://github.com/SiriZhao/alpha-mosaic/actions/runs/40508524040",
+  "status_observed": "completed",
+  "conclusion": "success",
+  "job": {
+    "name": "quality",
+    "status": "completed",
+    "conclusion": "success",
+    "steps": [
+      "uv lock --check",
+      "uv sync --locked --all-extras --dev",
+      "ruff check",
+      "pyright",
+      "pytest -q -W error::RuntimeWarning",
+      "offline reproducibility and performance smoke",
+      "local MCP protocol handshake",
+      "uv build",
+      "clean wheel smoke",
+      "dependency audit",
+      "credential and secret scan"
+    ]
+  },
+  "source_specific": true,
+  "remote_sha_matches_local": true,
+  "notes": [
+    "This hosted result certifies the pushed source at head_sha only.",
+    "It does not qualify licensed real/PIT market data or complete the Renaissance objective.",
+    "The PR remains draft and unmerged."
+  ]
+}

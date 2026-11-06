@@ -277,7 +277,7 @@ else:
             if page == "Backtest Results":
                 st.json(item["analysis"], expanded=False)
             if page == "Backtest Results":
-                tabs = st.tabs(["Fills", "Orders", "Positions", "Cash ledger", "Warnings", "Closed FIFO matches", "Asset accounting", "Weekly view", "Dividend accounting", "Signal price features"])
+                tabs = st.tabs(["Fills", "Orders", "Positions", "Cash ledger", "Warnings", "Closed FIFO matches", "Asset accounting", "Weekly view", "Parameter robustness", "Dividend accounting", "Signal price features"])
                 for tab, key in zip(tabs[:5], ["fills", "orders", "equity", "cash_ledger", "diagnostics"], strict=True):
                     tab.dataframe(item["result"].get(key, []), width="stretch")
                 trades = item["analysis"].get("trade_analysis", {})
@@ -289,8 +289,32 @@ else:
                 weekly = item["analysis"].get("weekly", {})
                 tabs[7].caption("52 completed-week periods/year; boundary intervals and daily risk remain separate.")
                 tabs[7].json(weekly, expanded=False)
-                dividend_evidence = dividend_accounting_evidence(item)
                 with tabs[8]:
+                    sensitivity = item["analysis"].get("parameter_sensitivity", {})
+                    st.subheader("Predeclared parameter sensitivity")
+                    st.caption("Each listed case was run independently. No lookback is selected or promoted; fixture and historical sensitivity do not establish prospective stability or alpha.")
+                    st.write({key: sensitivity.get(key) for key in ("status", "strategy", "selection", "trial_count", "computed_cases", "failed_cases") if key in sensitivity})
+                    cases = sensitivity.get("cases", [])
+                    if cases:
+                        rows = [{"Lookback sessions": case.get("lookback"),
+                                 "Status": case.get("status"),
+                                 "Execution": case.get("execution_status", "NOT_RECORDED"),
+                                 "Observations": case.get("observations"),
+                                 "Fills": case.get("fills"),
+                                 "Turnover": case.get("turnover"),
+                                 "Fees USD": case.get("fees_usd"),
+                                 "Slippage USD": case.get("slippage_cost_usd"),
+                                 "Return": (case.get("metrics") or {}).get("return"),
+                                 "Sharpe": (case.get("metrics") or {}).get("sharpe"),
+                                 "Warnings": "; ".join(case.get("warnings", [])) or ""}
+                                for case in cases]
+                        st.dataframe(rows, width="stretch", hide_index=True)
+                    else:
+                        st.info(sensitivity.get("reason", "No parameter sensitivity evidence was recorded."))
+                    if sensitivity.get("limitations"):
+                        st.caption("Limitations: " + " · ".join(sensitivity["limitations"]))
+                dividend_evidence = dividend_accounting_evidence(item)
+                with tabs[9]:
                     st.subheader("Dividend rights and cash availability")
                     st.caption(dividend_evidence["convention"])
                     if dividend_evidence["dividend_accounting"] == "PAY_DATE_RECEIVABLE":
@@ -315,7 +339,7 @@ else:
                         else:
                             st.info("No dividend cash payments in this evaluated period; inspect outstanding claims separately.")
                     st.json(dividend_evidence, expanded=False)
-                with tabs[9]:
+                with tabs[10]:
                     from alphamosaic.reporting.research import weekly_feature_evidence
                     feature_evidence = weekly_feature_evidence(item)
                     st.subheader("Derived weekly signal prices")

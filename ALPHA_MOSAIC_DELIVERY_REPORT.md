@@ -2,6 +2,14 @@
 
 Updated 2026-10-26, Asia/Shanghai. Full objective: **ACTIVE, incomplete**. This report describes current source-specific verification; timestamped checkpoint evidence remains immutable. No production-grade research acceptance, real historical strategy performance or demonstrated alpha is claimed.
 
+## 2026-11-06 continuation — parameter robustness and storage-boundary review
+
+The draft [PR #5](https://github.com/SiriZhao/alpha-mosaic/pull/5) now carries the bounded parameter-robustness diagnostic into persisted daily `momentum` experiments and the Backtest Results terminal. The declared lookbacks `[42, 63, 126]` remain visible with no selection or promotion. Each nested replay inherits the parent `start/end` window, records its actual period, creates a fresh strategy instance, and contributes to explicit nested trial accounting. Failed cases and no-trade/flat-NAV warnings are promoted to experiment analysis warnings. `trend`, weekly and other strategies are explicitly `NOT_APPLICABLE` so fixed workers do not multiply trials.
+
+Independent review reproduced and then verified closure of four correctness gaps: evaluation-window leakage, omitted `benchmark_return_basis` comparison identity, incomplete nested trial/warning evidence, and experiment-store junction/reparse redirection. A new experiment-store junction regression test runs on Windows junctions and POSIX symlink equivalents. A windowed 140-session FIXTURE smoke produced 60 observations from the declared start and `trials_reported=4`; market-performance inference remains prohibited.
+
+Final delivered test head is `4fe9bb18cc14080574e4e4e4d537fa3fc4d5d47b`. Hosted CI [42227903670](https://github.com/SiriZhao/alpha-mosaic/actions/runs/42227903670) passed the full test, Ruff, Pyright, build, clean-wheel, dependency, secret-scan and MCP gates. This continuation does not qualify real/PIT data, special distributions, cash-in-lieu, delisting economics, full covariance construction, DSR/PBO/Reality Check, PDF/Parquet export or complete scenario interaction coverage. PR #5 remains draft and unmerged pending human review.
+
 ## 1. Verified release identity
 
 Development branch: codex/renaissance-20261024. Current locally qualified RAW weekly source/package hash:1824b28cee25aaa1a585553b3f6c030eaab244d579c27346b35a771da102afee,62Python files. It passed **434 full tests**, zero failures/errors/skips, with RuntimeWarning as error; four upstream calendar deprecations remain visible. Independent final12 verifies actual form submission, readable manual share units, raw fills, price/income separation, export integrity and unchanged legacy reading. Earlier core28/integration30 reviews overlap; they are not an additive unique count.
@@ -129,7 +137,7 @@ Choose a unique home for a new case suite. Use an actual generated ID with alpha
 - **Planned:** controlled quarantine of unsealed artifacts, cash-in-lieu/special/delisting economics, dividend-inclusive signal indices, covariance/sector optimization, selection-adjusted statistics, richer scenario controls and PDF/Parquet export.
 - **Blocked:** strictly qualified licensed real historical three-asset/PIT/actions/universe/delisting research. No FIXTURE result, heuristic rank or descriptive alpha bypasses this gate.
 
-Production-grade research-prototype acceptance is incomplete. Highest-value next work remains licensed qualified raw-plus-actions historical evidence and source-qualified corporate-action/RAW-weekly boundaries; benchmark/portfolio/scientific capabilities follow the task graph. Opt-in RAW split-price weekly features are integrated and locally verified within their explicit price-only boundary; they do not relax real-data gates. Broader cash/equal-weight benchmark choices and compatible scenario controls are next implementable research work. Preserve financial correctness, failed experiments and immutable forward evidence rather than optimize attractive curves.
+Production-grade research-prototype acceptance is incomplete. The current requirement-by-requirement matrix is [REQUIREMENT_AUDIT_20261106.md](docs/REQUIREMENT_AUDIT_20261106.md). Highest-value next work remains licensed qualified raw-plus-actions historical evidence and source-qualified corporate-action/RAW-weekly boundaries; benchmark/portfolio/scientific capabilities follow the task graph. Opt-in RAW split-price weekly features are integrated and locally verified within their explicit price-only boundary; they do not relax real-data gates. Broader cash/equal-weight benchmark choices and compatible scenario controls are next implementable research work. Preserve financial correctness, failed experiments and immutable forward evidence rather than optimize attractive curves.
 
 ## 12. Commits and immutable checkpoint index
 

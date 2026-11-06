@@ -160,6 +160,8 @@ def parameter_sensitivity(
     config: ReplayConfig,
     strategy: str = "momentum",
     lookbacks: tuple[int, ...] = (42, 63, 126),
+    start: date | None = None,
+    end: date | None = None,
 ) -> dict[str, Any]:
     """Run a fixed parameter grid without selecting a best result.
 
@@ -179,16 +181,15 @@ def parameter_sensitivity(
     if any(value < 20 or value > 252 for value in lookbacks):
         raise ValueError("lookbacks must be between 20 and 252 sessions")
     engine = PaperReplayEngine()
-    registry = StrategyRegistry()
-    strategy_impl = registry.get(strategy)
     cases: list[dict[str, Any]] = []
     ordered_lookbacks = tuple(sorted(lookbacks))
     for lookback in ordered_lookbacks:
+        strategy_impl = StrategyRegistry().get(strategy)
         case_config = ReplayConfig.model_validate({
             **config.model_dump(), "lookback": lookback, "decision_frequency": "DAILY"
         })
         try:
-            replay = engine.run(data, strategy_impl, strategy, case_config)
+            replay = engine.run(data, strategy_impl, strategy, case_config, start, end)
         except ValueError as exc:
             cases.append({"lookback": lookback, "status": "FAILED", "error": str(exc)[:500]})
             continue
@@ -213,6 +214,10 @@ def parameter_sensitivity(
             "fees_usd": replay.fees,
             "slippage_cost_usd": replay.slippage_cost,
             "execution_status": execution_status,
+            "period": {
+                "start": replay.equity[0].session.isoformat() if replay.equity else None,
+                "end": replay.equity[-1].session.isoformat() if replay.equity else None,
+            },
             "warnings": warnings,
         })
     computed_cases = sum(case["status"] == "COMPUTED" for case in cases)

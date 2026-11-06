@@ -260,6 +260,15 @@ def test_parameter_sensitivity_rejects_undeclared_or_out_of_contract_grids():
     assert no_trade["cases"][0]["warnings"]
 
 
+def test_parameter_sensitivity_preserves_parent_evaluation_window():
+    data = dataset(180)
+    start = data.bars["AAA"][100].session
+    evidence = parameter_sensitivity(data, ReplayConfig(), lookbacks=(42,), start=start)
+    case = evidence["cases"][0]
+    assert case["period"]["start"] == start.isoformat()
+    assert case["observations"] < 180
+
+
 def test_pit_signal_cutoff_and_expiry():
     d = dataset(90)
     at = d.bars["AAA"][63].observed_at

@@ -4,6 +4,8 @@
 
 Added a bounded, predeclared `parameter_sensitivity` diagnostic to the validation layer. It reconstructs each daily config through Pydantic validation, preserves all case outcomes, counts trials by source, and labels no-trade/flat-NAV results. Focused backtest tests passed 2 cases with RuntimeWarnings treated as errors; Ruff and Pyright passed. This is deterministic fixture research evidence, not a strategy promotion or real-data qualification.
 
+Continuation: integrated the diagnostic into the persisted experiment result for daily `momentum` and `trend` runs and exposed a Backtest Results tab with per-lookback metrics, costs, fills, execution status and warnings. Non-applicable strategies receive an explicit `NOT_APPLICABLE` record. A direct 140-session FIXTURE run completed with `[42, 63, 126]`, `COMPUTED`, and `selection=NONE`; source compile and Ruff passed. Hosted CI and independent review remain pending for this continuation.
+
 ## Typed benchmark integration — 2026-10-27
 
 Full goal ACTIVE. BenchmarkSpecV1 is optional in ExperimentConfig and frozen research plans; legacy ticker configs serialize unchanged. ApplicationService persists cash/equal-weight references separately from benchmark_result, daily/weekly analytics distinguish model-assumption cash comparisons, and reports/terminal traces label typed references. Frozen cash plans/workers passed. Current source hash24a28b1f8cca6a09a0855409081fd1b719a52c5518fb28b8e5f18b68097a09c6 (65 Python files) passed447 full tests, 2 direct benchmark integration tests, 3 plan/worker integration tests, Ruff, Pyright and secret scan. Typed cash browser QA passed 12 captures with no browser errors. Second-model review was unavailable due capacity; real/PIT qualification remains blocked.

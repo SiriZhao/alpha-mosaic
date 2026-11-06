@@ -35,6 +35,7 @@ from alphamosaic.data.datasets import DatasetStore
 from alphamosaic.evaluation.analytics import analyze
 from alphamosaic.evaluation.scientific import HoldoutAudit
 from alphamosaic.evaluation.trades import analyze_trades
+from alphamosaic.evaluation.validation import parameter_sensitivity
 from alphamosaic.evaluation.weekly import analyze_weekly
 
 
@@ -268,6 +269,23 @@ class ExperimentRunner:
                 benchmark_result=None if benchmark_reference is not None else benchmark,
                 benchmark_reference=benchmark_reference, return_basis=basis,
                 benchmark_return_basis=benchmark_basis)
+            if config.replay.decision_frequency == "DAILY" and config.strategy in {"momentum", "trend"}:
+                # Persist a bounded, predeclared diagnostic with the experiment so
+                # the terminal and report can show robustness without selecting a
+                # winning parameter or changing the executed strategy.
+                analysis["parameter_sensitivity"] = parameter_sensitivity(
+                    selected, config.replay, strategy=config.strategy
+                )
+            else:
+                analysis["parameter_sensitivity"] = {
+                    "status": "NOT_APPLICABLE",
+                    "strategy": config.strategy,
+                    "selection": "NONE",
+                    "reason": "BOUND_TO_DAILY_MOMENTUM_OR_TREND",
+                    "limitations": [
+                        "Weekly and non-lookback strategies require a separately declared robustness contract",
+                    ],
+                }
             if source_manifest()["source_hash"] != payload["reproducibility"]["source_hash"]:
                 raise ValueError("SOURCE_CHANGED_DURING_RUN: freeze code and restart service")
             payload.update(status="COMPLETED", acceptance=result.acceptance,

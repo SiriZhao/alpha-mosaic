@@ -269,7 +269,7 @@ class ExperimentRunner:
                 benchmark_result=None if benchmark_reference is not None else benchmark,
                 benchmark_reference=benchmark_reference, return_basis=basis,
                 benchmark_return_basis=benchmark_basis)
-            if config.replay.decision_frequency == "DAILY" and config.strategy in {"momentum", "trend"}:
+            if config.replay.decision_frequency == "DAILY" and config.strategy == "momentum":
                 # Persist a bounded, predeclared diagnostic with the experiment so
                 # the terminal and report can show robustness without selecting a
                 # winning parameter or changing the executed strategy.

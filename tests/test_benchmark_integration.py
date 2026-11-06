@@ -67,6 +67,15 @@ def test_experiment_comparison_keeps_typed_references_separate_from_legacy_and_e
     assert service.research_comparison([cash_a["experiment_id"], equal_item["experiment_id"]])["status"] == "INCOMPATIBLE"
 
 
+def test_experiment_comparison_blocks_benchmark_return_basis_mismatch(tmp_path: Path) -> None:
+    service, manifest, _ = _service_and_manifest(tmp_path)
+    first = service.research_experiment({"dataset_id": manifest["dataset_id"], "strategy": "buy_and_hold", "symbols": ["SPY"], "benchmark": "SPY"})
+    second = dict(first)
+    second["benchmark_return_basis"] = "RAW_WITH_CASH_ACTIONS" if first["benchmark_return_basis"] == "PRICE" else "PRICE"
+    from alphamosaic.experiments.runner import compare_experiments
+    assert compare_experiments([first, second])["status"] == "INCOMPATIBLE"
+
+
 def test_frozen_plan_retains_typed_cash_reference_through_worker_dispatch(tmp_path: Path) -> None:
     service, manifest, sessions = _service_and_manifest(tmp_path)
     spec = cash_zero_interest(sessions, initial_cash=100_000)

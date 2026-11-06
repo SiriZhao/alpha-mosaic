@@ -37,9 +37,11 @@ def test_service_reproduces_accounting_and_exports_complete_reports(service: App
 
 def test_daily_momentum_persists_predeclared_parameter_robustness(service: ApplicationService) -> None:
     manifest = service.research_demo(140)
+    data = service.experiment_runner().datasets.load(manifest["dataset_id"])
+    start = data.bars["SPY"][80].session.isoformat()
     item = service.research_experiment({
         "dataset_id": manifest["dataset_id"], "strategy": "momentum",
-        "symbols": ["SPY"], "benchmark": "SPY",
+        "symbols": ["SPY"], "benchmark": "SPY", "start": start,
     })
     assert item["status"] == "COMPLETED"
     evidence = item["analysis"]["parameter_sensitivity"]
@@ -47,6 +49,9 @@ def test_daily_momentum_persists_predeclared_parameter_robustness(service: Appli
     assert evidence["selection"] == "NONE"
     assert [case["lookback"] for case in evidence["cases"]] == [42, 63, 126]
     assert all(case["status"] == "COMPUTED" for case in evidence["cases"])
+    assert all(case["period"]["start"] == start for case in evidence["cases"])
+    assert item["analysis"]["overfitting"]["trials_reported"] == 4
+    assert item["analysis"]["overfitting"]["trial_components"]["parameter_sensitivity_cases"] == 3
 
 
 def test_failure_is_recorded_and_provenance_failure_is_a_failed_run(service: ApplicationService, monkeypatch: pytest.MonkeyPatch) -> None:

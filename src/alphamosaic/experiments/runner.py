@@ -27,7 +27,7 @@ from alphamosaic.backtesting.models import (
 from alphamosaic.backtesting.replay import PaperReplayEngine
 from alphamosaic.backtesting.strategies import StrategyRegistry
 from alphamosaic.common.locking import exclusive_lease
-from alphamosaic.common.paths import unredirected
+from alphamosaic.common.paths import contained_child, unredirected
 from alphamosaic.core.benchmark_contracts import BenchmarkSpecV1
 from alphamosaic.core.contracts import Contract, utc_now
 from alphamosaic.data.basis import market_return_basis
@@ -134,10 +134,7 @@ class ExperimentStore:
     def path(self, experiment_id: str) -> Path:
         if not re.fullmatch(r"[0-9a-f]{32}", experiment_id):
             raise ValueError("invalid experiment ID")
-        path = self.root / experiment_id
-        if path.is_symlink() or path.resolve().parent != self.root:
-            raise ValueError("experiment path escapes store")
-        return path
+        return contained_child(self.root, experiment_id)
 
     def load(self, experiment_id: str) -> dict[str, Any]:
         path = self.path(experiment_id)
@@ -274,18 +271,36 @@ class ExperimentRunner:
                 # the terminal and report can show robustness without selecting a
                 # winning parameter or changing the executed strategy.
                 analysis["parameter_sensitivity"] = parameter_sensitivity(
-                    selected, config.replay, strategy=config.strategy
+                    selected, config.replay, strategy=config.strategy,
+                    start=config.start, end=config.end,
                 )
             else:
                 analysis["parameter_sensitivity"] = {
                     "status": "NOT_APPLICABLE",
                     "strategy": config.strategy,
                     "selection": "NONE",
-                    "reason": "BOUND_TO_DAILY_MOMENTUM_OR_TREND",
+                    "reason": "BOUND_TO_DAILY_MOMENTUM",
                     "limitations": [
                         "Weekly and non-lookback strategies require a separately declared robustness contract",
                     ],
                 }
+            sensitivity = analysis["parameter_sensitivity"]
+            analysis["overfitting"] = {
+                "selection": "NONE",
+                "trials_reported": 1 + int(sensitivity.get("trial_count", 0)),
+                "trial_components": {
+                    "primary_experiment": 1,
+                    "parameter_sensitivity_cases": int(sensitivity.get("trial_count", 0)),
+                },
+                "correction": "NOT_ESTIMATED_NO_SIGNIFICANCE_CLAIM",
+            }
+            sensitivity_warnings = [
+                f"PARAMETER_SENSITIVITY_{case.get('status', 'UNKNOWN')}"
+                for case in sensitivity.get("cases", []) if case.get("status") != "COMPUTED"
+            ]
+            if any(case.get("warnings") for case in sensitivity.get("cases", [])):
+                sensitivity_warnings.append("PARAMETER_SENSITIVITY_CASE_WARNINGS")
+            analysis["warnings"].extend(sensitivity_warnings)
             if source_manifest()["source_hash"] != payload["reproducibility"]["source_hash"]:
                 raise ValueError("SOURCE_CHANGED_DURING_RUN: freeze code and restart service")
             payload.update(status="COMPLETED", acceptance=result.acceptance,
@@ -345,7 +360,7 @@ def compare_experiments(items: list[dict[str, Any]]) -> dict[str, Any]:
         c = item["config"]
         replay = ReplayConfig.model_validate(c["replay"])
         dates = [p["session"] for p in item.get("result", {}).get("equity", [])]
-        return (item.get("dataset_hash"), item.get("return_basis"), item.get("acceptance"),
+        return (item.get("dataset_hash"), item.get("return_basis"), item.get("benchmark_return_basis"), item.get("acceptance"),
                 item.get("reproducibility", {}).get("source_hash"), c["validation"],
                 benchmark_signature(c), tuple(dates), dividend_accounting_signature(replay))
     comparable = all(i["status"] == "COMPLETED" and i.get("return_basis") is not None and i.get("dataset_hash") and i.get("reproducibility", {}).get("source_hash") for i in items) and len({signature(i) for i in items}) == 1

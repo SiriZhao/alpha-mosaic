@@ -2,6 +2,8 @@
 
 import csv
 import json
+import os
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -11,6 +13,27 @@ from test_independent_dividend_payment import fixture_data, payment_config
 from alphamosaic.backtesting.models import ReplayConfig, ReplayResult
 from alphamosaic.core.service import ApplicationService
 from alphamosaic.experiments.runner import ExperimentStore, canonical, digest
+
+
+def test_experiment_store_junction_cannot_redirect_artifact_path(tmp_path: Path) -> None:
+    store = ExperimentStore(tmp_path / "experiments")
+    target = tmp_path / "outside"
+    target.mkdir()
+    experiment_id = "a" * 32
+    link = store.root / experiment_id
+    if os.name == "nt":
+        subprocess.run(["cmd.exe", "/d", "/c", "mklink", "/J", str(link), str(target)], capture_output=True, check=True)
+    else:
+        link.symlink_to(target, target_is_directory=True)
+    try:
+        with pytest.raises(ValueError, match="redirected"):
+            store.path(experiment_id)
+        assert list(target.iterdir()) == []
+    finally:
+        if os.name == "nt":
+            os.rmdir(link)
+        else:
+            link.unlink()
 
 
 @pytest.mark.parametrize("end,paid,outstanding", [("2024-01-05", 0, 10), ("2024-01-12", 10, 0)])

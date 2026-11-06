@@ -6,7 +6,7 @@ Predeclared parameter sensitivity is implemented for bounded DAILY diagnostics. 
 
 The diagnostic is now persisted by the ordinary experiment runner for daily `momentum` runs and displayed in the Backtest Results terminal. A 140-session FIXTURE smoke produced all three declared cases with `selection=NONE`; `trend`, weekly and other strategies are labelled explicitly as non-applicable to avoid multiplying bounded worker trials. Hosted CI run 42212663325 passed all gates; independent review and PR review remain separate before acceptance. The next research gate remains licensed point-in-time actions, historical constituents and delisting economics.
 
-Independent review identified and the next patch addresses a parent-window mismatch, incomplete nested trial accounting/warnings, benchmark basis comparison drift, and junction redirection at experiment storage paths. Re-run the full hosted gates before accepting this follow-up. The platform still requires licensed point-in-time actions, historical constituents and delisting economics.
+Independent review identified and the follow-up patch addresses a parent-window mismatch, incomplete nested trial accounting/warnings, benchmark basis comparison drift, and junction redirection at experiment storage paths. Hosted CI run 42222551023 passed all gates; obtain a second independent review of the final head before accepting the draft PR. The platform still requires licensed point-in-time actions, historical constituents and delisting economics.
 
 ## Typed benchmark integration — 2026-10-27
 

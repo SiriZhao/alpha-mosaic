@@ -4,7 +4,7 @@
 
 Predeclared parameter sensitivity is implemented for bounded DAILY diagnostics. It reports every lookback case, partial/failed status, trial counts and no-trade/flat-NAV warnings without ranking. Focused tests and static checks passed locally; publish through a clean clone and observe source-specific CI. Next highest value remains interactive cost/parameter scenario presentation, then licensed PIT actions/universe/delisting evidence. Do not interpret fixture sensitivity as prospective stability or alpha.
 
-The diagnostic is now persisted by the ordinary experiment runner for daily `momentum` runs and displayed in the Backtest Results terminal. A 140-session FIXTURE smoke produced all three declared cases with `selection=NONE`; `trend`, weekly and other strategies are labelled explicitly as non-applicable to avoid multiplying bounded worker trials. Re-run source-specific hosted CI and independent review before treating the UI integration as accepted. The next research gate remains licensed point-in-time actions, historical constituents and delisting economics.
+The diagnostic is now persisted by the ordinary experiment runner for daily `momentum` runs and displayed in the Backtest Results terminal. A 140-session FIXTURE smoke produced all three declared cases with `selection=NONE`; `trend`, weekly and other strategies are labelled explicitly as non-applicable to avoid multiplying bounded worker trials. Hosted CI run 42212663325 passed all gates; independent review and PR review remain separate before acceptance. The next research gate remains licensed point-in-time actions, historical constituents and delisting economics.
 
 ## Typed benchmark integration — 2026-10-27
 
